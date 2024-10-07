@@ -3,5 +3,5 @@ from . import  views
 
 urlpatterns = [
     path("", views.index, name="index"),
-    path("success/", views.success, name="success"),
+    path("confirm_token/", views.confirm_token, name="confirm_token"),
 ]

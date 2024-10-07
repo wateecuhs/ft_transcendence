@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>transcendence</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'frontend/css/index.css' %}">
+</head>
+<body>
+	<div class="header">
+		<h1 class="text-center title">TRANSCENDENCE</h1>
+		<div class="nav-right-items" id="user-pfp-container">
+			<a class="user-name align-self-center" id="username"></a>
+			<img class="user-image" id="profile-pic">
+		</div>
+	</div>
+	<div class="buttons-containter">
+		<a href="https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fconfirm_token&response_type=code" class="btn btn-primary">Login</a>
+	</div>
+</body>
+<script>
+	function	getUser() {
+		fetch(`/get_user_info`)
+			.then(response => response.json())
+			.then(data =>{
+				let username = document.getElementById('username');
+				username.innerHTML = data['login'];
+				document.getElementById('profile-pic').src = data['image'];
+				document.getElementById('user-pfp-container').style.display = 'flex';
+			})
+	}
+	window.onload = function () {
+		getUser();
+	}
+</script>
+</html>
