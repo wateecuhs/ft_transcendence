@@ -1,0 +1,40 @@
+<!-- This html page print a button in the middle of the page. This button redirect the user to the intra's connection page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth42</title>
+</head>
+    <style>
+        button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            padding-left: 2%;
+            padding-right: 2%;
+            padding-top: 1%;
+            padding-bottom: 1%;
+            background-color: rgb(41, 112, 10);
+            color: rgb(255, 255, 255);
+            font-size: medium;
+            font-weight: bold;
+        }
+        body {
+            background-color: dimgray;
+        }
+    </style>
+</head>
+<body>
+    <button id="login">
+        LOGIN WITH 42
+    </button>
+    <script type="text/javascript">
+        document.getElementById("login").onclick = function () {
+            location.href = "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsuccess&response_type=code"
+        };
+    </script>
+</body>
+</html>
