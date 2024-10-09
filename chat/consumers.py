@@ -13,22 +13,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 	async def receive(self, text_data):
 		print("Received", text_data)
-		data = json.loads(text_data)
-		if data['type'] == 'live_chat':
+		event = json.loads(text_data)
+		if event['type'] == 'chat_message':
 			message = {
-				"event_type": "chat_message",
+				"type": "chat_message",
 				"data": {
-				"message": data['message'],
-				"username": data['username']
+					"message": event['data']['message'],
+					"username": event['data']['username']
 				}
 			}
 			await self.channel_layer.group_send("chat", message)
 
 	async def chat_message(self, event):
-		message = event['message']
-		username = event['username']
+		message = event['data']['message']
+		username = event['data']['username']
 		await self.send(text_data=json.dumps({
-			'type': 'live_chat',
-			'message': message,
-			'username': username
+			"type": "chat_message",
+			"data": {
+				"message": message,
+				"username": username
+			}
 		}))

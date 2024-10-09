@@ -48,9 +48,9 @@
 		var ws = new WebSocket('ws://localhost:8000/ws/chat/');
 		ws.onmessage = function (event) {
 			event = JSON.parse(event.data);
-			if (event.type === 'live_chat') {
+			if (event.type === 'chat_message') {
 				var messages = document.getElementById('messages');
-				messages.innerHTML += '<br><strong>' + event.username + ':</strong> ' + event.message;
+				messages.innerHTML += '<br><strong>' + event.data.username + ':</strong> ' + event.data.message;
 			}
 		};
 		ws.onopen = function () {
@@ -59,7 +59,13 @@
 		function sendMessage() {
 			var input = document.getElementById('message');
 			var message = input.value;
-			ws.send(JSON.stringify({'type': 'live_chat', 'username': document.getElementById('username').innerHTML, 'message': message}));
+			ws.send(JSON.stringify({
+				'type': 'chat_message',
+				'data': {
+					'username': document.getElementById('username').innerHTML,
+					'message': message
+				}
+			}));
 			input.value = '';
 		}
 		document.getElementById('message').addEventListener('keypress', function (e) {
