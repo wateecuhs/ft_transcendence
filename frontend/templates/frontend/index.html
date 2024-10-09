@@ -38,6 +38,9 @@
 		fetch(`/get_user_info`)
 			.then(response => response.json())
 			.then(data =>{
+				if (data['error']) {
+					return;
+				}
 				let username = document.getElementById('username');
 				username.innerHTML = data['login'];
 				document.getElementById('profile-pic').src = data['image'];
@@ -50,7 +53,7 @@
 			event = JSON.parse(event.data);
 			if (event.type === 'chat_message') {
 				var messages = document.getElementById('messages');
-				messages.innerHTML += '<br><strong>' + event.data.username + ':</strong> ' + event.data.message;
+				messages.innerHTML += '<br><strong>' + event.data.sender + ':</strong> ' + event.data.message;
 			}
 		};
 		ws.onopen = function () {
@@ -62,7 +65,7 @@
 			ws.send(JSON.stringify({
 				'type': 'chat_message',
 				'data': {
-					'username': document.getElementById('username').innerHTML,
+					'sender': document.getElementById('username').innerHTML,
 					'message': message
 				}
 			}));

@@ -6,6 +6,8 @@ def index(request):
 	return render(request, "frontend/index.html")
 
 def get_user_info(request):
+	if "user_info" not in request.session:
+		return JsonResponse({"error": "Not logged in."})
 	return JsonResponse(request.session["user_info"])
 
 def room_join(request, room_code):

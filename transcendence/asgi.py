@@ -11,6 +11,7 @@ import os
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
+from channels.sessions import SessionMiddlewareStack
 import socketio
 from chat.consumers import ChatConsumer
 from django.urls import path
@@ -24,7 +25,7 @@ socket_app = socketio.ASGIApp(sio)
 
 application = ProtocolTypeRouter({
 	"http": django_asgi_app,
-	'websocket': URLRouter([
+	'websocket': SessionMiddlewareStack(URLRouter([
         path('ws/chat/', ChatConsumer.as_asgi()),
-	]),
+	])),
 })
