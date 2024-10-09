@@ -36,10 +36,27 @@ html,body {
 	height: 58px;
 	border-radius: 50%;
 	object-fit: cover;
-	margin-left: 10px;
+	margin-left: 10px;	
 	margin-right: 10px;
 }
 
 #username {
-	color: #ecc52c;
+	color: #ffffff;
+}
+
+#buttons-container {
+	height: fit-content;
+	display: flex;
+	position: relative;
+	justify-content: center;
+}
+
+#chat-container {
+	right: 0;
+	width: 50%;
+}
+
+#page-body {
+	display: flex;
+	height: 90%;	
 }

@@ -42,4 +42,4 @@ def confirm_token(request):
 		request.session['user_info'] = payload
 		return redirect('index')
 	else:
-		return JsonResponse({"coucou": response.text}, status=400)
+		return redirect('index')

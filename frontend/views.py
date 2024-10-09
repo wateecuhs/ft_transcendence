@@ -5,6 +5,9 @@ from django.http import HttpResponse, JsonResponse
 def index(request):
 	return render(request, "frontend/index.html")
 
+def get_user_info(request):
+	return JsonResponse(request.session["user_info"])
+
 def room_join(request, room_code):
 	return HttpResponse(f"Joining room {room_code}.")
 
@@ -13,7 +16,3 @@ def friend_add(request, username):
 
 def login(request):
 	return HttpResponse(f"test")
-
-def get_user_info(request):
-	print(request.session["user_info"])
-	return JsonResponse(request.session["user_info"])
