@@ -1,3 +1,4 @@
+import string
 from http.client import responses
 from os import access
 from urllib.parse import uses_relative
@@ -36,7 +37,7 @@ def confirm_token(request):
 		'redirect_uri': redirect_uri
 	}
 	response = requests.post(token_url, data=params)
-
+	print(response.json())
 	if response.ok:
 		print("coucou")
 		access_token = response.json()['access_token']
@@ -44,8 +45,10 @@ def confirm_token(request):
 		payload = {"login": response['login'], "image": response['image']['versions']['small']}
 		request.session['user_info'] = payload
 		print("Added session data")
-		#if user.get_user_by_name(response['login']) == None :
-			#user.add_user(response['login'], avatar=response['image']['versions']['small'])
+		print(type(response['login']))
+		username = response['login'].decode('utf-8')
+		user.add_user(username, avatar=response['image']['versions']['small'])
+		print(user.get_user_by_name('earaujo'))
 		return redirect('index')
 	else:
 		return redirect('index')

@@ -1,17 +1,42 @@
 from .models import User, Tournament, Statistic, Match_History
+from django.core.exceptions import ValidationError
 
-# Function to add a new user to the database
+
 def add_user(name, status=None, avatar=None, tournament_id=None):
     try:
-        # Retrieve the related tournament if provided
-        tournament = Tournament.objects.get(id=tournament_id) if tournament_id else None
-        # Create a new user
-        user = User.objects.create(name=name, status=status, avatar=avatar, tournament_id=tournament)
+        if User.objects.filter(name=name).exists():
+            print(f"User with name '{name}' already exists.")
+            return None
+        tournament = None
+        if tournament_id is not None:
+            try:
+                tournament = Tournament.objects.get(id=tournament_id)
+            except Tournament.DoesNotExist:
+                print(f"Tournament with id {tournament_id} does not exist.")
+
+        # Crée un nouvel utilisateur avec les informations fournies
+        user = User(
+            name=name,
+            status=status,
+            avatar=avatar,
+            tournament=tournament
+        )
+
+        user.full_clean()
+
+        user.save()
+
+        print("User created successfully.")
         return user
-    except Exception as e:
-        # Handle any exceptions during user creation
-        print(f"Error in adding user: {e}")
+
+    except ValidationError as e:
+        print(f"Validation Error: {e}")
         return None
+
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return None
+
 
 # Function to retrieve a user by their name
 def get_user_by_name(name):

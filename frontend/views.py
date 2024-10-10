@@ -6,6 +6,8 @@ def index(request):
 	return render(request, "frontend/index.html")
 
 def get_user_info(request):
+	# print(request.session, flush=True)
+	# print(request.session.keys())
 	if "user_info" not in request.session:
 		return JsonResponse({"error": "Not logged in"})
 	return JsonResponse(request.session["user_info"])
