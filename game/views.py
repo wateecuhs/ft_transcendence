@@ -8,9 +8,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 import requests
 import  os
-from db import user
 from db import models
-from db import tourmanent
+from db.models import User
+from db.models import Tournament
 
 
 # Index take the request and just return the render of an index page.
@@ -46,9 +46,9 @@ def confirm_token(request):
 		request.session['user_info'] = payload
 		print("Added session data")
 		print(type(response['login']))
-		username = response['login'].decode('utf-8')
-		user.add_user(username, avatar=response['image']['versions']['small'])
-		print(user.get_user_by_name('earaujo'))
+		username = response['login']
+		User.add_user(name=username, status=None, avatar=response['image']['versions']['small'], tournament_id=None)
+		
 		return redirect('index')
 	else:
 		return redirect('index')
