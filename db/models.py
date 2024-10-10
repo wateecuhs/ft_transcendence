@@ -16,14 +16,14 @@ class Tournament(models.Model):
 
 
 class User(models.Model):
-    name = models.CharField(_("Name"), max_length=100)
+    name = models.CharField(("Name"), max_length=100)
     friends = models.ManyToManyField('self', blank=True, symmetrical=False, related_name='friend_of')
-    status = models.PositiveSmallIntegerField(_("Status"), choices=[
-        (1, _("Active")),
-        (2, _("Inactive")),
-        (3, _("Pending Activation"))
+    status = models.PositiveSmallIntegerField(("Status"), choices=[
+        (1, ("Active")),
+        (2, ("Inactive")),
+        (3, ("Pending Activation"))
     ], default=1)
-    avatar = models.ImageField(_("Avatar"), upload_to="avatars/", null=True, blank=True)
+    avatar = models.ImageField(("Avatar"), upload_to="avatars/", null=True, blank=True)
 
     tournament = models.OneToOneField(Tournament,  on_delete=models.SET_NULL, null=True, blank=True, related_name='user')
 
@@ -51,16 +51,17 @@ class User(models.Model):
     def activate(self):
         self.status = 1
         self.save()
-    
-    @classmethod
-    def add_user(cls, name, status=None, avatar=None, tournament_id=None):
-        user = cls(name=name, status=status, avatar=avatar, tournament=tournament_id)
-        user.save()
-        return user
-    
+
     @classmethod
     def get_user_by_name(cls, name):
         return cls.objects.filter(name=name).first()
+
+    @classmethod
+    def add_user(cls, name, status=1, avatar=None, tournament_id=None):
+        if (User.get_user_by_name(name=name) is None):
+            user = cls(name=name, status=status, avatar=avatar, tournament=tournament_id)
+            user.save()
+            return user
     
     @classmethod
     def update_user(cls, user_id, **kwargs):

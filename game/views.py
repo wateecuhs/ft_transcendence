@@ -47,7 +47,7 @@ def confirm_token(request):
 		print("Added session data")
 		print(type(response['login']))
 		username = response['login']
-		User.add_user(name=username, status=None, avatar=response['image']['versions']['small'], tournament_id=None)
+		User.add_user(name=username, avatar=response['image']['versions']['small'], tournament_id=None)
 		
 		return redirect('index')
 	else:
