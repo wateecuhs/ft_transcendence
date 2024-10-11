@@ -34,7 +34,6 @@ def confirm_token(request):
 		'redirect_uri': redirect_uri
 	}
 	response = requests.post(token_url, data=params)
-
 	if response.ok:
 		access_token = response.json()['access_token']
 		response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}).json()

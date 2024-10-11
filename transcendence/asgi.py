@@ -15,6 +15,14 @@ from channels.sessions import SessionMiddlewareStack
 import socketio
 from chat.consumers import ChatConsumer
 from django.urls import path
+import sys
+
+env_variables = ['CLIENT_ID', 'CLIENT_SECRET']
+
+if not all([os.getenv(var) for var in env_variables]):
+	print("You need to set the following environment variables:")
+	print(env_variables)
+	sys.exit(1)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcendence.settings')
 

@@ -60,3 +60,16 @@ html,body {
 	display: flex;
 	height: 90%;	
 }
+
+#messages {
+	color: #ffffff;
+}
+
+.private-message {
+	color: rgb(182, 113, 247);
+	margin: 0px;
+}
+
+.chat-message {
+	margin: 0px;
+}
