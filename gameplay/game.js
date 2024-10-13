@@ -1,9 +1,11 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const paddleWidth = 20;
-const paddleHeight = 100;
-const ballRadius = 10;
+let paddleWidth = 20;
+let paddleHeight = 100;
+let ballRadius = 10;
+const winWidth = 800;
+const winHeight = 600;
 
 const socket = new WebSocket('ws://localhost:6789');
 
@@ -30,22 +32,37 @@ document.addEventListener('keyup', (event) => {
     socket.send(JSON.stringify(command));
 });
 
+function resizeCanvas() {
+    const width = window.innerWidth * 0.8;
+    const height = window.innerHeight * 0.8;
+    canvas.width = width;
+    canvas.height = height;
+
+    // Adjust paddle and ball sizes based on new canvas size
+    paddleWidth = width * 0.025;
+    paddleHeight = height * 0.15;
+    ballRadius = width * 0.0125;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
 function drawGame(state) {
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	// Draw paddles
-	ctx.fillStyle = "white";
-	ctx.fillRect(state.paddle_left.x, state.paddle_left.y, paddleWidth, paddleHeight);
-	ctx.fillRect(state.paddle_right.x, state.paddle_right.y, paddleWidth, paddleHeight);
+    // Draw paddles
+    ctx.fillStyle = "white";
+    ctx.fillRect(state.paddle_left.x / winWidth * canvas.width, state.paddle_left.y / winHeight * canvas.height, paddleWidth, paddleHeight);
+    ctx.fillRect(state.paddle_right.x / winWidth * canvas.width, state.paddle_right.y / winHeight * canvas.height, paddleWidth, paddleHeight);
 
-	// Draw ball
-	ctx.beginPath();
-	ctx.arc(state.ball.x, state.ball.y, ballRadius, 0, Math.PI * 2);
-	ctx.fill();
-	ctx.closePath();
+    // Draw ball
+    ctx.beginPath();
+    ctx.arc(state.ball.x / winWidth * canvas.width, state.ball.y / winHeight * canvas.height, ballRadius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.closePath();
 
-	// Draw score
-	ctx.font = "40px Arial";
-	ctx.fillText(state.score[0], canvas.width / 4, 50);
-	ctx.fillText(state.score[1], canvas.width * 3 / 4, 50);
+    // Draw score
+    ctx.font = `${canvas.width * 0.05}px Arial`;
+    ctx.fillText(state.score[0], canvas.width / 4, canvas.height * 0.1);
+    ctx.fillText(state.score[1], canvas.width * 3 / 4, canvas.height * 0.1);
 }
