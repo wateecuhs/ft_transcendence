@@ -79,6 +79,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		These methods are called by the channel layer when a message is received /
 		from the group or a private message is received.
 	"""
+	
 	async def chat_message(self, event):
 		await self._send_message_to_client("chat_message", event['data'])
 
