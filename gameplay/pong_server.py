@@ -55,11 +55,13 @@ ball = Ball(WIN_WIDTH // 2, WIN_HEIGHT // 2, BALL_RADIUS)
 score = [0, 0]
 
 def handle_collision(ball, paddle_left, paddle_right):
+    # wall collision
     if ball.y - ball.radius <= 0 or ball.y + ball.radius >= WIN_HEIGHT:
         ball.y_vel = -ball.y_vel
 
+    # paddle collision
     if ball.x_vel < 0:
-        if (paddle_left.y <= ball.y <= paddle_left.y + paddle_left.height and
+        if (paddle_left.y <= ball.y + ball.radius * 2 / 3 and ball.y <= paddle_left.y + paddle_left.height and
             ball.x - ball.radius <= paddle_left.x + paddle_left.width):
                 ball.x_vel = -ball.x_vel
                 y_mid = paddle_left.y + paddle_left.height // 2
@@ -67,7 +69,7 @@ def handle_collision(ball, paddle_left, paddle_right):
                 bounce_mod = (paddle_left.height // 2) // ball.MAX_VELOCITY
                 ball.y_vel = y_diff // bounce_mod
     else:
-        if (paddle_right.y <= ball.y <= paddle_right.y + paddle_right.height and
+        if (paddle_right.y <= ball.y + ball.radius * 2 / 3 and ball.y <= paddle_right.y + paddle_right.height and
             ball.x + ball.radius >= paddle_right.x):
                 ball.x_vel = -ball.x_vel
                 y_mid = paddle_right.y + paddle_right.height // 2
