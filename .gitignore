@@ -1,5 +1,6 @@
 .venv
 .env
+.gitignore
 */__pycache__/
 __pycache__/
 */*.pyc
@@ -8,3 +9,4 @@ __pycache__/
 .build
 .vscode
 staticfiles
+how_to_launch.txt

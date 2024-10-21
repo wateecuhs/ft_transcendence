@@ -51,3 +51,7 @@ def confirm_token(request):
         return redirect("index")
     else:
         return redirect("index")
+
+
+def pong_game(request):
+    return render(request, 'game/pong_game.html')

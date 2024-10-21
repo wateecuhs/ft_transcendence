@@ -16,6 +16,9 @@ import socketio
 from chat.consumers import ChatConsumer
 from django.urls import path
 import sys
+from game.consumers import GameConsumer
+import game.routing
+import chat.routing
 
 env_variables = ["CLIENT_ID", "CLIENT_SECRET"]
 
@@ -31,15 +34,29 @@ django_asgi_app = get_asgi_application()
 sio = socketio.AsyncServer(async_mode="asgi")
 socket_app = socketio.ASGIApp(sio)
 
+# application = ProtocolTypeRouter(
+#     {
+#         "http": django_asgi_app,
+#         "websocket": SessionMiddlewareStack(
+#             URLRouter(
+#                 [
+#                     path("ws/chat/", ChatConsumer.as_asgi()),
+#                     path("ws/game/", GameConsumer.as_asgi()),
+#                     game.routing.websocket_urlpatterns,
+#                 ]
+#             )
+#         ),
+#     }
+# )
+
 application = ProtocolTypeRouter(
     {
-        "http": django_asgi_app,
+        # "http": django_asgi_app,
+        "http": get_asgi_application(),
         "websocket": SessionMiddlewareStack(
             URLRouter(
-                [
-                    path("ws/chat/", ChatConsumer.as_asgi()),
-                    # path("ws/game/", GameConsumer.as_asgi()),
-                ]
+                game.routing.websocket_urlpatterns +
+                chat.routing.websocket_urlpatterns
             )
         ),
     }
