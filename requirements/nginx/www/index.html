@@ -45,7 +45,7 @@
 			})
 	}
 	window.onload = function () {
-		var ws = new WebSocket('ws://localhost:8000/ws/chat/');
+		var ws = new WebSocket('ws://localhost:3336/ws/chat/');
 		ws.onmessage = function (event) {
 			event = JSON.parse(event.data);
 			console.log(event);
