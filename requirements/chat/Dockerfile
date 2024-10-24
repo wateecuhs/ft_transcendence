@@ -9,4 +9,4 @@ ENV CLIENT_SECRET='s-s4t2ud-5f5f6b481b95610b576766fbb09b7a5a0632d37b00e4816bef27
 
 RUN pip install -r requirements.txt
 
-CMD ["daphne", "live_chat.asgi:application", "--port", "3336"]
+CMD ["daphne", "live_chat.asgi:application", "-p", "3336", "-b", "0.0.0.0"]

@@ -22,10 +22,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         print("Connected")
-        self.session = await sync_to_async(self.scope["session"].load)()
-        self.user_id = random.randint(10000000, 99999999)
-        # if "user_info" in self.session:
-        #     self.user_id = self.session["user_info"]["login"]
+        # self.session = await sync_to_async(self.scope["session"].load)()
+        self.user_id = str(random.randint(10000000, 99999999))
         await self.channel_layer.group_add(self.GLOBAL_CHAT, self.channel_name)
         print("Connected to chat")
         await self.accept()
@@ -35,7 +33,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_discard(self.GLOBAL_CHAT, self.channel_name)
 
     async def receive(self, text_data):
-        print("Received", text_data)
+        print("Received", text_data, flush=True)
         event = json.loads(text_data)
         if event["type"] == "chat_message":
             await self._handle_chat_message(event)
@@ -52,6 +50,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self._handle_public_message(message)
 
     async def _handle_private_message(self, message: str):
+        print("Handling private message")
         splitted_message = message.split(" ")
         if len(splitted_message) < 3:
             return
@@ -82,9 +81,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	"""
 
     async def chat_message(self, event):
+        print("Chat message", event, flush=True)
         await self._send_message_to_client("chat_message", event["data"])
 
     async def chat_private_message(self, event):
+        print("private message", event, flush=True)
         message_type = (
             "chat_message_private_sent"
             if event["is_sender"]
@@ -93,5 +94,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self._send_message_to_client(message_type, event["data"])
 
     async def _send_message_to_client(self, message_type: str, data: Dict[str, Any]):
+        print("Sending message to client", message_type, data, flush=True)
         data["timestamp"] = datetime.datetime.now().strftime("%H:%M")
         await self.send(text_data=json.dumps({"type": message_type, "data": data}))
