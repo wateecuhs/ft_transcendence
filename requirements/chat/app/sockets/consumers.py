@@ -21,9 +21,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user_id = None
 
     async def connect(self):
+        self.channel_name = "channel___memory_layer..ADQhui123h21HWQUDH"
         print("Connected")
         # self.session = await sync_to_async(self.scope["session"].load)()
         self.user_id = str(random.randint(10000000, 99999999))
+        await self.channel_layer.group_add(f"user.{self.user_id}", self.channel_name)
         await self.channel_layer.group_add(self.GLOBAL_CHAT, self.channel_name)
         print("Connected to chat")
         await self.accept()
