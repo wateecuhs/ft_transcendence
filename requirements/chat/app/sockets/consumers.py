@@ -21,13 +21,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user_id = None
 
     async def connect(self):
-        self.channel_name = "channel___memory_layer..ADQhui123h21HWQUDH"
         print("Connected")
         # self.session = await sync_to_async(self.scope["session"].load)()
         self.user_id = str(random.randint(10000000, 99999999))
         await self.channel_layer.group_add(f"user.{self.user_id}", self.channel_name)
         await self.channel_layer.group_add(self.GLOBAL_CHAT, self.channel_name)
-        print("Connected to chat")
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -35,7 +33,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_discard(self.GLOBAL_CHAT, self.channel_name)
 
     async def receive(self, text_data):
-        print("Received", text_data, flush=True)
         event = json.loads(text_data)
         if event["type"] == "chat_message":
             await self._handle_chat_message(event)
@@ -52,7 +49,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self._handle_public_message(message)
 
     async def _handle_private_message(self, message: str):
-        print("Handling private message")
         splitted_message = message.split(" ")
         if len(splitted_message) < 3:
             return
@@ -60,14 +56,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         recipient = splitted_message[1]
         content = " ".join(splitted_message[2:])
 
+        if recipient == self.user_id:
+            return
+
         message_data = {
             "message": content,
             "sender": self.user_id,
             "recipient": recipient,
         }
-        await self.channel_layer.send(
+        await self.channel_layer.group_send(
             f"user.{recipient}",
-            {"type": "chat.private_message", "is_sender": False, "data": message_data},
+            {"type": "chat_private_message", "is_sender": False, "data": message_data},
         )
         await self.chat_private_message({"is_sender": True, "data": message_data})
 
@@ -83,11 +82,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 	"""
 
     async def chat_message(self, event):
-        print("Chat message", event, flush=True)
         await self._send_message_to_client("chat_message", event["data"])
 
     async def chat_private_message(self, event):
-        print("private message", event, flush=True)
         message_type = (
             "chat_message_private_sent"
             if event["is_sender"]
@@ -96,6 +93,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self._send_message_to_client(message_type, event["data"])
 
     async def _send_message_to_client(self, message_type: str, data: Dict[str, Any]):
-        print("Sending message to client", message_type, data, flush=True)
         data["timestamp"] = datetime.datetime.now().strftime("%H:%M")
         await self.send(text_data=json.dumps({"type": message_type, "data": data}))

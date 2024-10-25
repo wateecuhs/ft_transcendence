@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class SocketsConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'sockets'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "sockets"
