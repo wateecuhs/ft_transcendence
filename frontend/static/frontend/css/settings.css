@@ -1,0 +1,57 @@
+#page-body {
+	display: flex;
+	height: 90%;
+}
+
+#user-pfp-container {
+	position: absolute;
+	right: 0;
+	bottom: 500px;
+	justify-content: center;
+	display: none;
+}
+
+#profile-pic {
+	width: 58px;
+	height: 58px;
+	border-radius: 50%;
+	object-fit: cover;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+#username {
+	color: #ffffff;
+}
+
+#alias {
+	color: #ffffff;
+}
+
+#alias-container {
+	position: absolute;
+	left: 10px;
+	bottom: 500px;
+	justify-content: center;
+}
+
+#email-container {
+	position: absolute;
+	left: 250px;
+	bottom: 100px;
+}
+
+#email {
+	color: #ffffff;
+}
+
+h1 {
+	position: absolute;
+	left: 550px;
+}
+
+#password-container {
+	position: absolute;
+	right: 0;
+	bottom: 100px;
+}

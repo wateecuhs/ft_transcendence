@@ -3,11 +3,13 @@ from cProfile import label
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator
+
 from db.models import CustomUser
 from django.contrib.auth.forms import AuthenticationForm
 
 class CustomUserCreationForm(forms.Form):
-    username = forms.CharField(max_length=150)
+    username = forms.CharField(max_length=30, validators=[MinLengthValidator(2)])
     email = forms.EmailField()
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)

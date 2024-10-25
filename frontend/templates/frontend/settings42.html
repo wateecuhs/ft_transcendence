@@ -1,0 +1,54 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>transcendence</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/settings.css' %}">
+</head>
+<body>
+	<div class="header">
+		<h1 class="text-center title">PROFILE SETTINGS</h1>
+        <div class="nav-right-items" id="user-pfp-container">
+			<a class="user-name align-self-center" id="username"></a>
+			<img class="user-image" id="profile-pic">
+            <button class="btn btn-primary" onclick="window.location.href='/changePP'">Change PP</button>
+        </div>
+        <div class="nav-left-items" id="alias-container">
+            <a id="alias"></a>
+            <button class="btn btn-primary" onclick="window.location.href='/changeAlias'">Change Alias</button>
+        </div>
+        <div class="nav-center-items" id="email-container">
+            <a class="email" id="email"></a>
+            <button class="btn btn-primary" onclick="window.location.href='/changeEmail'">Change Email</button>
+        </div>
+	</div>
+    </div>
+</body>
+<script>
+	function	getUser() {
+		fetch(`/get_user_info`)
+			.then(response => response.json())
+			.then(data =>{
+                if (data["error"]) {
+                    return;
+                }
+				let username = document.getElementById('username');
+				username.innerHTML = data['login'];
+				document.getElementById('profile-pic').src = data['image'];
+				document.getElementById('user-pfp-container').style.display = 'flex';
+                let alias = document.getElementById('alias');
+                alias.innerHTML = data['alias'];
+                console.log(alias)
+                let email = document.getElementById('email');
+                email.innerHTML = data['email'];
+                console.log(email)
+			})
+	}
+	window.onload = function () {
+		getUser();
+	}
+</script>
+</html>
