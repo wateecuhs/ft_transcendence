@@ -14,7 +14,11 @@ from channels.auth import AuthMiddlewareStack
 from channels.sessions import SessionMiddlewareStack
 from sockets.consumers import ChatConsumer
 from django.urls import path
+import logging
 import sys
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 env_variables = ["CLIENT_ID", "CLIENT_SECRET"]
 
@@ -23,10 +27,9 @@ if not all([os.getenv(var) for var in env_variables]):
     print(env_variables)
     sys.exit(1)
 
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "live_chat.settings")
-
 django_asgi_app = get_asgi_application()
-
 
 application = ProtocolTypeRouter(
     {

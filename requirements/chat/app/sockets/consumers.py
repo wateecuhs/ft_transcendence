@@ -4,6 +4,9 @@ from asgiref.sync import sync_to_async
 import datetime
 from typing import Dict, Any
 import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 """
 	ChatConsumer class is a subclass of AsyncWebsocketConsumer, which is a class provided by Django Channels.
@@ -21,19 +24,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user_id = None
 
     async def connect(self):
-        print("Connected")
-        # self.session = await sync_to_async(self.scope["session"].load)()
         self.user_id = str(random.randint(10000000, 99999999))
+
+        logger.info(f"[{self.user_id}] Connected.")
+
         await self.channel_layer.group_add(f"user.{self.user_id}", self.channel_name)
         await self.channel_layer.group_add(self.GLOBAL_CHAT, self.channel_name)
+
         await self.accept()
 
     async def disconnect(self, close_code):
+        logger.info(f"[{self.user_id}] Disconnected. ({close_code})")
         if self.user_id:
             await self.channel_layer.group_discard(self.GLOBAL_CHAT, self.channel_name)
 
     async def receive(self, text_data):
-        event = json.loads(text_data)
+        try:
+            event = json.loads(text_data)
+        except json.JSONDecodeError as e:
+            logger.error(f"[{self.user_id}] Invalid JSON format.")
+            await self._send_message_to_client("error", {"message": e.msg})
+            return
+
         if event["type"] == "chat_message":
             await self._handle_chat_message(event)
 
