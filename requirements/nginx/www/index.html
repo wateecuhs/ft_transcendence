@@ -48,7 +48,6 @@
 		var ws = new WebSocket('ws://localhost/ws/chat/');
 		ws.onmessage = function (event) {
 			event = JSON.parse(event.data);
-			console.log(event);
 			var messages = document.getElementById('messages');
 			if (event.type === 'chat_message') {
 				messages.innerHTML += '<p class="chat-message">' + '[' + event.data.timestamp + '] ' +'<strong>' + event.data.sender + ':</strong> ' + event.data.message + "</p>";

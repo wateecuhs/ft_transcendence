@@ -3,6 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 import datetime
 from typing import Dict, Any
+from enums import MessageType, UserStatus
 import random
 import logging
 
@@ -31,6 +32,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(f"user.{self.user_id}", self.channel_name)
         await self.channel_layer.group_add(self.GLOBAL_CHAT, self.channel_name)
 
+        # Get the user's friendlist from the database
+        contacts = []
+        for contact in contacts:
+            await self.channel_layer.group_send(
+                f"user.{contact}",
+                {
+                    "type": MessageType.STATUS,
+                    "data": {
+                        "message": f"{self.user_id} is now online.",
+                        "user_id": self.user_id,
+                        "status": UserStatus.ONLINE,
+                    },
+                },
+            )
+
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -39,6 +55,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(
             f"user.{self.user_id}", self.channel_name
         )
+        # Get the user's friendlist from the database
+        contacts = []
+        for contact in contacts:
+            await self.channel_layer.group_send(
+                f"user.{contact}",
+                {
+                    "type": MessageType.STATUS,
+                    "data": {
+                        "message": f"{self.user_id} is now offline.",
+                        "user_id": self.user_id,
+                        "status": UserStatus.OFFLINE,
+                    },
+                },
+            )
 
     async def receive(self, text_data):
         logger.info(f"[{self.user_id}] Received message: {text_data}")
@@ -46,7 +76,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             event = json.loads(text_data)
         except json.JSONDecodeError as e:
-            await self.error(f"Invalid JSON format. ({e.msg})")
+            await self.error(f"Invalid JSON format. ({e})")
             return
 
         match event["type"]:
@@ -123,4 +153,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def _send_message_to_client(self, message_type: str, data: Dict[str, Any]):
         data["timestamp"] = datetime.datetime.now().strftime("%H:%M")
-        await self.send(text_data=json.dumps({"type": message_type, "data": data}))
+        try:
+            message = json.dumps({"type": message_type, "data": data})
+            await self.send(text_data=message)
+        except json.JSONDecodeError as e:
+            await self.error(f"Invalid JSON format. ({e})")

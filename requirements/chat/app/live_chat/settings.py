@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     "channels",
     "daphne",
     "django.contrib.admin",
-    "sockets.apps.SocketsConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
