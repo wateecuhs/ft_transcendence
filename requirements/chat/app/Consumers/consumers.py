@@ -36,18 +36,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         logger.info(f"[{self.user_id}] Disconnected. ({close_code})")
         await self.channel_layer.group_discard(self.GLOBAL_CHAT, self.channel_name)
-        await self.channel_layer.group_discard(f"user.{self.user_id}", self.channel_name)
+        await self.channel_layer.group_discard(
+            f"user.{self.user_id}", self.channel_name
+        )
 
     async def receive(self, text_data):
+        logger.info(f"[{self.user_id}] Received message: {text_data}")
+
         try:
             event = json.loads(text_data)
         except json.JSONDecodeError as e:
-            logger.error(f"[{self.user_id}] Invalid JSON format.")
-            await self._send_message_to_client("error", {"message": e.msg})
+            await self.error(f"Invalid JSON format. ({e.msg})")
             return
 
-        if event["type"] == "chat_message":
-            await self._handle_chat_message(event)
+        match event["type"]:
+            case "chat_message":
+                await self._handle_chat_message(event)
+            case _:
+                await self.error(f"Invalid message type. ({event['type']})")
 
     """
 		Rooting functions for handling chat messages.
@@ -55,20 +61,26 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def _handle_chat_message(self, event: Dict[str, Any]):
         message = event["data"]["message"]
-        if message.startswith(self.PRIVATE_CHAT_CMD):
-            await self._handle_private_message(message)
+        if message[0] == "/":
+            match message.split(" ")[0]:
+                case self.PRIVATE_CHAT_CMD:
+                    await self._handle_private_message(message)
+                case _:
+                    self.error(f"Invalid command. ({message.split(' ')[0]})")
         else:
             await self._handle_public_message(message)
 
     async def _handle_private_message(self, message: str):
         splitted_message = message.split(" ")
         if len(splitted_message) < 3:
+            self.error(f"Invalid private message format. ({message})")
             return
 
         recipient = splitted_message[1]
         content = " ".join(splitted_message[2:])
 
         if recipient == self.user_id:
+            self.error(f"Recipient cannot be the sender. ({recipient})")
             return
 
         message_data = {
@@ -76,6 +88,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "sender": self.user_id,
             "recipient": recipient,
         }
+
         await self.channel_layer.group_send(
             f"user.{recipient}",
             {"type": "chat_private_message", "is_sender": False, "data": message_data},
@@ -103,6 +116,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
             else "chat_message_private_received"
         )
         await self._send_message_to_client(message_type, event["data"])
+
+    async def error(self, error):
+        logger.error(f"[{self.user_id}] Error: {error}")
+        await self._send_message_to_client("error", {"error": error})
 
     async def _send_message_to_client(self, message_type: str, data: Dict[str, Any]):
         data["timestamp"] = datetime.datetime.now().strftime("%H:%M")
