@@ -35,8 +35,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         logger.info(f"[{self.user_id}] Disconnected. ({close_code})")
-        if self.user_id:
-            await self.channel_layer.group_discard(self.GLOBAL_CHAT, self.channel_name)
+        await self.channel_layer.group_discard(self.GLOBAL_CHAT, self.channel_name)
+        await self.channel_layer.group_discard(f"user.{self.user_id}", self.channel_name)
 
     async def receive(self, text_data):
         try:
