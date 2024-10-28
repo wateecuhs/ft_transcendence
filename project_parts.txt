@@ -1,0 +1,22 @@
+Frontend
+-> Design (HTML/CSS/Boostrap):      Create the raw frontend with buttons and everything but buttons functionality will be added in the JS part
+-> Event handling & rooting (JS):   Handle frontend events (button click, etc) and connect the frontend to the backend
+-> GFX:                             Create GFX using WebGL
+-> Multilanguage accessibility:     See Localization and i18n
+
+Backend
+-> Auth/Account:                    Implement the routes for signup, signin, refresh (see JWTs) and account settings/linking (ex: linking 42 account to an already existing account)
+-> Live chat:                       Implement the necessary routes for the live chat (commands handling: /invite, /block, /profile, etc) and for proper rendering
+
+Game
+-> Django implementation:           Implement the game using django websockets and api. Keep the Server-Side Pong rendering module in mind.
+-> Remote players:                  Implement the remote players feature using django websockets
+-> Matchmaking:                     Create a matchmaking so remote players can look for matches without having to invite a player
+-> Rooms:                           Implement rooms so players can join and leave rooms to play matches. This will require websockets AND api.
+-> Tournaments:                     Implement tournaments. This is similar to rooms, you will have to handle brackets on top of that.
+-> AI opponent:                     Create an AI. This can be done algorithmically, through reinforcement learning (q-learning?) or using genetics algorithms (NEAT?)
+-> Statistics:                      Store valuable statistics and create routes for the frontend to use them when rendering player profile. (winrate over time ? Average number of hits per points ?)
+
+Project structure:
+-> Microservices:                   The project should use microservices.
+-> Cybersecurity:                   WAF/Modsecurity and Hashicorp vault
