@@ -1,0 +1,21 @@
+networks:
+  peas:
+    name: peas
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "443:443"
+    networks:
+      - peas
+    depends_on:
+      - live_chat
+
+  live_chat:
+    build: ./chat
+    networks:
+      - peas
+    ports:
+      - "80:80"
+
