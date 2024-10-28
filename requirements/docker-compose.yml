@@ -9,10 +9,13 @@ services:
       - "443:443"
     networks:
       - peas
+    depends_on:
+      - live_chat
+
   live_chat:
     build: ./chat
     networks:
       - peas
     ports:
-      - "3336:3336"
+      - "80:80"
 
