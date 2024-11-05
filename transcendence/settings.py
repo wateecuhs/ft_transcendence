@@ -41,7 +41,7 @@ INSTALLED_APPS = [
 	'channels',
 	'db',
 	'chat.apps.ChatConfig',
-    'login.apps.GameConfig',
+	'api.apps.GameConfig',
 	'frontend.apps.FrontendConfig',
 	'django.contrib.admin',
 	'django.contrib.auth',

@@ -1,10 +1,14 @@
-from attr.validators import min_len
+import jwt
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MaxValueValidator, MinValueValidator
-from setuptools.package_index import user_agent
 from django.core.validators import MinLengthValidator
+from cryptography.fernet import Fernet
+import base64
+import os
+from twisted.scripts.htmlizer import header
 
+key = base64.urlsafe_b64encode(os.urandom(32))
+cipher = Fernet(key)
 
 class Tournament(models.Model):
     name = models.CharField(max_length=200)
@@ -34,6 +38,8 @@ class CustomUser(AbstractUser):
     is_42_account = models.BooleanField()
     avatar_path = models.CharField()
     is_42_pp = models.BooleanField()
+    access_token = models.CharField()
+    refresh_token = models.CharField()
 
     class Meta:
         db_table = 'users'
@@ -101,6 +107,7 @@ class CustomUser(AbstractUser):
     @classmethod
     def set_image(cls, user, new_PP):
         user.avatar = new_PP
+        user.avatar_path = new_PP
         user.save()
 
     @classmethod
@@ -108,3 +115,20 @@ class CustomUser(AbstractUser):
         user.email = newEmail
         print(f"set email {user.email}")
         user.save()
+
+    @classmethod
+    def set_password(cls, user, newPassword):
+        user.password = newPassword
+        user.save()
+
+    @classmethod
+    def set_refresh_token(cls, user, token):
+        user.refresh_token = cipher.encrypt(token.encode())
+
+    @classmethod
+    def get_refresh_token(cls, user, token):
+        return cipher.decrypt(user.refresh_token).decode()
+
+    @classmethod
+    def set_access_token(cls, user, token):
+        user.access_token = token
