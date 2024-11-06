@@ -1,11 +1,17 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
+// const offscreenCanvas = document.createElement("canvas");
+// const offscreenCtx = offscreenCanvas.getContext("2d");
+
 let paddleWidth = 20;
 let paddleHeight = 100;
 let ballRadius = 10;
 const winWidth = 800;
 const winHeight = 600;
+
+// offscreenCanvas.width = winWidth;
+// offscreenCanvas.height = winHeight;
 
 const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
 
@@ -74,4 +80,32 @@ function drawGame(state) {
     ctx.font = `${canvas.width * 0.05}px Arial`;
     ctx.fillText(state.score[0], canvas.width / 4, canvas.height * 0.1);
     ctx.fillText(state.score[1], canvas.width * 3 / 4, canvas.height * 0.1);
+
+    requestAnimationFrame(() => drawGame(state));
 }
+
+requestAnimationFrame(() => drawGame({}));
+
+
+// function drawGame(state) {
+//         offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+    
+//         // Draw paddles
+//         offscreenCtx.fillStyle = "white";
+//         offscreenCtx.fillRect(state.paddle_left.x / winWidth * offscreenCanvas.width, state.paddle_left.y / winHeight * offscreenCanvas.height, paddleWidth, paddleHeight);
+//         offscreenCtx.fillRect(state.paddle_right.x / winWidth * offscreenCanvas.width, state.paddle_right.y / winHeight * offscreenCanvas.height, paddleWidth, paddleHeight);
+    
+//         // Draw ball
+//         offscreenCtx.beginPath();
+//         offscreenCtx.arc(state.ball.x / winWidth * offscreenCanvas.width, state.ball.y / winHeight * offscreenCanvas.height, ballRadius, 0, Math.PI * 2);
+//         offscreenCtx.fill();
+//         offscreenCtx.closePath();
+    
+//         // Draw score
+//         offscreenCtx.font = `${offscreenCanvas.width * 0.05}px Arial`;
+//         offscreenCtx.fillText(state.score[0], offscreenCanvas.width / 4, offscreenCanvas.height * 0.1);
+//         offscreenCtx.fillText(state.score[1], offscreenCanvas.width * 3 / 4, offscreenCanvas.height * 0.1);
+
+//         ctx.clearRect(0, 0, canvas.width, canvas.height);
+//         ctx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
+// }

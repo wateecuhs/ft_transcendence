@@ -50,18 +50,25 @@ class Ball:
         self.y_vel = 0
 
 class GameConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.lock = asyncio.Lock()
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.ball = Ball(WIN_WIDTH // 2, WIN_HEIGHT // 2, BALL_RADIUS)
         self.score = [0, 0]
+
+    async def connect(self):
+        self.room_group_name = "game"
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
         asyncio.create_task(self.update_game_state())
 
     async def disconnect(self, close_code):
-        pass
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
+        global keys_pressed
         command = json.loads(text_data)
         if "move_left_up" in command:
             keys_pressed["move_left_up"] = command["move_left_up"]
@@ -72,28 +79,48 @@ class GameConsumer(AsyncWebsocketConsumer):
         if "move_right_down" in command:
             keys_pressed["move_right_down"] = command["move_right_down"]
 
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                "type": "game_update",
+                "message": text_data
+            }
+        )
+
+    async def game_update(self, event):
+        message = event["message"]
+        await self.send(text_data=message)
+
     async def update_game_state(self):
         while True:
-            if keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
-                self.paddle_left.move(True)
-            if keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
-                self.paddle_left.move(False)
-            if keys_pressed["move_right_up"] and self.paddle_right.y - self.paddle_right.SPEED > 0:
-                self.paddle_right.move(True)
-            if keys_pressed["move_right_down"] and self.paddle_right.y + self.paddle_right.height + self.paddle_right.SPEED < WIN_HEIGHT:
-                self.paddle_right.move(False)
+            async with self.lock:
+                if keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
+                    self.paddle_left.move(True)
+                if keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
+                    self.paddle_left.move(False)
+                if keys_pressed["move_right_up"] and self.paddle_right.y - self.paddle_right.SPEED > 0:
+                    self.paddle_right.move(True)
+                if keys_pressed["move_right_down"] and self.paddle_right.y + self.paddle_right.height + self.paddle_right.SPEED < WIN_HEIGHT:
+                    self.paddle_right.move(False)
 
-            self.ball.move()
-            self.handle_collision()
-            self.update_score()
+                self.ball.move()
+                self.handle_collision()
+                self.update_score()
 
-            game_state = {
-                "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
-                "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
-                "ball": {"x": self.ball.x, "y": self.ball.y},
-                "score": self.score
-            }
-            await self.send(text_data=json.dumps(game_state))
+                game_state = {
+                    "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
+                    "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
+                    "ball": {"x": self.ball.x, "y": self.ball.y},
+                    "score": self.score
+                }
+                # await self.send(text_data=json.dumps(game_state))
+                await self.channel_layer.group_send(
+                    self.room_group_name,
+                    {
+                        "type": "game_update",
+                        "message": json.dumps(game_state)
+                    }
+                )
             await asyncio.sleep(1 / FPS)
 
     def handle_collision(self):
