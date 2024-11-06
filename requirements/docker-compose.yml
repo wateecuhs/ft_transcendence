@@ -1,6 +1,8 @@
 networks:
   peas:
     name: peas
+  chat:
+    name: chat
 
 services:
   nginx:
@@ -8,16 +10,38 @@ services:
     ports:
       - "443:443"
     networks:
+      - chat
       - peas
     depends_on:
-      - live_chat
+      - chat
 
-  live_chat:
+  chat:
     build: ./chat
     env_file:
-      - ./chat/.env
+      - ./conf/.env-chat
     networks:
-      - peas
+      - chat
     ports:
       - "80:80"
+    depends_on:
+      - chat_db
 
+  chat_db:
+    build: ./chat-db
+    networks:
+      - chat
+    ports:
+      - "5432:5432"
+    volumes:
+      - chat-db-volume:/var/lib/postgresql/data
+    env_file:
+      - ./conf/.env-chat
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  chat-db-volume: {}
