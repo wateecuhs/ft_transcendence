@@ -10,7 +10,6 @@ services:
     ports:
       - "443:443"
     networks:
-      - chat
       - peas
     depends_on:
       - chat
@@ -21,25 +20,42 @@ services:
       - ./conf/.env-chat
     networks:
       - chat
+      - peas
     ports:
       - "80:80"
     depends_on:
-      - chat_db
+      chat-db:
+        condition: service_healthy
 
-  chat_db:
-    build: ./chat-db
-    networks:
-      - chat
-    ports:
-      - "5432:5432"
+  # chat_db:
+  #   build: ./chat-db
+  #   networks:
+  #     - chat
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - chat-db-volume:/var/lib/postgresql/data
+  #   env_file:
+  #     - ./conf/.env-chat
+  #   restart: on-failure
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  chat-db:
+    image: postgres:14
+    restart: on-failure
     volumes:
       - chat-db-volume:/var/lib/postgresql/data
     env_file:
       - ./conf/.env-chat
-    restart: on-failure
+    networks:
+      - chat
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
-      interval: 10s
+      interval: 1s
       timeout: 5s
       retries: 5
 

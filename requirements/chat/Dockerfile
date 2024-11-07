@@ -8,4 +8,6 @@ COPY app /app
 
 WORKDIR /app
 
-CMD ["daphne", "core.asgi:application", "-p", "80", "-b", "0.0.0.0"]
+COPY ./conf/run.sh /run.sh
+
+CMD ["/run.sh"]

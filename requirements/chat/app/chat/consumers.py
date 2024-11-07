@@ -1,12 +1,16 @@
-import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async
-import datetime
-import chat.models as cmod
+from asgiref.sync import sync_to_async, async_to_sync
+from .serializers import MessageSerializer
+from django.db import transaction
 from typing import Dict, Any
 from .enums import MessageType
-import random
+from .models import Message
+import chat.models as cmod
+import datetime
 import logging
+import random
+import json
+import uuid
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +46,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         type(self).user_count += 1
 
         logger.info(f"[{self.user_id}] Connected.")
-
+        
         await self.channel_layer.group_add(f"user.{self.user_id}", self.channel_name)
         await self.channel_layer.group_add(self.GLOBAL_CHAT, self.channel_name)
 
@@ -77,6 +81,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 await self._handle_chat_message(event)
             case _:
                 await self.error(f"Invalid message type. ({event['type']})")
+
+    @transaction.atomic
+    def fetch_public_messages(self):
+        test = cmod.Message.objects.filter(type=cmod.Message.Type.PUBLIC).order_by("created_at").all()
+        logger.info(test)
+        return list(test)
 
     """
 		Rooting functions for handling chat messages.
@@ -119,10 +129,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.chat_private({"is_sender": True, "data": message_data})
 
     async def _handle_public_message(self, message: str):
+        # serializer = MessageSerializer(data={"id": str(random.randint(100000, 999999)), "type": cmod.Message.Type.PUBLIC, "author": self.user_id, "content": message})
+        # serializer.is_valid(raise_exception=True)
+        # await sync_to_async(serializer.save)()
         message_data = {"message": message, "sender": self.user_id}
         await self.channel_layer.group_send(
             self.GLOBAL_CHAT, {"type": MessageType.Chat.PUBLIC, "data": message_data}
         )
+        # messages = await sync_to_async(self.fetch_public_messages)()
+        # for message in messages:
+        #     print(message.content)
+        # print("meoow", flush=True)
 
     """ 
 		These methods are called by the channel layer when a message is received /

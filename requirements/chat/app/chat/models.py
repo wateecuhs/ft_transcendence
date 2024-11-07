@@ -4,14 +4,13 @@ from django.db import models
 # Create your models here.
 class Relationship(models.Model):
     class Status(models.TextChoices):
-        NEUTRAL = "NEUTRAL", "Neutral"
         PENDING = "PENDING", "Pending"
         ACCEPTED = "ACCEPTED", "Accepted"
         REJECTED = "REJECTED", "Rejected"
         BLOCKED = "BLOCKED", "Blocked"
 
-    sender = models.ForeignKey("User", on_delete=models.CASCADE, related_name="from")
-    receiver = models.ForeignKey("User", on_delete=models.CASCADE, related_name="to")
+    sender = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sender")
+    receiver = models.ForeignKey("User", on_delete=models.CASCADE, related_name="receiver")
     status = models.CharField(
         max_length=8, choices=Status.choices, default=Status.PENDING
     )
@@ -21,6 +20,18 @@ class Relationship(models.Model):
 
     def __str__(self):
         return f"{self.sender} -> {self.receiver} ({self.status})"
+
+    def accept(self):
+        self.status = Relationship.Status.ACCEPTED
+        self.save()
+    
+    def reject(self):
+        self.status = Relationship.Status.REJECTED
+        self.save()
+    
+    def block(self):
+        self.status = Relationship.Status.BLOCKED
+        self.save()
 
 
 class User(models.Model):
@@ -48,9 +59,9 @@ class Message(models.Model):
         PUBLIC = "PUBLIC", "Public"
         COMMAND = "COMMAND", "Command"
 
-    id = models.UUIDField(primary_key=True, editable=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    type = models.CharField(max_length=10, choices=Type.choices, default=Type.PUBLIC)
     content = models.TextField()
+    author = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
