@@ -5,7 +5,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
 
-from db.models import CustomUser
+from .models import CustomUser
 from django.contrib.auth.forms import AuthenticationForm
 
 class EmptyFieldError(ValidationError):
@@ -18,6 +18,10 @@ class BadPasswordError(ValidationError):
 
 class   ConfirmationError(ValidationError):
     def __init__(self, message="Bad confirmation", code='bad-confirmation'):
+        super().__init__(message=message, code=code)
+
+class UserAlreadyExist(ValidationError):
+    def __init__(self, message="This field cannot be empty", code='empty_field'):
         super().__init__(message=message, code=code)
 
 class CustomUserCreationForm(forms.Form):

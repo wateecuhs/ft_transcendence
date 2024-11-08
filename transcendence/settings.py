@@ -39,7 +39,6 @@ CHANNEL_LAYERS = {
 
 INSTALLED_APPS = [
 	'channels',
-	'db',
 	'chat.apps.ChatConfig',
 	'api.apps.GameConfig',
 	'frontend.apps.FrontendConfig',
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'rest_framework',
 ]
 
 STATIC_URL = '/static/'
