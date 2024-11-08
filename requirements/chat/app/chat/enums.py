@@ -10,3 +10,4 @@ class MessageType:
     class Chat(TextChoices):
         PUBLIC = "chat.public"
         PRIVATE = "chat.private"
+        HISTORY = "chat.history"

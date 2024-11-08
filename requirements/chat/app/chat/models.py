@@ -1,5 +1,6 @@
 from django.db import models
-
+from .enums import MessageType
+import uuid
 
 # Create your models here.
 class Relationship(models.Model):
@@ -55,11 +56,11 @@ class User(models.Model):
 
 class Message(models.Model):
     class Type(models.TextChoices):
-        PRIVATE = "PRIVATE", "Private"
-        PUBLIC = "PUBLIC", "Public"
-        COMMAND = "COMMAND", "Command"
+        PRIVATE = MessageType.Chat.PRIVATE, "Private"
+        PUBLIC = MessageType.Chat.PUBLIC, "Public"
 
-    type = models.CharField(max_length=10, choices=Type.choices, default=Type.PUBLIC)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    type = models.CharField(max_length=15, choices=Type.choices, default=Type.PUBLIC)
     content = models.TextField()
     author = models.CharField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)

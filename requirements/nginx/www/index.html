@@ -44,22 +44,36 @@
 				document.getElementById('user-pfp-container').style.display = 'flex';
 			})
 	}
+	function loadMessageHistory() {
+		fetch(`/chat/messages`)
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+				let messages = document.getElementById('messages');
+				data.forEach(message => {
+					console.log(message);
+					messages.innerHTML += '<p class="chat-message">' + '[' + message.data.created_at + '] ' +'<strong>' + message.data.author + ':</strong> ' + message.data.content + "</p>";
+
+				});
+				messages.scrollTop = messages.scrollHeight;
+			})
+	}
 	window.onload = function () {
-		var ws = new WebSocket('ws://localhost/ws/chat/');
+		loadMessageHistory();
+		var ws = new WebSocket('ws://localhost/chat/');
 		ws.onmessage = function (event) {
 			event = JSON.parse(event.data);
+			console.log(event);
 			var messages = document.getElementById('messages');
-			if (event.type === 'chat_message') {
-				messages.innerHTML += '<p class="chat-message">' + '[' + event.data.timestamp + '] ' +'<strong>' + event.data.sender + ':</strong> ' + event.data.message + "</p>";
+			if (event.type === 'chat.public') {
+				messages.innerHTML += '<p class="chat-message">' + '[' + event.data.created_at + '] ' +'<strong>' + event.data.author + ':</strong> ' + event.data.content + "</p>";
 			}
-			else if (event.type === 'chat_message_private_received') {
-				messages.innerHTML += '<p class="private-message">' + '[' + event.data.timestamp + '] ' +'<strong> [from] ' + event.data.sender + ':</strong> ' + event.data.message + "</p>";
-			}
-			else if (event.type === 'chat_message_private_sent') {
-				messages.innerHTML += '<p class="private-message">' + '[' + event.data.timestamp + '] ' +'<strong> [to] ' + event.data.recipient + ':</strong> ' + event.data.message + "</p>";
+			else if (event.type === 'chat.private') {
+				prefix = event.data.is_author ? '[to] ' : '[from] ';
+				messages.innerHTML += '<p class="private-message">' + '[' + event.data.created_at + '] ' +'<strong> ' + prefix + event.data.author + ':</strong> ' + event.data.content + "</p>";
 			}
 			else if (event.type == 'status_update') {
-				messages.innerHTML += '<p class="chat-message">' + event.data.message + "</p>";
+				messages.innerHTML += '<p class="chat-message">' + event.data.content + "</p>";
 			}
 			if (messages.childElementCount > 50) {
 				messages.removeChild(messages.firstChild);

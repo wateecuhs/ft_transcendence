@@ -14,20 +14,25 @@ import uuid
 
 logger = logging.getLogger(__name__)
 
+# TODO
+# Fix the private messages fields, type and handling
+# Refactor handlers
+# Proper exception handling
+
 """
 	ChatConsumer class is a subclass of AsyncWebsocketConsumer, which is a class provided by Django Channels.
 	AsyncWebsocketConsumer is a class that provides a simple interface for handling WebSockets.
 	We define the methods connect, disconnect, and receive to handle the WebSocket connection lifecycle.
 
-    Every websocket message should be in the following format:
-    {
-        "type": "message_type",
-        "data": {
-            "author": "author_id",
-            "key": "value",
-            ...
-        }
-    }
+    Websocket message fields:
+        - type: The type of the message. (str)
+        - data: The data of the message. (dict)
+            - author: The author of the message. (str)
+
+            - status: The status of the author. (str) (optional: for status messages)
+            - content: The content of the message. (str) (optional: for chat messages)
+            - created_at: The creation date of the message. (str) (optional: for chat messages)
+            - target: The target of the message. (str) (optional: for private messages)
 """
 
 
@@ -46,7 +51,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         type(self).user_count += 1
 
         logger.info(f"[{self.user_id}] Connected.")
-        
+
         await self.channel_layer.group_add(f"user.{self.user_id}", self.channel_name)
         await self.channel_layer.group_add(self.GLOBAL_CHAT, self.channel_name)
 
@@ -82,12 +87,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             case _:
                 await self.error(f"Invalid message type. ({event['type']})")
 
-    @transaction.atomic
-    def fetch_public_messages(self):
-        test = cmod.Message.objects.filter(type=cmod.Message.Type.PUBLIC).order_by("created_at").all()
-        logger.info(test)
-        return list(test)
-
     """
 		Rooting functions for handling chat messages.
 	"""
@@ -109,38 +108,32 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.error(f"Invalid private message format. ({message})")
             return
 
-        recipient = splitted_message[1]
+        target = splitted_message[1]
         content = " ".join(splitted_message[2:])
 
-        if recipient == self.user_id:
-            self.error(f"Recipient cannot be the sender. ({recipient})")
+        if target == self.user_id:
+            self.error(f"You can't send a message to yourself.")
             return
 
         message_data = {
-            "message": content,
-            "sender": self.user_id,
-            "recipient": recipient,
+            "content": content,
+            "author": self.user_id,
+            "target": target,
+            "is_author": False,
         }
 
-        await self.channel_layer.group_send(
-            f"user.{recipient}",
-            {"type": MessageType.Chat.PRIVATE, "is_sender": False, "data": message_data},
-        )
-        await self.chat_private({"is_sender": True, "data": message_data})
+        await self.channel_layer.group_send(f"user.{target}", {"type": MessageType.Chat.PRIVATE, "data": message_data})
+        message_data["is_author"] = True
+        await self.chat_private({"data": message_data})
 
     async def _handle_public_message(self, message: str):
-        # serializer = MessageSerializer(data={"id": str(random.randint(100000, 999999)), "type": cmod.Message.Type.PUBLIC, "author": self.user_id, "content": message})
-        # serializer.is_valid(raise_exception=True)
-        # await sync_to_async(serializer.save)()
-        message_data = {"message": message, "sender": self.user_id}
+        serializer = MessageSerializer(data={"type": cmod.Message.Type.PUBLIC, "author": self.user_id, "content": message})
+        serializer.is_valid(raise_exception=True)
+        message_data = {"content": message, "author": self.user_id}
         await self.channel_layer.group_send(
             self.GLOBAL_CHAT, {"type": MessageType.Chat.PUBLIC, "data": message_data}
         )
-        # messages = await sync_to_async(self.fetch_public_messages)()
-        # for message in messages:
-        #     print(message.content)
-        # print("meoow", flush=True)
-
+        await sync_to_async(serializer.save)()
     """ 
 		These methods are called by the channel layer when a message is received /
 		from the group or a private message is received.
@@ -150,26 +143,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(event["data"]["author"], {"type": MessageType.Status.UPDATE, "data": {"author": self.user_id, "status": cmod.User.Status.ONLINE}})
 
     async def status_update(self, event):
-        event["data"]["message"] = f"{event['data']['author']} is now {event['data']['status']}."
+        event["data"]["content"] = f"{event['data']['author']} is now {event['data']['status']}."
         await self._json_send("status_update", event["data"])
 
     async def chat_public(self, event):
-        await self._json_send("chat_message", event["data"])
+        await self._json_send(MessageType.Chat.PUBLIC, event["data"])
 
     async def chat_private(self, event):
-        message_type = (
-            "chat_message_private_sent"
-            if event["is_sender"]
-            else "chat_message_private_received"
-        )
-        await self._json_send(message_type, event["data"])
+        await self._json_send(MessageType.Chat.PRIVATE, event["data"])
 
     async def error(self, error):
         logger.error(f"[{self.user_id}] Error: {error}")
         await self._json_send("error", {"error": error})
 
     async def _json_send(self, message_type: str, data: Dict[str, Any]):
-        data["timestamp"] = datetime.datetime.now().strftime("%H:%M")
+        data["created_at"] = datetime.datetime.now().strftime("%H:%M")
         try:
             message = json.dumps({"type": message_type, "data": data})
             await self.send(text_data=message)

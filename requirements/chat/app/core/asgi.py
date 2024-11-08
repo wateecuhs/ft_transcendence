@@ -22,7 +22,7 @@ application = ProtocolTypeRouter(
         "websocket": SessionMiddlewareStack(
             URLRouter(
                 [
-                    path("ws/chat/", ChatConsumer.as_asgi()),
+                    path("chat/", ChatConsumer.as_asgi()),
                 ]
             )
         ),
