@@ -13,7 +13,10 @@ const winHeight = 600;
 // offscreenCanvas.width = winWidth;
 // offscreenCanvas.height = winHeight;
 
-const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
+// const socket = new WebSocket('ws://' + window.location.host + '/ws/game/');
+
+const roomName = "room1"; // Replace with dynamic room name if needed
+const socket = new WebSocket('ws://' + window.location.host + '/ws/game/' + roomName + '/');
 
 socket.onopen = function() {
     console.log('WebSocket connection established');
