@@ -9,13 +9,6 @@ PADDLE_HEIGHT = 100
 BALL_RADIUS = 10
 FPS = 60
 
-keys_pressed = {
-    "move_left_up": False,
-    "move_left_down": False,
-    "move_right_up": False,
-    "move_right_down": False
-}
-
 class Paddle:
     SPEED = 6
 

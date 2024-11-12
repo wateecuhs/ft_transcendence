@@ -11,13 +11,6 @@ PADDLE_HEIGHT = 100
 BALL_RADIUS = 10
 FPS = 60
 
-# keys_pressed = {
-#     "move_left_up": False,
-#     "move_left_down": False,
-#     "move_right_up": False,
-#     "move_right_down": False
-# }
-
 rooms = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
@@ -46,7 +39,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             del rooms[self.room_name]
 
     async def receive(self, text_data):
-        # global keys_pressed
         command = json.loads(text_data)
         if "move_left_up" in command:
            self.room.keys_pressed["move_left_up"] = command["move_left_up"]
