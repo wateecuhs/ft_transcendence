@@ -40,14 +40,19 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         command = json.loads(text_data)
-        if "move_left_up" in command:
-           self.room.keys_pressed["move_left_up"] = command["move_left_up"]
-        if "move_left_down" in command:
-            self.room.keys_pressed["move_left_down"] = command["move_left_down"]
-        if "move_right_up" in command:
-            self.room.keys_pressed["move_right_up"] = command["move_right_up"]
-        if "move_right_down" in command:
-            self.room.keys_pressed["move_right_down"] = command["move_right_down"]
+        player_index = self.room.players.index(self)
+
+        if player_index == 0 or len(self.room.players) == 1:
+            if "move_left_up" in command:
+                self.room.keys_pressed["move_left_up"] = command["move_left_up"]
+            if "move_left_down" in command:
+                self.room.keys_pressed["move_left_down"] = command["move_left_down"]
+
+        if player_index == 1 or len(self.room.players) == 1:
+            if "move_right_up" in command:
+                self.room.keys_pressed["move_right_up"] = command["move_right_up"]
+            if "move_right_down" in command:
+                self.room.keys_pressed["move_right_down"] = command["move_right_down"]
 
         await self.channel_layer.group_send(
             self.room_name,
