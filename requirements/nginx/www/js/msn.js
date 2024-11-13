@@ -5,20 +5,17 @@ function loadMessageHistory() {
     .then(data => {
       console.log("Here");
       console.log(data);
-      let messages = document.getElementById('messages');
-      data.forEach(message => {
-        console.log(message);
-        messages.innerHTML += '<p class="chat-message">' + '[' + message.data.created_at + '] ' +'<strong>' + message.data.author + ':</strong> ' + message.data.content + "</p>";
+      // let messages = document.getElementById('messages');
+      // data.forEach(message => {
+      //   console.log(message);
+      //   messages.innerHTML += '<p class="chat-message">' + '[' + message.data.created_at + '] ' +'<strong>' + message.data.author + ':</strong> ' + message.data.content + "</p>";
 
-      });
-      messages.scrollTop = messages.scrollHeight;
+      // });
+      // messages.scrollTop = messages.scrollHeight;
     })
 }
-var ws = new WebSocket('ws://localhost:4430/chat/');
+var ws = new WebSocket('wss://localhost:4430/chat/');
 loadMessageHistory();
-ws.onmessage = function () {
-
-}
 function showMsnPage(pageIndex) {
   const msnPages = document.getElementById('msnWindow').querySelectorAll('.msn-page');
   msnPages.forEach((page, index) => {
@@ -72,7 +69,7 @@ function setupSendMessage() {
       ws.send(JSON.stringify({
 				'type': 'chat_message',
 				'data': {
-					'sender': document.getElementById('username').innerHTML,
+					'sender': document.getElementsByClassName('chat-input').innerHTML,
 					'message': message
 				}
 			}));
