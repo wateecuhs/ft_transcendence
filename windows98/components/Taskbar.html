@@ -1,0 +1,30 @@
+<!-- La barre de taches -->
+<div class="taskbar">
+
+  <!-- Affiche les optios du boutton start -->
+  <button class="start-btn" onclick="toogleStartMenu()">
+    <img src="img/png/windows-0.png" alt="Start Icon" class="start-icon">Start
+  </button>
+  
+  <div class="start-menu" style="display: none;">
+    <ul>
+      <li>
+        <!-- Creer le fenetre poste de travail-->
+        <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()">Poste de travail</button>
+      </li>
+      <li>
+        <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()">Compte</button>
+      </li>
+      <li>Parametres</li>
+      <li>Executer...</li>
+    </ul>
+  </div>
+
+  <!-- L'heure est affichee et mise a jour -->
+  <div class="taskbar-items">
+      <span class="time">
+        <img src="img/png/time_and_date-0.png" alt="Time Icon" class="time-icon"> 
+        <span class="time-text">12:00 PM</span>
+      </span>
+  </div>
+</div>
