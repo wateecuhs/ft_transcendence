@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bureau Windows 98</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/desktop-icons.css">
+    <link rel="stylesheet" href="css/taskbar.css">
+    <link rel="stylesheet" href="css/taskbar_start.css">
+    <link rel="stylesheet" href="css/window.css">
+    <link rel="stylesheet" href="css/explorerWindow.css">
+    <link rel="stylesheet" href="css/accountWindow.css">
+    <link rel="stylesheet" href="css/msn.css">
+    <link rel="stylesheet" href="css/winbook.css">
+</head>
+<body class="desktop">
+
+  <!-- La barre de taches -->
+  <div class="taskbar">
+
+    <!-- Affiche les optios du boutton start -->
+    <button class="start-btn" onclick="toogleStartMenu()">
+      <img src="img/png/windows-0.png" alt="Start Icon" class="start-icon">Start
+    </button>
+    
+    <div class="start-menu" style="display: none;">
+      <ul>
+        <li>
+          <!-- Creer le fenetre poste de travail-->
+          <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()">Poste de travail</button>
+        </li>
+        <li>
+          <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()">Compte</button>
+        </li>
+        <li>Parametres</li>
+        <li>Executer...</li>
+      </ul>
+    </div>
+
+    <!-- L'heure est affichee et mise a jour -->
+    <div class="taskbar-items">
+        <span class="time">
+          <img src="img/png/time_and_date-0.png" alt="Time Icon" class="time-icon"> 
+          <span class="time-text">12:00 PM</span>
+        </span>
+    </div>
+  </div>
+
+  <!-- Toutes les fenetres de la taskbar-->
+
+  <!-- Explorateur de fichier -->
+  <div class="window" id="explorerWindow" style="display: none;">
+    
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title">Windows Explorer</div>
+      <button class="close-button">X</button>
+    
+    </div>
+
+    <div class="window-content">
+      <ul>
+        
+      </ul>
+    </div>
+  </div>
+
+  <!-- Fenetre du compte -->
+  <div class="window" id="accountWindow" style="display: none;">
+    
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title">Account</div>
+      <button class="close-button">X</button>
+    
+    </div>
+
+    <div class="window-content">
+
+      <div class="account-page" id="account-page-0" style="display: none">
+        <div class="user-img">
+          <img src="img/png/game_spider-0.png">
+          <span>default pseudo</span>
+        </div>
+  
+        <ul>
+          <li>name: default </li>
+          <li>email address: default@gmail.com</li>
+          <li>status: active</li>
+        </ul>
+      </div>
+
+      <div class="account-page" id="account-page-1" style="display: none">
+        <div class="user-stat-title"> User statistic </div>
+
+        <ul>
+          <li>winrate: 8</li>
+          <li>number of matches: 10</li>
+          <li>average match time: 2min</li>
+        </ul>
+      </div>
+
+      <div class="account-page" id="account-page-2" style="display: none">
+        <div class="user-friends-title"> User friends </div>
+
+        <ul class="friends-list">
+          <li class="friend-item">
+            <span class="friend-name">user2:</span>
+            <button>See profile</button>
+          </li>
+          <li class="friend-item">
+            <span class="friend-name">user3:</span>
+            <button>See profile</button>
+          </li>
+          <li class="friend-item">
+            <span class="friend-name">user4:</span>
+            <button>See profile</button>
+          </li>
+        </ul>
+        
+      </div>
+
+      <div class="number-pages">1/4</div>
+    </div>
+  </div>
+
+   <!-- Icone du Bureau -->
+  <div class="desktop-icons">
+
+      <div class="icon" draggable="true" id="Poste de travail">
+          <img src="img/png/computer-0.png" alt="My Computer">
+          <p class="icon-text">Poste de travail</p>
+      </div>
+
+      
+      <div class="icon" draggable="true" id="Msn">
+        <img src="img/png/msn.png" alt="Msn">
+        <p class="icon-text">Msn</p>
+      </div>
+      
+      <div class="icon" draggable="true" id="Pong">
+        <img src="img/png/game_freecell-0.png" alt="Pong">
+        <p class="icon-text">Pong</p>
+      </div>
+
+      <div class="icon" draggable="true" id="Winbook">
+        <img src="img/png/internet_connection_wiz-0.png" alt="Pong">
+        <p class="icon-text">Winbook</p>
+      </div>
+
+      <div class="icon" draggable="true" id="Corbeille">
+        <img src="img/png/recycle_bin_directory.png" alt="Recycle Bin">
+        <p class="icon-text">Corbeille</p>
+    </div>
+  </div>
+
+  <div class="window" id="msnWindow" style="display: none">
+    <div class="window-header">
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title">MSN</div>
+      <button class="close-button">X</button>
+    </div>
+  
+    <div class="window-content">
+
+    <div class="msn-page" id="msn-page-0" style="display: none">
+      <div class="chat-area">
+        <div class="chat-messages"></div>
+        <div class="input-container">
+          <input type="text" class="chat-input" placeholder="Type a message" />
+          <button class="send-button">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="msn-page" id="msn-page-1" style="display: none">
+      <div class="contact-list">
+        <div class="contact">
+          Contact 1
+          <button>Action</button>
+        </div>
+        <div class="contact">
+          Contact 2
+          <button>Action</button>
+        </div>
+        <div class="contact">
+          Contact 3
+          <button>Action</button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+  </div>
+
+  <div class="window fullscreen" id="winBook" style="display: none">
+    <div class="window-header">
+      <div class="arrow-buttons">
+        <button class="left-arrow">&lt;</button>
+        <button class="right-arrow">&gt;</button>
+      </div>
+      <div class="header-title">Winbook - Inscription Tournoi Pong</div>
+      <button class="close-button">X</button>
+    </div>
+  
+    <!-- Page 1 - Formulaire d'inscription -->
+    <div class="winBook-page" id="page1">
+
+      <div class="left-panel">
+       
+        <div class="search-section">
+          <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
+          <button id="search-button" class="button-98">Rechercher</button>
+        </div>
+        <ul class="result-list" id="tournament-results"></ul>
+
+        <div class="create-section">
+          <input type="text" id="new-tournament-name" class="input-field" placeholder="Nom du nouveau tournoi">
+          <button id="create-tournament-button" class="button-98">Créer un tournoi</button>
+        </div>
+      
+      </div>
+
+      <div class="right-panel">
+        <div class="tournament-info">
+          <h3 class="tournament-name">Nom du tournoi</h3>
+          <p id="players-count">Nombre de joueurs : 0</p>
+
+          <ul id="players-list">
+
+          </ul>
+        </div>
+      </div>
+ 
+  
+    </div>
+    <div class="vertical-bar"></div>
+  </div>
+
+  <script src="/js/explorerWindow.js"></script>
+  <script src="js/accountWindow.js"></script>
+  <script src="/js/start_menu.js"></script>
+  <script src="/js/move_icon.js"></script>
+  <script src="/js/update_time.js"></script>
+  <script src="js/msn.js"></script>
+  <script src="js/winbook.js"></script>
+  <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+      updateTime();
+      setInterval(updateTime, 60000);
+    });
+  </script>
+</body>
+</html>

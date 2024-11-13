@@ -1,0 +1,256 @@
+/* Fenêtre plein écran */
+.fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #e0e0e0;
+  z-index: 2000;
+
+  display: flex;
+  flex-direction: column;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+
+  font-family: "Tahoma", sans-serif;
+  border: 2px solid #000;
+}
+
+/* En-tête de la fenêtre */
+.window-header {
+  background: linear-gradient(#000080, #0000a0);
+  color: #fff;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  border-bottom: 2px solid #fff;
+  z-index: 20001;
+}
+
+.arrow-buttons button {
+  background: #c3c7cb;
+  border: 1px solid #404040;
+  font-size: 12px;
+  color: #000;
+  cursor: pointer;
+  margin: 0 2px;
+}
+
+.arrow-buttons button:hover {
+  background-color: #000080;
+  color: #fff;
+}
+
+.window-header .header-title {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.window-header .close-button {
+  background: #c3c7cb;
+  color: black;
+  border: 1px solid #404040;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.window-header .close-button:hover {
+  background: #000080;
+  color: #fff;
+}
+
+.winBook-page {
+  display: flex;
+  position: relative;
+  justify-content: space-between;
+  flex-direction: row;
+  background: #dbdada;
+  padding: 15px;
+  flex: 1;
+  overflow-y: auto;
+  border: 2px solid #808080;
+  margin: 10px;
+  box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #404040;
+}
+
+
+/* -------- CONTENUE DE LA PAGE -------- */
+
+
+
+/* Panneaux latéraux */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 45%;
+  margin-top: 30px;
+  position: relative;
+}
+
+.result-list {
+  font-size: 18px;
+  margin-top: 10px;
+  padding-left: 0;
+  list-style-type: none;
+  overflow-y: auto;
+  display: none;
+
+  background-color: #c3c7cb; /* Fond gris clair */
+  border: 2px solid #808080; /* Bordure grise foncée */
+  box-shadow: inset -2px -2px 0 #ffffff, inset 2px 2px 0 #404040, 2px 2px 0 #808080; /* Effet 3D Win98 */
+
+  top: 15%;
+  height: 80%;
+  width: 100%;
+  position: absolute;
+  margin-top: 20px;
+  max-width: 414px;
+}
+
+.tournament-button {
+  background-color: #c3c7cb;
+  border: 2px solid #808080;
+  font-size: 16px;
+  padding: 8px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #404040;
+}
+
+.tournament-button:hover {
+  background-color: #808080;
+  color: white;
+}
+
+.result-list li {
+  padding: 10px 12px;
+  background-color: #e0e0e0; /* Fond gris plus clair pour contraste */
+  border-top: 1px solid #f0f0f0; /* Ligne supérieure plus claire */
+  border-bottom: 1px solid #404040; /* Ligne inférieure foncée */
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040; /* Incrustation 3D des éléments */
+  
+  cursor: pointer;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-size: 18px;
+  color: #000;
+}
+
+.result-list li:hover {
+  background-color: #a0a0a0; /* Fond foncé au survol */
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040; /* Effet d'incrustation inchangé au survol */
+  border-top: 1px solid #d0d0d0; /* Bordure supérieure plus foncée au survol */
+}
+
+/* Afficher la liste des résultats quand elle contient des éléments */
+.left-panel .result-list.show {
+  display: block;
+}
+
+/* Champs de saisie */
+.search-section {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espace entre le champ et le bouton */
+  margin-bottom: 12px; /* Espace sous la section */
+}
+
+/* Section de création */
+.create-section {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espace entre le champ et le bouton */
+}
+
+/* Champ de saisie et boutons (style Win98) */
+.input-field, .button-98 {
+  padding: 6px;
+  font-size: 18px;
+  border: 2px solid #646363;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #404040;
+  background-color: #c3c7cb;
+  color: #000;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+}
+
+.button-98 {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.button-98:hover {
+  background-color: #000080;
+  color: white;
+}
+
+.vertical-bar {
+  position: absolute;
+  top: 0;
+  width: 20px; /* Largeur de la barre */
+  height: 100%; /* Prendre toute la hauteur du conteneur */
+  background-color: #c3c7cb; /* Couleur de fond claire */
+  border: 2px solid #808080; /* Bordure grise foncée */
+  margin-left: 48%; /* Centrer la barre */
+  box-shadow: 
+    inset 1px 1px 0 #ffffff,    /* Ombre interne blanche (éclat) */
+    inset -1px -1px 0 #404040,  /* Ombre interne noire (profondeur) */
+    2px 2px 3px #808080,       /* Ombre extérieure pour effet 3D */
+    1px 1px 2px #ffffff;       /* Ombre extérieure pour accentuer le relief */
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  width: 45%;
+  margin-top: 30px;
+  padding: 10px;
+  background: #e0e0e0;
+  border: 2px solid #808080;
+  box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #404040;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+}
+
+.tournament-info {
+  margin-bottom: 20px;
+}
+
+#tournament-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000080;
+}
+
+#players-count {
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+#players-list {
+  list-style-type: none;
+  padding-left: 0;
+  font-size: 14px;
+}
+
+.player {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #d0d0d0;
+}
+
+.player-name {
+  font-weight: bold;
+}
+
+.player-status {
+  color: #000080;
+}
+
+.player:hover {
+  background-color: #d0d0d0;
+  cursor: pointer;
+}
