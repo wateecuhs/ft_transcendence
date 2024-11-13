@@ -1,5 +1,24 @@
 let msnCurrentPage = 0;
+function loadMessageHistory() {
+  fetch(`/chat/messages`)
+    .then(response => response.json())
+    .then(data => {
+      console.log("Here");
+      console.log(data);
+      let messages = document.getElementById('messages');
+      data.forEach(message => {
+        console.log(message);
+        messages.innerHTML += '<p class="chat-message">' + '[' + message.data.created_at + '] ' +'<strong>' + message.data.author + ':</strong> ' + message.data.content + "</p>";
 
+      });
+      messages.scrollTop = messages.scrollHeight;
+    })
+}
+var ws = new WebSocket('ws://localhost:4430/chat/');
+loadMessageHistory();
+ws.onmessage = function () {
+
+}
 function showMsnPage(pageIndex) {
   const msnPages = document.getElementById('msnWindow').querySelectorAll('.msn-page');
   msnPages.forEach((page, index) => {
@@ -34,7 +53,7 @@ function toggleMsnWindow() {
     msnWindow.style.top = `${window.innerHeight / 2 - msnWindow.offsetHeight / 2}px`;
     msnWindow.style.left = `${window.innerWidth / 2 - msnWindow.offsetWidth / 2}px`;
   }
-  
+
   showMsnPage(msnCurrentPage);
 }
 
@@ -43,12 +62,20 @@ function setupSendMessage() {
   const sendButton = document.querySelector('#msnWindow .send-button');
   const chatInput = document.querySelector('#msnWindow .chat-input');
   const chatMessages = document.querySelector('#msnWindow .chat-messages');
-  
+
 
   sendButton.addEventListener('click', function() {
     const message = chatInput.value.trim();
     if (message) {
-      displayChatMessage(message);
+      // displayChatMessage(message);
+      console.log("Sending stuff");
+      ws.send(JSON.stringify({
+				'type': 'chat_message',
+				'data': {
+					'sender': document.getElementById('username').innerHTML,
+					'message': message
+				}
+			}));
       chatInput.value = '';
     }
   });
@@ -67,7 +94,7 @@ function displayChatMessage(message) {
   messageDiv.classList.add('message');
   messageDiv.textContent = 'you: ' + message;
   chatMessages.appendChild(messageDiv);
-  
+
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 

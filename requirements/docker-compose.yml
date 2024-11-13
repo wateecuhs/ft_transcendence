@@ -3,6 +3,7 @@ networks:
     name: peas
   chat:
     name: chat
+    internal: true
   auth:
     name: auth
 
@@ -10,7 +11,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - "443:443"
+      - "4430:4430"
     networks:
       - peas
     depends_on:
@@ -21,6 +22,8 @@ services:
     build: ./chat
     env_file:
       - ./conf/.env-chat
+    ports:
+      - "8000:8000"
     networks:
       - chat
       - peas
@@ -51,9 +54,9 @@ services:
       - peas
       - auth
     depends_on:
-      auth-db: 
+      auth-db:
         condition: service_healthy
-    
+
   auth-db:
     image: postgres:14
     restart: on-failure

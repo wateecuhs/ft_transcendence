@@ -7,6 +7,7 @@ from .enums import MessageType
 
 class MessagesView(APIView):
     def get(self, request):
+        print("Testing", flush=True)
         messages = Message.objects.order_by("created_at").all()
         # test = Message.objects.filter(type=Message.Type.PUBLIC).order_by("created_at").all()
         serializer = MessageSerializer(messages, many=True)
