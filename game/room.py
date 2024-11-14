@@ -97,7 +97,7 @@ class Room:
 
         # Paddle collision
         if self.ball.dx < 0:
-            if (self.paddle_left.y <= self.ball.y <= self.paddle_left.y + self.paddle_left.height and
+            if (self.paddle_left.y - self.ball.radius <= self.ball.y <= self.paddle_left.y + self.paddle_left.height and
                 self.ball.x - self.ball.radius <= self.paddle_left.x + self.paddle_left.width):
                 self.ball.dx = -self.ball.dx
                 y_mid = self.paddle_left.y + self.paddle_left.height // 2
@@ -105,7 +105,7 @@ class Room:
                 bounce_mod = (self.paddle_left.height // 2) // self.ball.MAX_VELOCITY
                 self.ball.dy = y_diff // bounce_mod
         else:
-            if (self.paddle_right.y <= self.ball.y <= self.paddle_right.y + self.paddle_right.height and
+            if (self.paddle_right.y - self.ball.radius <= self.ball.y <= self.paddle_right.y + self.paddle_right.height and
                 self.ball.x + self.ball.radius >= self.paddle_right.x):
                 self.ball.dx = -self.ball.dx
                 y_mid = self.paddle_right.y + self.paddle_right.height // 2
