@@ -1,0 +1,42 @@
+.window {
+  width: 300px;
+  border: 2px solid #000;
+  background-color: #fff;
+  box-shadow: 2px 2px 5px #aaa;
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  font-family: 'Tahoma', Arial, sans-serif;
+}
+
+.window-header {
+  background-color: #000080;
+  color: #fff;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  font-family: "Tahoma", sans-serif;
+}
+
+.window-header .header-title {
+  flex-grow: 1;
+  margin-right: 45px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  color: #ffffff;
+  text-shadow: 
+    1px 1px 0px #000000,
+    -1px -1px 0px #000000;
+  letter-spacing: 1px;
+}
+
+.arrow-buttons {
+  display: flex;
+  margin-right: 10px;
+}
+
+.close-button {
+  margin-left: auto;
+}
+

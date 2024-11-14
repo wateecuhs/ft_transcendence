@@ -19,6 +19,11 @@ class MessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ['id', 'type', 'author', 'content', 'created_at']
 
+    def validate_created_at(self, value):
+        if not value:
+            raise serializers.ValidationError("Message creation date cannot be empty.")
+        return value
+
     def validate_type(self, value):
         if value not in Message.Type.values:
             raise serializers.ValidationError(f"Invalid message type. ({value})")

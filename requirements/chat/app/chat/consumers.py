@@ -15,8 +15,6 @@ import uuid
 logger = logging.getLogger(__name__)
 
 # TODO
-# Fix the private messages fields, type and handling
-# Refactor handlers
 # Proper exception handling
 
 """
@@ -133,8 +131,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.GLOBAL_CHAT, {"type": MessageType.Chat.PUBLIC, "data": message_data}
         )
+
         await sync_to_async(serializer.save)()
-    """ 
+    """
 		These methods are called by the channel layer when a message is received /
 		from the group or a private message is received.
 	"""

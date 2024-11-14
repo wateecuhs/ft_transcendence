@@ -3,12 +3,16 @@ networks:
     name: peas
   chat:
     name: chat
+    internal: true
+  matchmaking:
+    name: matchmaking
+    internal: true
 
 services:
   nginx:
     build: ./nginx
     ports:
-      - "443:443"
+      - "8443:8443"
     networks:
       - peas
     depends_on:
@@ -22,7 +26,7 @@ services:
       - chat
       - peas
     ports:
-      - "80:80"
+      - "8000:8000"
     depends_on:
       chat-db:
         condition: service_healthy
@@ -42,5 +46,35 @@ services:
       timeout: 5s
       retries: 5
 
+  matchmaking:
+    build: ./matchmaking
+    env_file:
+      - ./conf/.env-matchmaking
+    networks:
+      - peas
+      - matchmaking
+    ports:
+      - "8001:8001"
+    depends_on:
+      chat-db:
+        condition: service_healthy
+
+  matchmaking-db:
+    image: postgres:14
+    restart: on-failure
+    volumes:
+      - matchmaking-db-volume:/var/lib/postgresql/data
+    env_file:
+      - ./conf/.env-matchmaking
+    networks:
+      - peas
+      - matchmaking
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+
 volumes:
   chat-db-volume: {}
+  matchmaking-db-volume: {}
