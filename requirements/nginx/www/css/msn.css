@@ -146,3 +146,9 @@
   background-color: #c0bebe; /* Couleur de survol du bouton */
   box-shadow: inset 1px 1px 0 #949393, inset -1px -1px 0 #ffffff; /* Ombre au survol du bouton */
 }
+
+#msnWindow .timestamp {
+  color: grey;
+  opacity: 0.5;
+  float: right;
+}

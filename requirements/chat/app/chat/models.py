@@ -1,5 +1,6 @@
 from django.db import models
 from .enums import MessageType
+from datetime import datetime
 import uuid
 
 # Create your models here.

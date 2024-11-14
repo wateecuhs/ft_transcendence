@@ -1,21 +1,26 @@
 let msnCurrentPage = 0;
+
 function loadMessageHistory() {
   fetch(`/chat/messages`)
     .then(response => response.json())
     .then(data => {
-      console.log("Here");
-      console.log(data);
-      // let messages = document.getElementById('messages');
-      // data.forEach(message => {
-      //   console.log(message);
-      //   messages.innerHTML += '<p class="chat-message">' + '[' + message.data.created_at + '] ' +'<strong>' + message.data.author + ':</strong> ' + message.data.content + "</p>";
-
-      // });
-      // messages.scrollTop = messages.scrollHeight;
+      data.forEach(message => {
+        displayChatMessage(message.data);
+      });
     })
 }
-var ws = new WebSocket('wss://localhost:4430/chat/');
-loadMessageHistory();
+
+function initWebSocket() {
+  var ws = new WebSocket('wss://localhost:8443/chat/');
+  ws.onmessage = function(event) {
+    const message = JSON.parse(event.data);
+    if (message.type === "chat.public") {
+      displayChatMessage(message.data);
+    }
+  }
+  return ws;
+}
+
 function showMsnPage(pageIndex) {
   const msnPages = document.getElementById('msnWindow').querySelectorAll('.msn-page');
   msnPages.forEach((page, index) => {
@@ -64,7 +69,6 @@ function setupSendMessage() {
   sendButton.addEventListener('click', function() {
     const message = chatInput.value.trim();
     if (message) {
-      // displayChatMessage(message);
       console.log("Sending stuff");
       ws.send(JSON.stringify({
 				'type': 'chat_message',
@@ -85,13 +89,16 @@ function setupSendMessage() {
   });
 }
 
-function displayChatMessage(message) {
+function displayChatMessage(data) {
   const chatMessages = document.querySelector('#msnWindow .chat-messages');
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message');
-  messageDiv.textContent = 'you: ' + message;
+  messageDiv.textContent = data.author + ': ' + data.content;
   chatMessages.appendChild(messageDiv);
-
+  const timestampSpan = document.createElement('span');
+  timestampSpan.classList.add('timestamp');
+  timestampSpan.textContent = data.created_at;
+  messageDiv.appendChild(timestampSpan);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 

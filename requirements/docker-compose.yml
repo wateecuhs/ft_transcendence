@@ -11,7 +11,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - "4430:4430"
+      - "8443:8443"
     networks:
       - peas
     depends_on:

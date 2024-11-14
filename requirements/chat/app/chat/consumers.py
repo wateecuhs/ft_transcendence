@@ -47,7 +47,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         # self.user_id = str(random.randint(10000000, 99999999))
-        print("Connecting", flush=True)
         self.user_id = str(type(self).user_count)
         type(self).user_count += 1
 
@@ -134,6 +133,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.GLOBAL_CHAT, {"type": MessageType.Chat.PUBLIC, "data": message_data}
         )
+
         await sync_to_async(serializer.save)()
     """
 		These methods are called by the channel layer when a message is received /

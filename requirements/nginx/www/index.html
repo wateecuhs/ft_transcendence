@@ -260,8 +260,10 @@
   <script src="js/winbook.js"></script>
   <script>
     window.onload = function () {
+      loadMessageHistory();
+      ws = initWebSocket();
       updateTime();
-      setInterval(updateTime, 60000);
+      setInterval(updateTime, 1000);
     }
   </script>
 </body>
