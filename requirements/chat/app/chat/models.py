@@ -35,7 +35,6 @@ class Relationship(models.Model):
         self.status = Relationship.Status.BLOCKED
         self.save()
 
-
 class User(models.Model):
     class Status(models.TextChoices):
         ONLINE = "ON", "Online"
@@ -53,7 +52,6 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Message(models.Model):
     class Type(models.TextChoices):

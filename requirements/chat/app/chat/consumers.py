@@ -15,8 +15,6 @@ import uuid
 logger = logging.getLogger(__name__)
 
 # TODO
-# Fix the private messages fields, type and handling
-# Refactor handlers
 # Proper exception handling
 
 """
