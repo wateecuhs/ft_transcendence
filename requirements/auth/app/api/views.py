@@ -57,7 +57,7 @@ class loginAPI(APIView):
 		username = serializer.validated_data['username']
 		password = serializer.validated_data['password']
 		user = CustomUser.get_user_by_name(username)
-		if user.password != password:
+		if not user or user.password != password:
 			return JsonResponse({"message": f"failed : authentication failed for {username}"}, status=401)
 		encoded_access_jwt = CreateAccessToken(request, username)
 		CreateRefreshToken(request, username)

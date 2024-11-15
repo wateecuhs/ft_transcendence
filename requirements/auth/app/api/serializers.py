@@ -68,9 +68,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 		return password
 
 class LoginSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CustomUser
+		fields = ['username', 'password']
+
 	username = serializers.CharField(label='Username', max_length=30, min_length=2)
 	password = serializers.CharField(label='Password')
-
 
 
 class EditAccountSerializer(serializers.ModelSerializer):
