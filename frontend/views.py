@@ -13,13 +13,6 @@ import  os, base64
 from pyasn1_modules.rfc5280 import ub_serial_number
 from twisted.scripts.htmlizer import header
 
-from .models import CustomUser
-from api.views import set_cookie_refresh
-from .forms import changeAliasForm, changePpForm, changeEmailForm, changePasswordForm
-from django.core.files.storage import FileSystemStorage
-from django.conf import settings
-from datetime import datetime, timedelta
-
 
 
 # Create your views here.

@@ -1,7 +1,5 @@
 from django.urls import path
-from zope.interface import named
-
-from . import  views
+from .views import loginAPI, register, EditAccount, confirm_token, get_user_info, refresh
 
 urlpatterns = [
     path("Register/", register.as_view(), name="register"),

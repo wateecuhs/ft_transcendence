@@ -148,4 +148,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
-AUTH_USER_MODEL = 'db.CustomUser'
+AUTH_USER_MODEL = 'api.CustomUser'
