@@ -4,6 +4,9 @@ networks:
   chat:
     name: chat
     internal: true
+  auth:
+    name: auth
+    internal: true
   matchmaking:
     name: matchmaking
     internal: true
@@ -17,16 +20,17 @@ services:
       - peas
     depends_on:
       - chat
+      - auth
 
   chat:
     build: ./chat
     env_file:
       - ./conf/.env-chat
+    ports:
+      - "8000:8000"
     networks:
       - chat
       - peas
-    ports:
-      - "8000:8000"
     depends_on:
       chat-db:
         condition: service_healthy
@@ -46,6 +50,35 @@ services:
       timeout: 5s
       retries: 5
 
+  auth:
+    build: ./auth
+    env_file:
+      - ./conf/.env-auth
+    ports:
+      - "8001:8001"
+    networks:
+      - peas
+      - auth
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
+  auth-db:
+    image: postgres:14
+    restart: on-failure
+    volumes:
+      - auth-db-volume:/var/lib/postgresql/data
+    env_file:
+      - ./conf/.env-auth
+    networks:
+      - auth
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+
+
   matchmaking:
     build: ./matchmaking
     env_file:
@@ -54,7 +87,7 @@ services:
       - peas
       - matchmaking
     ports:
-      - "8001:8001"
+      - "8002:8002"
     depends_on:
       chat-db:
         condition: service_healthy
@@ -75,6 +108,8 @@ services:
       timeout: 5s
       retries: 5
 
+
 volumes:
   chat-db-volume: {}
+  auth-db-volume: {}
   matchmaking-db-volume: {}

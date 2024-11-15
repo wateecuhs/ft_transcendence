@@ -10,7 +10,6 @@ class Room(models.Model):
         READY = "READY", "Ready"
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    label = models.SlugField(unique=True)
     player_1 = models.UUIDField()
     player_2 = models.UUIDField()
     player_1_ready = models.BooleanField(default=False)
@@ -18,6 +17,7 @@ class Room(models.Model):
     status = models.CharField(
         max_length=8, choices=Status.choices, default=Status.WAITING
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.label
