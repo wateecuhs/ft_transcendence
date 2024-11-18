@@ -1,93 +1,270 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>transcendence</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="assets/index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bureau Windows 98</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/desktop-icons.css">
+    <link rel="stylesheet" href="css/taskbar.css">
+    <link rel="stylesheet" href="css/taskbar_start.css">
+    <link rel="stylesheet" href="css/window.css">
+    <link rel="stylesheet" href="css/explorerWindow.css">
+    <link rel="stylesheet" href="css/accountWindow.css">
+    <link rel="stylesheet" href="css/msn.css">
+    <link rel="stylesheet" href="css/winbook.css">
 </head>
-<body>
-	<div class="header">
-		<h1 class="text-center title">TRANSCENDENCE</h1>
-		<div class="nav-right-items" id="user-pfp-container">
-			<a class="user-name align-self-center" id="username"></a>
-			<img class="user-image" id="profile-pic">
-		</div>
-	</div>
-	<div id="page-body">
-		<div id="buttons-container">
-			<button class="btn btn-primary" onclick="window.location.href='https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fconfirm_token&response_type=code'">Login</button>
-			<button class="btn btn-primary" onclick="window.location.href='/game'">Play</button>
-		</div>
-		<div id="chat-container">
-			<div id="messages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; background-color: #465362;">
-				<!-- Messages will appear here -->
-			</div>
-			<div id="chat-input" style="margin-top: 10px;">
-				<input type="text" id="message" class="form-control" placeholder="Type your message here...">
-			</div>
-		</div> 
-	</div>
-</body>
-<script>
-	function	getUser() {
-		fetch(`/get_user_info`)
-			.then(response => response.json())
-			.then(data =>{
-				if (data['error']) {
-					return;
-				}
-				let username = document.getElementById('username');
-				username.innerHTML = data['login'];
-				document.getElementById('profile-pic').src = data['image'];
-				document.getElementById('user-pfp-container').style.display = 'flex';
-			})
-	}
-	window.onload = function () {
-		var ws = new WebSocket('ws://localhost/ws/chat/');
-		ws.onmessage = function (event) {
-			event = JSON.parse(event.data);
-			console.log(event);
-			var messages = document.getElementById('messages');
-			if (event.type === 'chat_message') {
-				messages.innerHTML += '<p class="chat-message">' + '[' + event.data.timestamp + '] ' +'<strong>' + event.data.sender + ':</strong> ' + event.data.message + "</p>";
-			}
-			else if (event.type === 'chat_message_private_received') {
-				messages.innerHTML += '<p class="private-message">' + '[' + event.data.timestamp + '] ' +'<strong> [from] ' + event.data.sender + ':</strong> ' + event.data.message + "</p>";
-			}
-			else if (event.type === 'chat_message_private_sent') {
-				messages.innerHTML += '<p class="private-message">' + '[' + event.data.timestamp + '] ' +'<strong> [to] ' + event.data.recipient + ':</strong> ' + event.data.message + "</p>";
-			}
-			if (messages.childElementCount > 50) {
-				messages.removeChild(messages.firstChild);
-			}
-			messages.scrollTop = messages.scrollHeight;
-		};
-		ws.onopen = function () {
-			console.log('Connected to the server');
-		};
-		function sendMessage() {
-			var input = document.getElementById('message');
-			var message = input.value;
-			if (message == '')
-				return;
-			ws.send(JSON.stringify({
-				'type': 'chat_message',
-				'data': {
-					'sender': document.getElementById('username').innerHTML,
-					'message': message
-				}
-			}));
-			input.value = '';
-		}
-		document.getElementById('message').addEventListener('keypress', function (e) {
-			if (e.key === 'Enter') {
-				sendMessage();
-			}
-		});
+<body class="desktop">
 
-		getUser();
-	}
-</script>
+  <!-- La barre de taches -->
+  <div class="taskbar">
+
+    <!-- Affiche les optios du boutton start -->
+    <button class="start-btn" onclick="toogleStartMenu()">
+      <img src="img/png/windows-0.png" alt="Start Icon" class="start-icon">Start
+    </button>
+
+    <div class="start-menu" style="display: none;">
+      <ul>
+        <li>
+          <!-- Creer le fenetre poste de travail-->
+          <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()">Poste de travail</button>
+        </li>
+        <li>
+          <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()">Compte</button>
+        </li>
+        <li>Parametres</li>
+        <li>Executer...</li>
+      </ul>
+    </div>
+
+    <!-- L'heure est affichee et mise a jour -->
+    <div class="taskbar-items">
+        <span class="time">
+          <img src="img/png/time_and_date-0.png" alt="Time Icon" class="time-icon">
+          <span class="time-text">12:00 PM</span>
+        </span>
+    </div>
+  </div>
+
+  <!-- Toutes les fenetres de la taskbar-->
+
+  <!-- Explorateur de fichier -->
+  <div class="window" id="explorerWindow" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title">Windows Explorer</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <ul>
+
+      </ul>
+    </div>
+  </div>
+
+  <!-- Fenetre du compte -->
+  <div class="window" id="accountWindow" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title">Account</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+
+      <div class="account-page" id="account-page-0" style="display: none">
+        <div class="user-img">
+          <img src="img/png/game_spider-0.png">
+          <span>default pseudo</span>
+        </div>
+
+        <ul>
+          <li>name: default </li>
+          <li>email address: default@gmail.com</li>
+          <li>status: active</li>
+        </ul>
+      </div>
+
+      <div class="account-page" id="account-page-1" style="display: none">
+        <div class="user-stat-title"> User statistic </div>
+
+        <ul>
+          <li>winrate: 8</li>
+          <li>number of matches: 10</li>
+          <li>average match time: 2min</li>
+        </ul>
+      </div>
+
+      <div class="account-page" id="account-page-2" style="display: none">
+        <div class="user-friends-title"> User friends </div>
+
+        <ul class="friends-list">
+          <li class="friend-item">
+            <span class="friend-name">user2:</span>
+            <button>See profile</button>
+          </li>
+          <li class="friend-item">
+            <span class="friend-name">user3:</span>
+            <button>See profile</button>
+          </li>
+          <li class="friend-item">
+            <span class="friend-name">user4:</span>
+            <button>See profile</button>
+          </li>
+        </ul>
+
+      </div>
+
+      <div class="number-pages">1/4</div>
+    </div>
+  </div>
+
+   <!-- Icone du Bureau -->
+  <div class="desktop-icons">
+
+      <div class="icon" draggable="true" id="Poste de travail">
+          <img src="img/png/computer-0.png" alt="My Computer">
+          <p class="icon-text">Poste de travail</p>
+      </div>
+
+
+      <div class="icon" draggable="true" id="Msn">
+        <img src="img/png/msn.png" alt="Msn">
+        <p class="icon-text">Msn</p>
+      </div>
+
+      <div class="icon" draggable="true" id="Pong">
+        <img src="img/png/game_freecell-0.png" alt="Pong">
+        <p class="icon-text">Pong</p>
+      </div>
+
+      <div class="icon" draggable="true" id="Winbook">
+        <img src="img/png/internet_connection_wiz-0.png" alt="Pong">
+        <p class="icon-text">Winbook</p>
+      </div>
+
+      <div class="icon" draggable="true" id="Corbeille">
+        <img src="img/png/recycle_bin_directory.png" alt="Recycle Bin">
+        <p class="icon-text">Corbeille</p>
+    </div>
+  </div>
+
+  <div class="window" id="msnWindow" style="display: none">
+    <div class="window-header">
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title">MSN</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <div class="window-content">
+
+    <div class="msn-page" id="msn-page-0" style="display: none">
+      <div class="chat-area">
+        <div class="chat-messages"></div>
+        <div class="input-container">
+          <input type="text" class="chat-input" placeholder="Type a message" />
+          <button class="send-button">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="msn-page" id="msn-page-1" style="display: none">
+      <div class="contact-list">
+        <div class="contact">
+          Contact 1
+          <button>Action</button>
+        </div>
+        <div class="contact">
+          Contact 2
+          <button>Action</button>
+        </div>
+        <div class="contact">
+          Contact 3
+          <button>Action</button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+  </div>
+
+  <div class="window fullscreen" id="winBook" style="display: none">
+    <div class="window-header">
+      <div class="arrow-buttons">
+        <button class="left-arrow">&lt;</button>
+        <button class="right-arrow">&gt;</button>
+      </div>
+      <div class="header-title">Winbook - Inscription Tournoi Pong</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <!-- Page 1 - Formulaire d'inscription -->
+    <div class="winBook-page" id="page1">
+
+      <div class="left-panel">
+
+        <div class="search-section">
+          <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
+          <button id="search-button" class="button-98">Rechercher</button>
+        </div>
+        <ul class="result-list" id="tournament-results"></ul>
+
+        <div class="create-section">
+          <input type="text" id="new-tournament-name" class="input-field" placeholder="Nom du nouveau tournoi">
+          <button id="create-tournament-button" class="button-98">Créer un tournoi</button>
+        </div>
+
+      </div>
+
+      <div class="right-panel">
+        <div class="tournament-info">
+          <h3 class="tournament-name">Nom du tournoi</h3>
+          <p id="players-count">Nombre de joueurs : 0</p>
+
+          <ul id="players-list">
+
+          </ul>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="vertical-bar"></div>
+  </div>
+
+  <script src="/js/explorerWindow.js"></script>
+  <script src="js/accountWindow.js"></script>
+  <script src="/js/start_menu.js"></script>
+  <script src="/js/move_icon.js"></script>
+  <script src="/js/update_time.js"></script>
+  <script src="js/msn.js"></script>
+  <script src="js/winbook.js"></script>
+  <script>
+    window.onload = function () {
+      loadMessageHistory();
+      ws = initWebSocket();
+      updateTime();
+      setInterval(updateTime, 1000);
+    }
+  </script>
+</body>
 </html>

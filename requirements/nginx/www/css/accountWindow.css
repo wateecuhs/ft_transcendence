@@ -1,0 +1,152 @@
+#accountWindow {
+  width: 350px;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 6px #aaa;
+  background-color: #f9f6f6;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+#accountWindow .window-content {
+  padding: 20px;
+  background-color: #dcdcdc;
+  border: 2px solid #808080;
+  box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+#accountWindow .header-title {
+  margin-right: 30px;
+}
+
+#accountWindow ul {
+  list-style-type: none;
+  padding: 12px;
+  margin: 0;
+  background-color: #e0e0e0;
+  border: 1px solid #b0b0b0;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+#accountWindow ul li {
+  margin: 5px 0;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+#accountWindow .number-pages {
+  text-align: right;
+  font-size: 12px;
+  color: #555;
+  padding: 5px;
+  margin-top: auto;
+  background-color: #e0e0e0;
+  border-top: 1px solid #b0b0b0;
+  box-shadow: inset 0px 1px 0 #ffffff, inset 0px -1px 0 #808080;
+  box-sizing: border-box;
+}
+
+/* Page 1*/
+
+#accountWindow .user-img {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #e0e0e0;
+  border: 1px solid #b0b0b0;
+  margin-bottom: 10px;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+}
+
+#accountWindow .user-img img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+#accountWindow .user-img span {
+  font-weight: bold;
+}
+
+/* Page 2*/
+
+#accountWindow .user-stat-title {
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  margin-right: 15px;
+  align-items: center;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #e0e0e0;
+  border: 1px solid #b0b0b0;
+  margin-bottom: 10px;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+}
+
+/* Page 3*/
+
+#accountWindow .user-friends-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #e0e0e0;
+  border: 1px solid #b0b0b0;
+  margin-bottom: 10px;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+}
+
+#accountWindow .friends-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: #e0e0e0;
+  border: 1px solid #b0b0b0;
+  padding: 8px;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+}
+
+#accountWindow .friend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px;
+  background-color: #dcdcdc;
+  border: 1px solid #b0b0b0;
+  margin-bottom: 6px;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+}
+
+#accountWindow .friend-name {
+  font-weight: bold;
+  color: black;
+  margin-right: auto;
+}
+
+#accountWindow .friend-item button {
+  padding: 4px 8px;
+  font-size: 14px;
+  margin-left: 10px;
+  background-color: #dcdcdc;
+  border: 1px solid #808080;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
+  cursor: pointer;
+}
+
+#accountWindow .friend-item button:hover {
+  background-color: #c0bebe;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff;
+}
+
+
+/* Page 4*/
