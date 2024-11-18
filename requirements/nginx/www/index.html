@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>transcendence</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/index.css">
+</head>
+<body>
+	<div class="header">
+		<h1 class="text-center title">TRANSCENDENCE</h1>
+		<div class="nav-right-items" id="user-pfp-container">
+			<a class="user-name align-self-center" id="username"></a>
+			<img class="user-image" id="profile-pic">
+		</div>
+	</div>
+	<div id="page-body">
+		<div id="buttons-container">
+			<button class="btn btn-primary" onclick="window.location.href='https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fconfirm_token&response_type=code'">Login</button>
+			<button class="btn btn-primary" onclick="window.location.href='/game'">Play</button>
+		</div>
+		<div id="chat-container">
+			<div id="messages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; background-color: #465362;">
+				<!-- Messages will appear here -->
+			</div>
+			<div id="chat-input" style="margin-top: 10px;">
+				<input type="text" id="message" class="form-control" placeholder="Type your message here...">
+			</div>
+		</div> 
+	</div>
+</body>
+<script>
+	function	getUser() {
+		fetch(`/get_user_info`)
+			.then(response => response.json())
+			.then(data =>{
+				if (data['error']) {
+					return;
+				}
+				let username = document.getElementById('username');
+				username.innerHTML = data['login'];
+				document.getElementById('profile-pic').src = data['image'];
+				document.getElementById('user-pfp-container').style.display = 'flex';
+			})
+	}
+	window.onload = function () {
+		var ws = new WebSocket('ws://localhost/ws/chat/');
+		ws.onmessage = function (event) {
+			event = JSON.parse(event.data);
+			console.log(event);
+			var messages = document.getElementById('messages');
+			if (event.type === 'chat_message') {
+				messages.innerHTML += '<p class="chat-message">' + '[' + event.data.timestamp + '] ' +'<strong>' + event.data.sender + ':</strong> ' + event.data.message + "</p>";
+			}
+			else if (event.type === 'chat_message_private_received') {
+				messages.innerHTML += '<p class="private-message">' + '[' + event.data.timestamp + '] ' +'<strong> [from] ' + event.data.sender + ':</strong> ' + event.data.message + "</p>";
+			}
+			else if (event.type === 'chat_message_private_sent') {
+				messages.innerHTML += '<p class="private-message">' + '[' + event.data.timestamp + '] ' +'<strong> [to] ' + event.data.recipient + ':</strong> ' + event.data.message + "</p>";
+			}
+			if (messages.childElementCount > 50) {
+				messages.removeChild(messages.firstChild);
+			}
+			messages.scrollTop = messages.scrollHeight;
+		};
+		ws.onopen = function () {
+			console.log('Connected to the server');
+		};
+		function sendMessage() {
+			var input = document.getElementById('message');
+			var message = input.value;
+			if (message == '')
+				return;
+			ws.send(JSON.stringify({
+				'type': 'chat_message',
+				'data': {
+					'sender': document.getElementById('username').innerHTML,
+					'message': message
+				}
+			}));
+			input.value = '';
+		}
+		document.getElementById('message').addEventListener('keypress', function (e) {
+			if (e.key === 'Enter') {
+				sendMessage();
+			}
+		});
+
+		getUser();
+	}
+</script>
+</html>
