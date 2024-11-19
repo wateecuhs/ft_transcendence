@@ -1,7 +1,6 @@
 from django.db import models
 from .enums import MessageType
-from datetime import datetime
-import uuid
+from uuid import uuid4
 
 # Create your models here.
 class Relationship(models.Model):
@@ -41,7 +40,9 @@ class User(models.Model):
         OFFLINE = "OFF", "Offline"
         PLAYING = "PLAYING", "Playing"
 
+    # This will probably turn into referenceID that references the auth service's user ID
     id = models.UUIDField(primary_key=True, editable=False)
+
     name = models.CharField(max_length=100)
     friends = models.ManyToManyField(
         "self", through=Relationship, symmetrical=False, related_name="+"
@@ -54,11 +55,14 @@ class User(models.Model):
         return self.name
 
 class Message(models.Model):
+    class Meta:
+        ordering = ["created_at"]
+
     class Type(models.TextChoices):
         PRIVATE = MessageType.Chat.PRIVATE, "Private"
         PUBLIC = MessageType.Chat.PUBLIC, "Public"
 
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     type = models.CharField(max_length=15, choices=Type.choices, default=Type.PUBLIC)
     content = models.TextField()
     author = models.CharField(max_length=100)

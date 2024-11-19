@@ -16,6 +16,7 @@ networks:
 
 services:
   nginx:
+    container_name: nginx
     build: ./nginx
     ports:
       - "8443:8443"
@@ -26,11 +27,16 @@ services:
       - auth
 
   chat:
-    build: ./chat
+    container_name: chat
+    build:
+      context: ./chat
+      dockerfile: Dockerfile.dev
     env_file:
       - ./conf/.env-chat
     ports:
       - "8000:8000"
+    volumes:
+      - ./chat/app:/app/
     networks:
       - chat
       - peas
@@ -39,6 +45,7 @@ services:
         condition: service_healthy
 
   chat-db:
+    container_name: chat-db
     image: postgres:14
     restart: on-failure
     volumes:
@@ -54,9 +61,14 @@ services:
       retries: 5
 
   auth:
-    build: ./auth
+    container_name: auth
+    build:
+      context: ./auth
+      dockerfile: Dockerfile.dev
     env_file:
       - ./conf/.env-auth
+    volumes:
+      - ./auth/app:/app/
     ports:
       - "8001:8001"
     networks:
@@ -67,6 +79,7 @@ services:
         condition: service_healthy
 
   auth-db:
+    container_name: auth-db
     image: postgres:14
     restart: on-failure
     volumes:
@@ -83,19 +96,25 @@ services:
 
 
   matchmaking:
-    build: ./matchmaking
+    container_name: matchmaking
+    build:
+      context: ./matchmaking
+      dockerfile: Dockerfile.dev
     env_file:
       - ./conf/.env-matchmaking
+    volumes:
+      - ./matchmaking/app:/app/
     networks:
       - peas
       - matchmaking
     ports:
       - "8002:8002"
     depends_on:
-      chat-db:
+      matchmaking-db:
         condition: service_healthy
 
   matchmaking-db:
+    container_name: matchmaking-db
     image: postgres:14
     restart: on-failure
     volumes:
@@ -103,6 +122,7 @@ services:
     env_file:
       - ./conf/.env-matchmaking
     networks:
+      - peas
       - matchmaking
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
@@ -117,6 +137,8 @@ services:
   #   networks:
   #     - peas
   #     - game
+  #   volumes:
+  #     - ./game/app:/app/
   #   ports:
   #     - "8003:8003"
   #   depends_on:
@@ -138,9 +160,8 @@ services:
   #     timeout: 5s
   #     retries: 5
 
-
 volumes:
   chat-db-volume: {}
   auth-db-volume: {}
-  matchmaking-db-volume: {}
   game-db-volume: {}
+  matchmaking-db-volume: {}

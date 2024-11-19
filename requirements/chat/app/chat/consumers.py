@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 # TODO
 # Proper exception handling
+# Change handler routing bc its ass (this needs frontend change so wont be done rn)
 
 """
 	ChatConsumer class is a subclass of AsyncWebsocketConsumer, which is a class provided by Django Channels.
@@ -37,7 +38,7 @@ logger = logging.getLogger(__name__)
 class ChatConsumer(AsyncWebsocketConsumer):
     GLOBAL_CHAT = "chat"
     PRIVATE_CHAT_CMD = "/w"
-    user_count = 0
+    user_count = 1
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

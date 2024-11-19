@@ -9,7 +9,6 @@ from datetime import datetime
 class MessagesView(APIView):
     def get(self, request):
         messages = Message.objects.order_by("created_at").all()
-        # test = Message.objects.filter(type=Message.Type.PUBLIC).order_by("created_at").all()
         serializer = MessageSerializer(messages, many=True)
         message_history = []
         for message in serializer.data:

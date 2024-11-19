@@ -8,7 +8,7 @@ django_asgi_app = get_asgi_application()
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.sessions import SessionMiddlewareStack
-from chat.consumers import ChatConsumer
+from rooms.consumers import RoomConsumer
 from django.urls import path
 import logging
 
@@ -22,7 +22,7 @@ application = ProtocolTypeRouter(
         "websocket": SessionMiddlewareStack(
             URLRouter(
                 [
-                    path("", ChatConsumer.as_asgi()),
+                    path("rooms", RoomConsumer.as_asgi()),
                 ]
             )
         ),
