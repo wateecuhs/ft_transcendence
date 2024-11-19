@@ -1,41 +1,32 @@
-from cgitb import reset
-from csv import excel
-from fileinput import filename
-from http.client import responses
-from django.contrib.auth import login, authenticate
-from django.db.models.fields import return_None
-from django.views.decorators.csrf import csrf_exempt
-from jwt import InvalidTokenError, ExpiredSignatureError
 from rest_framework.exceptions import ValidationError
-from .forms import  BadPasswordError, ConfirmationError
-from django.contrib.auth.decorators import login_required
 from rest_framework.views import APIView
-import jwt
-from tempfile import NamedTemporaryFile
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse
-import requests
-import  os
-from .models import CustomUser
+from rest_framework.request import Request
+import jwt, os, requests
+from jwt import InvalidTokenError, ExpiredSignatureError
+from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from datetime import datetime, timedelta
-from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer
+from .forms import  BadPasswordError, ConfirmationError
+from .models import CustomUser
+from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer
+from .utils import get42_response, get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
 
 """
 register take a POST request of the CustomUserSerializer. The function verify that all fields are valid
 and then create the user in DB and create too JWT token for this user. On success return a success message with the encoded_access_jwt and the encoded_refresh_jwt
 is send as cookie. On failure return a failed message with an explanation and status
 """
-class register(APIView):
+class Register(APIView):
 	def post(self, request):
 		serializer = RegisterSerializer(data=request.data)
 		if not serializer.is_valid():
-			return JsonResponse({"message": "failed : serializer is not valid"}, status=400)
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		try:
-			username = serializer.validate_username()
-			email = serializer.validate_email()
-			password = serializer.validate()
+			validated_data = serializer.validated_data
+			username = validated_data['username']
+			email = validated_data['email']
+			password = validated_data['password']
 			CustomUser.add_user_by_form(username=username, password=password, email=email, avatar='static/default_pp.png')
 			encoded_access_jwt = CreateAccessToken(request, username)
 			CreateRefreshToken(request, username)
@@ -49,11 +40,12 @@ then the function recreate JWT token for this user. On success return a JsonResp
 encoded refresh token is send as cookie. On failure return a JsonResponse with failed message and explanation
 '''
 
-class loginAPI(APIView):
+class LoginAPI(APIView):
 	def post(self, request):
 		serializer = LoginSerializer(data=request.data)
 		if not serializer.is_valid():
-			return JsonResponse({"message": "failed : serializer is not valid"}, status=400)
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		username = serializer.validated_data['username']
 		password = serializer.validated_data['password']
 		user = CustomUser.get_user_by_name(username)
@@ -64,15 +56,18 @@ class loginAPI(APIView):
 		return JsonResponse({"message": "success", "access_token": encoded_access_jwt})
 
 '''
-EditAccount take a POST request of EditAccountSerializer and the encoded_access_jwt. The function check all field of serializer and change in DB if fields aren't empty and if fields are valid
+UserInfo take a PUT request of EditAccountSerializer and the encoded_access_jwt. The function check all field of serializer and change in DB if fields aren't empty and if fields are valid
 On success return JsonResponse with success message and all info for this user. On failure return JsonResponse with failed message, explanation and status code.
+
+UserInfo can also take a GET request to return on success all informartions about a user. On failure return JsonResponse with failed message, explanation and status code.
 '''
 
-def EditAccount(request, encoded_access_jwt):
-	def post(self, request):
+class UserInfo(APIView):
+	def put(self, request, encoded_access_jwt):
 		serializer = EditAccountSerializer(data=request.data)
 		if not serializer.is_valid():
-			return JsonResponse({"message": "failed : form is not valid"}, status=400)
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		try:
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			username = payload.get("username")
@@ -110,158 +105,119 @@ def EditAccount(request, encoded_access_jwt):
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
-'''
-get42_response take a request with a code. This code will be use to request a response at 42's API. Return this response
-'''
+	def get(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if authorization_header.startswith("Bearer "):
+				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			print(f'encoded_access_jwt')
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			username = payload.get("username")
+			user = CustomUser.get_user_by_name(username)
+			return JsonResponse({"message": "Success",
+								 "username": username,
+								 "alias": user.alias,
+								 "status": user.status,
+								 "email": user.email,
+								 "is_42_account": user.is_42_account,
+								 "avatar_path": user.avatar_path,
+								 "is_42_pp": user.is_42_pp,
+								 "access_token": user.access_token,
+								 "user_id": user.user_id,
+								 "room_id": user.room_id})
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
-def get42_response(request):
-	code = request.GET.get('code')
-	token_url = 'https://api.intra.42.fr/oauth/token'
-	client_id = os.getenv('CLIENT_ID')
-	client_secret = os.getenv('CLIENT_SECRET')
-	redirect_uri = 'http://localhost:8000/confirm_token'
-	params = {
-		'grant_type': 'authorization_code',
-		'client_id': client_id,
-		'client_secret': client_secret,
-		'code': code,
-		'redirect_uri': redirect_uri
-	}
-	response = requests.post(token_url, data=params)
-	return response
+
+
+class	UserInfoId(APIView):
+	def put(self, request, user_id):
+		serializer = ChangeRoomSerializer(data=request.data)
+		if not serializer.is_valid():
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
+		user = CustomUser.get_user_by_id(user_id=user_id)
+		user.room_id = serializer.validated_data['room_id']
+		return JsonResponse({"message": "Success",
+							"room_id": user.room_id})
+
+	def get(self, user_id):
+		user = CustomUser.get_user_by_id(user_id=user_id)
+		return JsonResponse({"message": "Success",
+								 "username": user.username,
+								 "alias": user.alias,
+								 "status": user.status,
+								 "email": user.email,
+								 "is_42_account": user.is_42_account,
+								 "avatar_path": user.avatar_path,
+								 "is_42_pp": user.is_42_pp,
+								 "user_id": user.user_id,
+								 "room_id": user.room_id})
+
+
+class	UserInfoUsername(APIView):
+	def put(self, request, username):
+		serializer = ChangeRoomSerializer(data=request.data)
+		if not serializer.is_valid():
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
+		user = CustomUser.get_user_by_name(username=username)
+		user.room_id = serializer.validated_data['room_id']
+		return JsonResponse({"message": "Success",
+							"room_id": user.room_id})
+
+	def get(self, username):
+		user = CustomUser.get_user_by_name(username=username)
+		return JsonResponse({"message": "Success",
+								 "username": user.username,
+								 "alias": user.alias,
+								 "status": user.status,
+								 "email": user.email,
+								 "is_42_account": user.is_42_account,
+								 "avatar_path": user.avatar_path,
+								 "is_42_pp": user.is_42_pp,
+								 "user_id": user.user_id,
+								 "room_id": user.room_id})
 
 '''
-confirm_token verify that the response is ok and then create or connect the user with all informations and create JWT token.
+ConfirmToken verify that the response is ok and then create or connect the user with all informations and create JWT token.
 On failure return JsonResponse with failed message an explanation. On success return JsonResponse with access token and refresh token as cookie.
 '''
 
-def confirm_token(request):
-	response = get42_response(request)
-	if not response.ok:
-		return JsonResponse({"message_error": "Failed to access at 42's API"}, status=401)
-	access_token = response.json()['access_token']
-	response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}).json()
-	username = response['login']
-	CustomUser.add_user(username=username, avatar_path=response['image']['versions']['small'], avatar=response['image']['versions']['small'], tournament_id=None, email=response['email'])
-	encoded_access_jwt = CreateAccessToken(request, username)
-	CreateRefreshToken(request, username)
-	return JsonResponse({"access_token": encoded_access_jwt})
+class ConfirmToken(APIView):
+	def get(request):
+		response = get42_response(request)
+		if not response.ok:
+			return JsonResponse({"message_error": "Failed to access at 42's API"}, status=401)
+		access_token = response.json()['access_token']
+		response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}).json()
+		username = response['login']
+		CustomUser.add_user(username=username, avatar_path=response['image']['versions']['small'], avatar=response['image']['versions']['small'], tournament_id=None, email=response['email'])
+		encoded_access_jwt = CreateAccessToken(request, username)
+		CreateRefreshToken(request, username)
+		return JsonResponse({"access_token": encoded_access_jwt})
 
-'''
-get_user_info take an encoded_access_token. On success return a JsonResponse with success message and all information of a user. On failure return a JsonResponse with failed message
-'''
-
-def get_user_info(request, encoded_access_jwt):
-	try:
-		payload = decodeAccessToken(request, encoded_access_jwt)
-		username = payload.get("username")
-		user = CustomUser.get_user_by_id(username)
-		return JsonResponse({"message": "Success",
-							 "username": username,
-							 "alias": user.alias,
-							 "status": user.status,
-							 "email": user.email,
-							 "is_42_account": user.is_42_account,
-							 "avatar_path": user.avatar_path,
-							 "is_42_pp": user.is_42_pp,
-							 "access_token": user.access_token})
-	except jwt.InvalidTokenError:
-		return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
-	except jwt.ExpiredSignatureError:
-		return JsonResponse({"message": "failed : access_token is expired"}, status=401)
-
-'''
-CreateAccessToken take an username. Create, stock in DB and return an encoded_access_token
-'''
-
-def CreateAccessToken(request, username):
-	user = CustomUser.get_user_by_name(username)
-	exp_access = datetime.now() + timedelta(hours=5)
-	iat = datetime.now()
-	payload = {
-		"username": username,
-		"user_id": user.id,
-		"exp": int(exp_access.timestamp()),
-		"iat": int(iat.timestamp())
-	}
-	encoded_access_jwt = jwt.encode(payload, os.getenv('JWT_ACCESS_KEY'), algorithm="HS256")
-	return encoded_access_jwt
-
-'''
-CreateRefreshToken take an username. Create and set as cookie an encoded_refresh_token
-'''
-
-def CreateRefreshToken(request, username):
-	user = CustomUser.get_user_by_name(username)
-	exp_refresh = datetime.now() + timedelta(days=7)
-	iat = datetime.now()
-	payload = {
-		"username": username,
-		"user_id": user.id,
-		"exp": int(exp_refresh.timestamp()),
-		"iat": int(iat.timestamp())
-	}
-	encoded_refresh_jwt = jwt.encode(payload, os.getenv('JWT_REFRESH_KEY'), algorithm="HS256")
-	user.set_refresh_token(user, encoded_refresh_jwt)
-	user.save()
-	response = HttpResponse("Cookie has been set")
-	response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=604800)
-
-'''
-get_cookie_refresh Get and return the encoded_refresh_token
-'''
-
-def get_cookie_refresh(request):
-	value = request.COOKIES.get('refresh_token')
-	return value
 
 '''
 refresh. Get the refresh token and if it's valid. Generate a new access_token. On success return JsonResponse with success message and new_access_token.
 On failure return JsonResponse with failed message and status
 '''
 
-def checkRefreshToken(encoded_refresh_token, username):
-	user = CustomUser.get_user_by_name(username)
-	if user.refresh_token is not encoded_refresh_token:
-		raise InvalidTokenError
 
-def refresh(request):
-	try:
-		encoded_refresh_jwt = get_cookie_refresh(request)
-		payload = decodeRefreshToken(encoded_refresh_jwt)
-		username = payload.get("username")
-		checkRefreshToken(encoded_refresh_jwt, username)
-		new_access_jwt = CreateAccessToken(request, username)
-		return JsonResponse({"message": "Success", "access_token": new_access_jwt})
-	except ExpiredSignatureError:
-		return JsonResponse({"message": "failed : Refresh token has expired"}, status=401)
-	except InvalidTokenError:
-		return JsonResponse({"message": "failed : Refresh token is invalid"}, status=400)
-
-'''
-decodeAccessToken take an access_token. Check if access token is valid and not expire and return the payload with information.
-On failure raise exception with custom message
-'''
-
-def decodeAccessToken(request, encoded_jwt):
-	try:
-		payload = jwt.decode(encoded_jwt, os.getenv('JWT_SECRET_KEY'), algorithms=["HS256"])
-		return payload
-	except jwt.ExpiredSignatureError:
-		raise ExpiredSignatureError
-	except jwt.InvalidTokenError:
-		raise InvalidTokenError
-
-'''
-decodeRefreshToken take a refresh_token. Check if access token is valid and not expire and return the payload with information.
-On failure raise exception with custom message
-'''
-
-def decodeRefreshToken(encoded_jwt):
-	try:
-		payload = jwt.decode(encoded_jwt, os.getenv('JWT_SECRET_KEY'), algorithms=["HS256"])
-		return payload
-	except jwt.ExpiredSignatureError:
-		raise ExpiredSignatureError
-	except jwt.InvalidTokenError:
-		raise InvalidTokenError
+class refresh(APIView):
+	def get(request):
+		try:
+			encoded_refresh_jwt = get_cookie_refresh(request)
+			payload = decodeRefreshToken(encoded_refresh_jwt)
+			username = payload.get("username")
+			checkRefreshToken(encoded_refresh_jwt, username)
+			new_access_jwt = CreateAccessToken(request, username)
+			return JsonResponse({"message": "Success", "access_token": new_access_jwt})
+		except ExpiredSignatureError:
+			return JsonResponse({"message": "failed : Refresh token has expired"}, status=401)
+		except InvalidTokenError:
+			return JsonResponse({"message": "failed : Refresh token is invalid"}, status=400)

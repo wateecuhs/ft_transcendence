@@ -30,7 +30,6 @@ pathspec==0.12.1
 pillow==10.4.0
 platformdirs==4.3.6
 propcache==0.2.0
-psycog==0.0.1
 psycopg2-binary==2.9.10
 pyasn1==0.6.1
 pyasn1_modules==0.4.1

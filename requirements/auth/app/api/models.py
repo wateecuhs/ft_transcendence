@@ -1,12 +1,9 @@
-import jwt
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinLengthValidator
 from rest_framework.exceptions import ValidationError
 from cryptography.fernet import Fernet
-import base64
-import os
-from twisted.scripts.htmlizer import header
+import os, base64, uuid
 
 key = base64.urlsafe_b64encode(os.urandom(32))
 cipher = Fernet(key)
@@ -41,6 +38,8 @@ class CustomUser(AbstractUser):
     is_42_pp = models.BooleanField()
     access_token = models.CharField()
     refresh_token = models.CharField()
+    room_id = models.UUIDField(null=True)
+    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     class Meta:
         db_table = 'users'
@@ -74,6 +73,10 @@ class CustomUser(AbstractUser):
     @classmethod
     def get_user_by_name(cls, name):
         return cls.objects.filter(username=name).first()
+
+    @classmethod
+    def get_user_by_id(cls, user_id):
+        return cls.objects.filter(user_id=user_id).first()
 
     @classmethod
     def add_user(cls, username, email, avatar_path, status=1, avatar=None, tournament_id=None):
