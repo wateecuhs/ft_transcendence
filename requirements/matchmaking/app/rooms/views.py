@@ -9,20 +9,17 @@ class RoomsView(APIView):
         if request.query_params.get('status'):
             rooms = Room.objects.filter(status=request.query_params.get("status"))
         rooms = Room.objects.all()
-
-        return Response({"message": "Hello, world!"})
+        serializer = RoomSerializer(rooms, many=True)
+        return Response(serializer.data)
 
     def post(self, request: Request):
         try:
             serializer = RoomSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
         except Exception as e:
             return Response({"error": str(e)}, status=400)
-        serializer.save()
-        print(request, flush=True)
-        print(request.data, flush=True)
-        print(serializer.data, flush=True)
-        return Response(serializer.data)
 
 class RoomView(APIView):
     def get(self, request: Request, label: str):
