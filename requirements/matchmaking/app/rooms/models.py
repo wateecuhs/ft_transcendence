@@ -6,7 +6,7 @@ class User(models.Model):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     username = models.CharField(max_length=255)
     status = models.CharField(max_length=8, default="ONLINE")
-    room = models.ForeignKey('Room', on_delete=models.SET_NULL, null=True, blank=True)
+    room = models.CharField(null=True, blank=True)
 
     def __str__(self):
         return self.username

@@ -3,6 +3,7 @@ from .enums import MessageType
 from .serializers import RoomSerializer
 from asgiref.sync import sync_to_async
 from .models import Room, User
+import traceback
 import logging
 import json
 
@@ -52,13 +53,14 @@ class RoomConsumer(AsyncWebsocketConsumer):
         try:
             serializer = RoomSerializer(data=data)
             print(repr(serializer), flush=True)
-            if not serializer.is_valid():
-                await self.error(serializer.errors)
-            await self.channel_layer.group_add(serializer.data["label"], self.channel_name)
-            self.room = serializer.data["label"]
-            await self.channel_layer.group_send(serializer.data["label"], {"type": MessageType.Room.CREATE, "data": serializer.data})
+            await sync_to_async(serializer.is_valid)(raise_exception=True)
+            await self.channel_layer.group_add(serializer.validated_data["label"], self.channel_name)
+            self.room = serializer.validated_data["label"]
+            self.user.room = serializer.validated_data["label"]
             await sync_to_async(serializer.save)()
+            await sync_to_async(self.user.save)()
         except Exception as e:
+            print(traceback.format_exc(), flush=True)
             await self.error(str(e))
         return
 
@@ -66,11 +68,12 @@ class RoomConsumer(AsyncWebsocketConsumer):
         data = event["data"]
         try:
             logger.info(f"[{self.user_id}] Joining room {data['label']}")
-            room = Room.objects.exclude(status=Room.Status.FINISHED).get(label=data["label"])
+            room = await sync_to_async(Room.objects.exclude(status=Room.Status.FINISHED).get)(label=data["label"])
             await self.channel_layer.group_add(data["label"], self.channel_name)
             self.room = data["label"]
             await self.channel_layer.group_send(data["label"], {"type": MessageType.Room.JOIN, "data": data})
-            self.user.room = room.id
+            self.user.room = data["label"]
+            await sync_to_async(self.user.save)()
 
         except Room.DoesNotExist:
             await self.error("Room does not exist.")
