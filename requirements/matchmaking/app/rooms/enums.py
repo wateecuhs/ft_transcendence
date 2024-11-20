@@ -6,5 +6,6 @@ class MessageType:
         LEAVE = "room.leave"
         CREATE = "room.create"
         DELETE = "room.delete"
+        KICK = "room.kick"
 
     

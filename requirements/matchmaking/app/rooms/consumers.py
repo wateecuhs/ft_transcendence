@@ -3,11 +3,29 @@ from .enums import MessageType
 from .serializers import RoomSerializer
 from asgiref.sync import sync_to_async
 from .models import Room, User
+from uuid import UUID
 import traceback
 import logging
 import json
 
 logger = logging.getLogger(__name__)
+
+"""
+    Fields required in each message type:
+    - type: MessageType
+    - data: dict
+
+    Fields in data for:
+    - MessageType.Room.CREATE:
+        - author: UUID
+        - label: str
+        - room_type: str
+        - max_players: int
+
+    - MessageType.Room.JOIN:
+        - author: UUID
+        - label: str
+"""
 
 class RoomConsumer(AsyncWebsocketConsumer):
     user_count = 1
@@ -23,7 +41,6 @@ class RoomConsumer(AsyncWebsocketConsumer):
 
         logger.info(f"[{self.user_id}] Connected.")
         await self.accept()
-        
 
     async def disconnect(self, close_code):
         logger.info(f"[{self.user_id}] Disconnected. ({close_code})")
@@ -31,7 +48,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
             self.channel_layer.group_discard(self.room, self.channel_name)
 
     async def receive(self, text_data):
-        logger.info(f"[{self.user_id}] Received message: {text_data}")  
+        logger.info(f"[{self.user_id}] Received message: {text_data}")
         try:
             event = json.loads(text_data)
         except json.JSONDecodeError as e:
@@ -45,14 +62,14 @@ class RoomConsumer(AsyncWebsocketConsumer):
                 await self._handle_join_room(event)
             case MessageType.Room.LEAVE:
                 await self._handle_leave_room(event)
-
-        await self.send(text_data=text_data)
+            case MessageType.Room.DELETE:
+                await self._handle_delete_room(event)
     
     async def _handle_create_room(self, event):
+        logger.info(f"[{self.user_id}] Create room: {event}")
         data = event["data"]
         try:
             serializer = RoomSerializer(data=data)
-            print(repr(serializer), flush=True)
             await sync_to_async(serializer.is_valid)(raise_exception=True)
             await self.channel_layer.group_add(serializer.validated_data["label"], self.channel_name)
             self.room = serializer.validated_data["label"]
@@ -60,7 +77,6 @@ class RoomConsumer(AsyncWebsocketConsumer):
             await sync_to_async(serializer.save)()
             await sync_to_async(self.user.save)()
         except Exception as e:
-            print(traceback.format_exc(), flush=True)
             await self.error(str(e))
         return
 
@@ -68,7 +84,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
         data = event["data"]
         try:
             logger.info(f"[{self.user_id}] Joining room {data['label']}")
-            room = await sync_to_async(Room.objects.exclude(status=Room.Status.FINISHED).get)(label=data["label"])
+            await sync_to_async(Room.objects.exclude(status=Room.Status.FINISHED).get)(label=data["label"])
             await self.channel_layer.group_add(data["label"], self.channel_name)
             self.room = data["label"]
             await self.channel_layer.group_send(data["label"], {"type": MessageType.Room.JOIN, "data": data})
@@ -82,6 +98,32 @@ class RoomConsumer(AsyncWebsocketConsumer):
 
     async def _handle_leave_room(self, event):
         pass
+
+    async def _handle_delete_room(self, event):
+        data = event["data"]
+        try:
+            room = await sync_to_async(Room.objects.get)(label=data["label"])
+            if room.owner != UUID(data["author"]):
+                await self.error("You are not the author of this room.")
+                return
+            await sync_to_async(room.delete)()
+            await self.channel_layer.group_discard(data["label"], self.channel_name)
+        except Room.DoesNotExist:
+            await self.error("Room does not exist.")
+        except Exception as e:
+            await self.error(str(e))
+
+    """
+    Default routing methods
+    """
+
+    async def room_join(self, event):
+        logger.info(f"[{self.user_id}] Room join: {event['data']}")
+        await self.send(json.dumps(("room.join", event["data"])))
+    
+    async def room_leave(self, event):
+        logger.info(f"[{self.user_id}] Room leave: {event['data']}")
+        await self.send(json.dumps(("room.leave", event["data"])))
 
     async def error(self, error):
         logger.error(f"[{self.user_id}] Error: {error}")

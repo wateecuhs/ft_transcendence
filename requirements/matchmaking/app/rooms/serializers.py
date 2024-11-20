@@ -14,7 +14,6 @@ class RoomSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        print(attrs, flush=True)
         if attrs['room_type'] == Room.Type.TOURNAMENT and not (attrs['max_players'] == Room.MaxPlayers.EIGHT or attrs['max_players'] == Room.MaxPlayers.FOUR):
             raise serializers.ValidationError("Tournament rooms must have 4 or 8 players")
         if attrs['room_type'] == Room.Type.MATCH and not (attrs['max_players'] == Room.MaxPlayers.TWO):

@@ -29,7 +29,7 @@ services:
       context: ./chat
       dockerfile: Dockerfile.dev
     env_file:
-      - ./conf/.env-chat
+      - ./conf/dev.env-chat
     ports:
       - "8000:8000"
     volumes:
@@ -48,7 +48,7 @@ services:
     volumes:
       - chat-db-volume:/var/lib/postgresql/data
     env_file:
-      - ./conf/.env-chat
+      - ./conf/dev.env-chat
     networks:
       - chat
     healthcheck:
@@ -63,7 +63,7 @@ services:
       context: ./auth
       dockerfile: Dockerfile.dev
     env_file:
-      - ./conf/.env-auth
+      - ./conf/dev.env-auth
     volumes:
       - ./auth/app:/app/
     ports:
@@ -82,7 +82,7 @@ services:
     volumes:
       - auth-db-volume:/var/lib/postgresql/data
     env_file:
-      - ./conf/.env-auth
+      - ./conf/dev.env-auth
     networks:
       - auth
     healthcheck:
@@ -98,7 +98,7 @@ services:
       context: ./matchmaking
       dockerfile: Dockerfile.dev
     env_file:
-      - ./conf/.env-matchmaking
+      - ./conf/dev.env-matchmaking
     volumes:
       - ./matchmaking/app:/app/
     networks:
@@ -117,7 +117,7 @@ services:
     volumes:
       - matchmaking-db-volume:/var/lib/postgresql/data
     env_file:
-      - ./conf/.env-matchmaking
+      - ./conf/dev.env-matchmaking
     networks:
       - peas
       - matchmaking

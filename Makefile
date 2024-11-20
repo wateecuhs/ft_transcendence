@@ -6,6 +6,8 @@ DOCKER_COMPOSE_DEV := docker compose -f $(DOCKER_COMPOSE_DEV_FILE)
 
 .PHONY: up build dev down stop start clean status ps logs volume_clean
 
+all: build
+
 up:
 	$(DOCKER_COMPOSE) up -d
 
@@ -48,5 +50,3 @@ clean:
 	fi
 
 .SILENT: help ps status
-
-.DEFAULT_GOAL := help

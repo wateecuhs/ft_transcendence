@@ -1,16 +1,12 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async, async_to_sync
 from .serializers import MessageSerializer
-from django.db import transaction
-from typing import Dict, Any
+from asgiref.sync import sync_to_async
 from .enums import MessageType
-from .models import Message
+from typing import Dict, Any
 import chat.models as cmod
 import datetime
 import logging
-import random
 import json
-import uuid
 
 logger = logging.getLogger(__name__)
 
