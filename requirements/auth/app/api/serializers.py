@@ -121,3 +121,11 @@ class EditAccountSerializer(serializers.ModelSerializer):
 
 class	ChangeRoomSerializer(serializers.ModelSerializer):
 	room_id = serializers.UUIDField(label='Room Id')
+
+
+class	AddMatchSerializer(serializers.ModelSerializer):
+	opponent_id = serializers.UUIDField(required=True)
+	user_score = serializers.IntegerField(required=True)
+	opponent_score = serializers.IntegerField(required=True)
+	status = serializers.IntegerField(required=True)
+	date = serializers.DateField(required=True)

@@ -39,7 +39,13 @@ class CustomUser(AbstractUser):
     access_token = models.CharField()
     refresh_token = models.CharField()
     room_id = models.UUIDField(null=True)
-    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    matches_number = models.PositiveIntegerField(default=0)
+    matches_win = models.PositiveIntegerField(default=0)
+    matches_lose = models.PositiveIntegerField(default=0)
+    winrate = models.PositiveIntegerField(default=0)
+    goal_scored = models.PositiveIntegerField(default=0)
+    goal_conceded = models.PositiveIntegerField(default=0)
 
     class Meta:
         db_table = 'users'
@@ -75,8 +81,8 @@ class CustomUser(AbstractUser):
         return cls.objects.filter(username=name).first()
 
     @classmethod
-    def get_user_by_id(cls, user_id):
-        return cls.objects.filter(user_id=user_id).first()
+    def get_user_by_id(cls, id):
+        return cls.objects.filter(id=id).first()
 
     @classmethod
     def add_user(cls, username, email, avatar_path, status=1, avatar=None, tournament_id=None):
@@ -137,3 +143,34 @@ class CustomUser(AbstractUser):
     @classmethod
     def set_access_token(cls, user, token):
         user.access_token = token
+
+
+class   Match(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
+    user_id = models.UUIDField()
+    status = models.PositiveSmallIntegerField(("Status"), choices=[
+        (1, ("Win")),
+        (2, ("Inactive")),
+    ], default=1)
+    opponent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="opponent_match_history")
+    date = models.DateField()
+    user_score = models.PositiveSmallIntegerField()
+    opponent_score = models.PositiveSmallIntegerField()
+    opponent_id = models.UUIDField()
+
+    class Meta:
+        db_table = 'matches'
+
+    @classmethod
+    def create_match(cls, user, opponent, date, status, user_score, opponent_score):
+        match = cls(user=user, user_id=user.id, opponent=opponent, opponent_id=opponent.id, date=date, status=status, user_score=user_score, opponent_score=opponent_score)
+        match.save()
+        user.matches_number = user.matches_number + 1
+        if status is "win":
+            user.matches_win = user.matches_win + 1
+        else:
+            user.matches_lose = user.matches_lose + 1
+        user.winrate = (user.matches_win / user.matches_number) * 100
+        user.goal_scored = user.goal_score + user_score
+        user.goal_conceded = user.goal_conded + opponent_score
+        user.save()

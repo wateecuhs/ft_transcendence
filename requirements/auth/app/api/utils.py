@@ -34,7 +34,7 @@ def CreateAccessToken(request, username):
 	iat = datetime.now()
 	payload = {
 		"username": username,
-		"user_id": str(user.user_id),
+		"id": str(user.id),
 		"exp": int(exp_access.timestamp()),
 		"iat": int(iat.timestamp())
 	}
@@ -51,7 +51,7 @@ def CreateRefreshToken(request, username):
 	iat = datetime.now()
 	payload = {
 		"username": username,
-		"user_id": str(user.user_id),
+		"id": str(user.id),
 		"exp": int(exp_refresh.timestamp()),
 		"iat": int(iat.timestamp())
 	}
@@ -86,8 +86,8 @@ On failure raise exception with custom message
 def decodeAccessToken(request, encoded_jwt):
 	try:
 		payload = jwt.decode(encoded_jwt, os.getenv('JWT_ACCESS_KEY'), algorithms=["HS256"])
-		if "user_id" in payload:
-			payload["user_id"] = uuid.UUID(payload["user_id"])
+		if "id" in payload:
+			payload["id"] = uuid.UUID(payload["id"])
 		return payload
 	except jwt.ExpiredSignatureError:
 		raise ExpiredSignatureError
@@ -102,8 +102,8 @@ On failure raise exception with custom message
 def decodeRefreshToken(encoded_jwt):
 	try:
 		payload = jwt.decode(encoded_jwt, os.getenv('JWT_REFRESH_KEY'), algorithms=["HS256"])
-		if "user_id" in payload:
-			payload["user_id"] = uuid.UUID(payload["user_id"])
+		if "id" in payload:
+			payload["id"] = uuid.UUID(payload["id"])
 		return payload
 		return payload
 	except jwt.ExpiredSignatureError:

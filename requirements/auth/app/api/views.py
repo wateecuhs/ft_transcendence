@@ -1,14 +1,15 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework.request import Request
-import jwt, os, requests
+import jwt, os, requests, json
 from jwt import InvalidTokenError, ExpiredSignatureError
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .forms import  BadPasswordError, ConfirmationError
-from .models import CustomUser
-from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer
+from .models import CustomUser, Match
+from django.core.serializers.json import DjangoJSONEncoder
+from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, AddMatchSerializer
 from .utils import get42_response, get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
 
 """
@@ -63,12 +64,17 @@ UserInfo can also take a GET request to return on success all informartions abou
 '''
 
 class UserInfo(APIView):
-	def put(self, request, encoded_access_jwt):
+	def put(self, request):
 		serializer = EditAccountSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if authorization_header.startswith("Bearer "):
+				encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			username = payload.get("username")
 			user = CustomUser.get_user_by_name(username)
@@ -125,7 +131,7 @@ class UserInfo(APIView):
 								 "avatar_path": user.avatar_path,
 								 "is_42_pp": user.is_42_pp,
 								 "access_token": user.access_token,
-								 "user_id": user.user_id,
+								 "id": user.id,
 								 "room_id": user.room_id})
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
@@ -135,18 +141,22 @@ class UserInfo(APIView):
 
 
 class	UserInfoId(APIView):
-	def put(self, request, user_id):
+	def put(self, request, id):
 		serializer = ChangeRoomSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user = CustomUser.get_user_by_id(user_id=user_id)
+		user = CustomUser.get_user_by_id(id=id)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
 		user.room_id = serializer.validated_data['room_id']
 		return JsonResponse({"message": "Success",
 							"room_id": user.room_id})
 
-	def get(self, user_id):
-		user = CustomUser.get_user_by_id(user_id=user_id)
+	def get(self, id):
+		user = CustomUser.get_user_by_id(id=id)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
 		return JsonResponse({"message": "Success",
 								 "username": user.username,
 								 "alias": user.alias,
@@ -155,7 +165,7 @@ class	UserInfoId(APIView):
 								 "is_42_account": user.is_42_account,
 								 "avatar_path": user.avatar_path,
 								 "is_42_pp": user.is_42_pp,
-								 "user_id": user.user_id,
+								 "id": user.id,
 								 "room_id": user.room_id})
 
 
@@ -166,12 +176,16 @@ class	UserInfoUsername(APIView):
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		user = CustomUser.get_user_by_name(username=username)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
 		user.room_id = serializer.validated_data['room_id']
 		return JsonResponse({"message": "Success",
 							"room_id": user.room_id})
 
 	def get(self, username):
 		user = CustomUser.get_user_by_name(username=username)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
 		return JsonResponse({"message": "Success",
 								 "username": user.username,
 								 "alias": user.alias,
@@ -180,7 +194,7 @@ class	UserInfoUsername(APIView):
 								 "is_42_account": user.is_42_account,
 								 "avatar_path": user.avatar_path,
 								 "is_42_pp": user.is_42_pp,
-								 "user_id": user.user_id,
+								 "id": user.id,
 								 "room_id": user.room_id})
 
 '''
@@ -221,3 +235,151 @@ class refresh(APIView):
 			return JsonResponse({"message": "failed : Refresh token has expired"}, status=401)
 		except InvalidTokenError:
 			return JsonResponse({"message": "failed : Refresh token is invalid"}, status=400)
+
+class MatchHistory(APIView):
+	def get(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if authorization_header.startswith("Bearer "):
+				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			user_id = payload.get("id")
+			user = CustomUser.get_user_by_id(user_id)
+			user_matches = user.match_history.all()
+			matches_data = list(user_matches.values("user_id", "opponent_id", "status", "user_score", "opponent_score", "date"))
+			response = {
+				"message": "Success",
+				"matches": matches_data
+			}
+			matches_json = json.dumps(response, cls=DjangoJSONEncoder)
+			return JsonResponse(matches_json)
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+	def put(self, request):
+		serializer = AddMatchSerializer(data=request.data)
+		if not serializer.is_valid():
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if authorization_header.startswith("Bearer "):
+				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			user_id = payload.get("id")
+			user = CustomUser.get_user_by_id(user_id)
+			opponent_id = serializer.validated_data['opponent_id']
+			Match.create_match(user=user, opponent=CustomUser.get_user_by_id(opponent_id), date=serializer.validated_data['date'], status=serializer.validated_data['status'], user_score=serializer.validated_data['user_score'], opponent_score=serializer.validated_data['opponent_score'])
+			return JsonResponse({"message": "Success"})
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+
+class MatchHistoryId(APIView):
+	def get(self, request, id):
+		user = CustomUser.get_user_by_id(id)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
+		user_matches = user.match_history.all()
+		matches_data = list(user_matches.values("user_id", "opponent_id", "status", "user_score", "opponent_score", "date"))
+		response = {
+			"message": "Success",
+			"matches": matches_data
+		}
+		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
+		return JsonResponse(matches_json)
+
+	def put(self, request, id):
+		serializer = AddMatchSerializer(data=request.data)
+		if not serializer.is_valid():
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
+		user = CustomUser.get_user_by_id(id)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
+		opponent_id = serializer.validated_data['opponent_id']
+		Match.create_match(user=user, opponent=CustomUser.get_user_by_id(opponent_id), date=serializer.validated_data['date'], status=serializer.validated_data['status'], user_score=serializer.validated_data['user_score'], opponent_score=serializer.validated_data['opponent_score'])
+		return JsonResponse({"message": "Success"})
+
+class MatchHistoryUsername(APIView):
+	def get(self, username):
+		user = CustomUser.get_user_by_name(username)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
+		user_matches = user.match_history.all()
+		matches_data = list(user_matches.values("user_id", "opponent_id", "status", "user_score", "opponent_score", "date"))
+		response = {
+			"message": "Success",
+			"matches": matches_data
+		}
+		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
+		return JsonResponse(matches_json)
+
+	def put(self, request, username):
+		serializer = AddMatchSerializer(data=request.data)
+		if not serializer.is_valid():
+			errors = serializer.errors
+			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
+		user = CustomUser.get_user_by_username(username)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
+		opponent_id = serializer.validated_data['opponent_id']
+		Match.create_match(user=user, opponent=CustomUser.get_user_by_id(opponent_id), date=serializer.validated_data['date'], status=serializer.validated_data['status'], user_score=serializer.validated_data['user_score'], opponent_score=serializer.validated_data['opponent_score'])
+		return JsonResponse({"message": "Success"})
+
+class	UserStat(APIView):
+	def get(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if authorization_header.startswith("Bearer "):
+				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			user_id = payload.get("id")
+			user = CustomUser.get_user_by_id(user_id)
+			return JsonResponse({"message": "Success",
+								"matches_number": user.matches_number,
+								"matches_win": user.matches_win,
+								"matches_lose": user.matches_lose,
+								"winrate": user.winrate,
+								"goal_scored": user.goal_scored,
+								"goal_conceded": user.goal_conceded})
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+class	UserStatId(APIView):
+	def get(self, id):
+		user = CustomUser.get_user_by_id(id)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
+		return JsonResponse({"message": "Success",
+							"matches_number": user.matches_number,
+							"matches_win": user.matches_win,
+							"matches_lose": user.matches_lose,
+							"winrate": user.winrate,
+							"goal_scored": user.goal_scored,
+							"goal_conceded": user.goal_conceded})
+
+class	UserStatUsername(APIView):
+	def get(self, username):
+		user = CustomUser.get_user_by_name(username)
+		if user is None:
+			return JsonResponse({"message": "failed : User not found"})
+		return JsonResponse({"message": "Success",
+							"matches_number": user.matches_number,
+							"matches_win": user.matches_win,
+							"matches_lose": user.matches_lose,
+							"winrate": user.winrate,
+							"goal_scored": user.goal_scored,
+							"goal_conceded": user.goal_conceded})
