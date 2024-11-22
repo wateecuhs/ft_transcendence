@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Status
 from django.core.exceptions import ValidationError
 import uuid
 
@@ -124,8 +124,10 @@ class	ChangeRoomSerializer(serializers.ModelSerializer):
 
 
 class	AddMatchSerializer(serializers.ModelSerializer):
-	opponent_id = serializers.UUIDField(required=True)
-	user_score = serializers.IntegerField(required=True)
-	opponent_score = serializers.IntegerField(required=True)
-	status = serializers.IntegerField(required=True)
+	user1_id = serializers.UUIDField(required=True)
+	user2_id = serializers.UUIDField(required=True)
+	user1_score = serializers.IntegerField(required=True)
+	user2_score = serializers.IntegerField(required=True)
+	user1_status = serializers.ChoiceField(required=True, choices=Status.choices)
+	user2_status = serializers.ChoiceField(required=True, choices=Status.choices)
 	date = serializers.DateField(required=True)
