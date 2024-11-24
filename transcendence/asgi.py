@@ -13,12 +13,12 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.sessions import SessionMiddlewareStack
 import socketio
-from chat.consumers import ChatConsumer
+# from chat.consumers import ChatConsumer
 from django.urls import path
 import sys
 from game.consumers import GameConsumer
 import game.routing
-import chat.routing
+# import chat.routing
 
 env_variables = ["CLIENT_ID", "CLIENT_SECRET"]
 
@@ -55,8 +55,8 @@ application = ProtocolTypeRouter(
         "http": get_asgi_application(),
         "websocket": SessionMiddlewareStack(
             URLRouter(
-                game.routing.websocket_urlpatterns +
-                chat.routing.websocket_urlpatterns
+                game.routing.websocket_urlpatterns #+
+                # chat.routing.websocket_urlpatterns
             )
         ),
     }

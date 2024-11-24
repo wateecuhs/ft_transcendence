@@ -92,18 +92,18 @@ requestAnimationFrame(() => drawGame({}));
 
 // function drawGame(state) {
 //         offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
-    
+
 //         // Draw paddles
 //         offscreenCtx.fillStyle = "white";
 //         offscreenCtx.fillRect(state.paddle_left.x / winWidth * offscreenCanvas.width, state.paddle_left.y / winHeight * offscreenCanvas.height, paddleWidth, paddleHeight);
 //         offscreenCtx.fillRect(state.paddle_right.x / winWidth * offscreenCanvas.width, state.paddle_right.y / winHeight * offscreenCanvas.height, paddleWidth, paddleHeight);
-    
+
 //         // Draw ball
 //         offscreenCtx.beginPath();
 //         offscreenCtx.arc(state.ball.x / winWidth * offscreenCanvas.width, state.ball.y / winHeight * offscreenCanvas.height, ballRadius, 0, Math.PI * 2);
 //         offscreenCtx.fill();
 //         offscreenCtx.closePath();
-    
+
 //         // Draw score
 //         offscreenCtx.font = `${offscreenCanvas.width * 0.05}px Arial`;
 //         offscreenCtx.fillText(state.score[0], offscreenCanvas.width / 4, offscreenCanvas.height * 0.1);
@@ -111,4 +111,9 @@ requestAnimationFrame(() => drawGame({}));
 
 //         ctx.clearRect(0, 0, canvas.width, canvas.height);
 //         ctx.drawImage(offscreenCanvas, 0, 0, canvas.width, canvas.height);
+
+//         requestAnimationFrame(() => drawGame(state));
+
 // }
+
+// requestAnimationFrame(() => drawGame({}));

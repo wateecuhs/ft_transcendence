@@ -34,9 +34,9 @@ CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}
 
 INSTALLED_APPS = [
     "channels",
-    "chat.apps.ChatConfig",
+    # "chat.apps.ChatConfig",
     "game.apps.GameConfig",
-    "frontend.apps.FrontendConfig",
+    # "frontend.apps.FrontendConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

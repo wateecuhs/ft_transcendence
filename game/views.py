@@ -20,7 +20,7 @@ def index(request):
 # Succes take the request. In request's url we can find a code. This code will be used to connect the user to his intra's account.
 # Then he will be redirect to the confirm_token page and we will get his login and his profile picture
 
-
+'''
 def confirm_token(request):
     code = request.GET.get("code")
     token_url = "https://api.intra.42.fr/oauth/token"
@@ -51,6 +51,7 @@ def confirm_token(request):
         return redirect("index")
     else:
         return redirect("index")
+'''
 
 
 def pong_game(request):
