@@ -14,8 +14,41 @@
     <link rel="stylesheet" href="css/accountWindow.css">
     <link rel="stylesheet" href="css/msn.css">
     <link rel="stylesheet" href="css/winbook.css">
+    <link rel="stylesheet" href="css/loginPage.css">
 </head>
 <body class="desktop">
+
+  <div class="login-page" id="login-id-page">
+    
+    <div class="login-page-header">Demarrage Win98</div>
+
+    <div class="sign-in">
+
+      <input type="text" id="sign-in-username" class="input-login-page" placeholder="username">
+      <input type="text" id="sign-in-password" class="input-login-page" placeholder="password">
+      <button id="sign-in-button" class="button-login-page">sign-in</button>
+
+    </div>
+
+    <div class="sign-up">
+      <button id="button-sign-up-page" class="button-login-page">sign-up</button>
+
+      <div class="register" style="display: none;">
+
+        <input type="text" id="sign-up-username" class="input-login-page" placeholder="username">
+        <input type="text" id="sign-up-email" class="input-login-page" placeholder="email">
+        <input type="text" id="sign-up-password" class="input-login-page" placeholder="password">
+        <input type="text" id="sign-up-confirm-password" class="input-login-page" placeholder="confirm password">
+        
+        <button id="button-register-page" class="button-login-page">register</button>
+      </div>
+
+    </div>
+
+    <div class="login-42">
+      <button class="button-login-42">Login 42</button>
+    </div>
+  </div>
 
   <!-- La barre de taches -->
   <div class="taskbar">
@@ -258,6 +291,7 @@
   <script src="/js/update_time.js"></script>
   <script src="js/msn.js"></script>
   <script src="js/winbook.js"></script>
+  <script src="js/register.js"></script>
   <script>
     window.onload = function () {
       loadMessageHistory();
