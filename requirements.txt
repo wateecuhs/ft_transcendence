@@ -42,3 +42,4 @@ whitenoise==6.7.0
 wsproto==1.2.0
 yarl==1.14.0
 zope.interface==7.0.3
+neat-python==0.92

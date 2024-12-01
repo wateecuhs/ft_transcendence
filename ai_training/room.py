@@ -113,6 +113,7 @@ class Room:
                 y_diff = self.ball.y - y_mid
                 bounce_mod = (self.paddle_left.height / 2) / self.ball.MAX_VELOCITY
                 self.ball.dy = y_diff / bounce_mod
+                self.left_hits += 1
         else:
             if (self.paddle_right.y - self.ball.radius <= self.ball.y <= self.paddle_right.y + self.paddle_right.height and
                 self.ball.x + self.ball.radius >= self.paddle_right.x):
@@ -121,6 +122,7 @@ class Room:
                 y_diff = self.ball.y - y_mid
                 bounce_mod = (self.paddle_right.height / 2) / self.ball.MAX_VELOCITY
                 self.ball.dy = y_diff / bounce_mod
+                self.right_hits += 1
 
     def update_score(self):
         if self.ball.x < 0:
@@ -131,11 +133,30 @@ class Room:
             self.ball.reset()
 
     def loop(self):
+        if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
+                self.paddle_left.move(True)
+        if self.keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
+            self.paddle_left.move(False)
+        if self.keys_pressed["move_right_up"] and self.paddle_right.y - self.paddle_right.SPEED > 0:
+            self.paddle_right.move(True)
+        if self.keys_pressed["move_right_down"] and self.paddle_right.y + self.paddle_right.height + self.paddle_right.SPEED < WIN_HEIGHT:
+            self.paddle_right.move(False)
+
         self.ball.move()
         self.handle_collision()
         self.update_score()
 
+        # self.update_game_state()
+
         game_info = GameInformation(self.left_hits, self.right_hits, self.score[0], self.score[1])
 
         return game_info
+
+    # def reset(self):
+    #     self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+    #     self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+    #     self.ball.reset()
+    #     self.score = [0, 0]
+    #     self.left_hits = 0
+    #     self.right_hits = 0
 

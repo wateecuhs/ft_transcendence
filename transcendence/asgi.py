@@ -19,6 +19,7 @@ import sys
 from game.consumers import GameConsumer
 import game.routing
 # import chat.routing
+import ai_training.routing
 
 env_variables = ["CLIENT_ID", "CLIENT_SECRET"]
 
@@ -55,8 +56,9 @@ application = ProtocolTypeRouter(
         "http": get_asgi_application(),
         "websocket": SessionMiddlewareStack(
             URLRouter(
-                game.routing.websocket_urlpatterns #+
+                game.routing.websocket_urlpatterns +
                 # chat.routing.websocket_urlpatterns
+                ai_training.routing.websocket_urlpatterns
             )
         ),
     }
