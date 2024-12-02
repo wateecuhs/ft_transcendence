@@ -1,5 +1,4 @@
 import asyncio
-import json
 import random
 
 WIN_WIDTH = 800
@@ -28,8 +27,8 @@ class Ball:
         self.x = self.base_x = x
         self.y = self.base_y = y
         self.radius = radius
-        self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY # * 2 / 3
-        self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY #* 2 / 3
+        self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
+        self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
 
     def move(self):
         self.x += self.dx
@@ -38,8 +37,8 @@ class Ball:
     def reset(self):
         self.x = self.base_x
         self.y = self.base_y
-        self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY #* 2 / 3
-        self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY #* 2 / 3
+        self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
+        self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
 
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
@@ -146,12 +145,11 @@ class Room:
         self.handle_collision()
         self.update_score()
 
-        # self.update_game_state()
-
         game_info = GameInformation(self.left_hits, self.right_hits, self.score[0], self.score[1])
 
         return game_info
 
+    # Can be used for training purposes
     def reset(self):
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)

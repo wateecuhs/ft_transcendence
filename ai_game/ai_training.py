@@ -8,37 +8,17 @@ WIN_HEIGHT = 600
 
 class GameInstance:
 	def __init__(self, room_name, config):
-		self.game = Room('ai')
+		self.game = Room('ai')								# change to dynamic room name
 		self.paddle_left = self.game.paddle_left
 		self.paddle_right = self.game.paddle_right
 		self.ball = self.game.ball
 		self.key_pressed = self.game.keys_pressed
 
-	def test_ai(self, genome, config):
-		ai = neat.nn.FeedForwardNetwork.create(genome, config)
-
-		run = True
-		while run:
-			self.game.loop()
-
-			output = ai.activate((self.paddle_right.y, self.ball.y, abs(self.paddle_right.x - self.ball.x)))
-			decision = output.index(max(output))
-
-			if decision == 0:
-				pass
-			elif decision == 1:
-				self.key_pressed['move_right_up'] = True
-			elif decision == 2:
-				self.key_pressed['move_right_down'] = True
-
-
-
-	def train_ai(self, genome1, genome2, config):
+	def eval_genomes(self, genome1, genome2, config):
 		ai1 = neat.nn.FeedForwardNetwork.create(genome1, config)
 		ai2 = neat.nn.FeedForwardNetwork.create(genome2, config)
 
-		run = True
-		while run:
+		while True:
 			output1 = ai1.activate((self.paddle_left.y, self.ball.y, abs(self.paddle_left.x - self.ball.x)))
 			decision1 = output1.index(max(output1))
 
@@ -62,16 +42,14 @@ class GameInstance:
 			game_info = self.game.loop()
 
 			if game_info.left_score >= 1 or game_info.right_score >= 1 or game_info.left_hits >= 50:
-				# genome1.fitness = game_info.left_score
-				# genome2.fitness = game_info.right_score
 				self.calculate_fitness(genome1, genome2, game_info)
-				run = False
+				break
 
 	def calculate_fitness(self, genome1, genome2, game_info):
 		genome1.fitness += game_info.left_hits
 		genome2.fitness += game_info.right_hits
 
-def eval_genomes(genomes, config):
+def train_ai(genomes, config):
 	for i, (genome_id1, genome1) in enumerate(genomes):
 		if i == len(genomes) - 1:
 			break
@@ -81,28 +59,20 @@ def eval_genomes(genomes, config):
 			if genome2.fitness is None:
 				genome2.fitness = 0
 			game_instance = GameInstance('ai', config)
-			game_instance.train_ai(genome1, genome2, config)
+			game_instance.eval_genomes(genome1, genome2, config)
 
 def run_neat(config):
 	# pop = neat.Checkpointer.restore_checkpoint('ai_training/training_checkpoints/generation-24')
 	pop = neat.Population(config)
-	# pop = load_checkpoint('hard-gen50.pkl')
 	pop.add_reporter(neat.StdOutReporter(True))
 	stats = neat.StatisticsReporter()
 	pop.add_reporter(stats)
 	pop.add_reporter(neat.Checkpointer(50, filename_prefix=os.path.join('ai_training', 'training_checkpoints', 'generation-')))
 
-	winner = pop.run(eval_genomes, 50)
+	winner = pop.run(train_ai, 50)
 	winner_path = os.path.join(os.path.dirname(__file__), 'bots', 'gen50.pkl')
 	with open(winner_path, 'wb') as f:
 		pickle.dump(winner, f)
-
-# def	load_winner(config):
-# 	with open('winner.pkl', 'rb') as f:
-# 		winner = pickle.load(f)
-
-# 	game = GameInstance('ai', config)
-# 	game.test_ai(winner, config)
 
 if __name__ == '__main__':
 	local_dir = os.path.dirname(__file__)
@@ -110,9 +80,4 @@ if __name__ == '__main__':
 	config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
 								neat.DefaultSpeciesSet, neat.DefaultStagnation,
 								config_path)
-
-
-	# game_instance = GameInstance('ai', config)
-	# game_instance.test_ai()
 	run_neat(config)
-	# load_winner(config)

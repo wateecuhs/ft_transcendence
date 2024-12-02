@@ -1,5 +1,4 @@
 import json
-import random
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
 from .room import Room
