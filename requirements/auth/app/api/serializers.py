@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
+import uuid
 
 class EmptyFieldError(ValidationError):
 	def __init__(self, message="This field cannot be empty", code='empty_field'):
@@ -35,7 +35,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = CustomUser
-		fields = ['id', 'username', 'email', 'password']
+		fields = ['username', 'email', 'password', 'confirmation_password']
 
 	def validate_username(self, value):
 		if CustomUser.objects.filter(username=value).exists():
@@ -48,8 +48,16 @@ class RegisterSerializer(serializers.ModelSerializer):
 		return value
 
 	def validate(self, data):
+		username = data.get('username')
+		email = data.get('email')
 		password = data.get('password')
 		confirmation = data.get('confirmation_password')
+
+		if CustomUser.objects.filter(username=username).exists():
+			raise ValidationError(message="This username is already taken.")
+
+		if CustomUser.objects.filter(email=email).exists():
+			raise ValidationError(message="This email is already taken.")
 
 		if password and confirmation and password != confirmation:
 			raise ValidationError(message="Passwords don't match")
@@ -65,12 +73,15 @@ class RegisterSerializer(serializers.ModelSerializer):
 		if not has_digit:
 			raise ValidationError(message="No digit in password")
 
-		return password
+		return data
 
 class LoginSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CustomUser
+		fields = ['username', 'password']
+
 	username = serializers.CharField(label='Username', max_length=30, min_length=2)
 	password = serializers.CharField(label='Password')
-
 
 
 class EditAccountSerializer(serializers.ModelSerializer):
@@ -106,4 +117,15 @@ class EditAccountSerializer(serializers.ModelSerializer):
 		if not has_digit:
 			raise ValidationError(message="No digit in password")
 
-		return new_password
+		return data
+
+class	ChangeRoomSerializer(serializers.ModelSerializer):
+	room_id = serializers.UUIDField(label='Room Id')
+
+
+class	AddMatchSerializer(serializers.ModelSerializer):
+	opponent_id = serializers.UUIDField(required=True)
+	user_score = serializers.IntegerField(required=True)
+	opponent_score = serializers.IntegerField(required=True)
+	status = serializers.IntegerField(required=True)
+	date = serializers.DateField(required=True)

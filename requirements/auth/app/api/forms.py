@@ -1,12 +1,8 @@
-from cProfile import label
-
 from django import forms
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator
-
 from .models import CustomUser
-from django.contrib.auth.forms import AuthenticationForm
 
 class EmptyFieldError(ValidationError):
     def __init__(self, message="This field cannot be empty", code='empty_field'):
