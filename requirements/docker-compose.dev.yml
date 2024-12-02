@@ -1,30 +1,33 @@
 networks:
-  peas:
-    name: peas
-  chat:
-    name: chat
+  peas-dev:
+    name: peas-dev
+  chat-dev:
+    name: chat-dev
     internal: true
-  auth:
-    name: auth
+  auth-dev:
+    name: auth-dev
     internal: true
-  matchmaking:
-    name: matchmaking
+  matchmaking-dev:
+    name: matchmaking-dev
     internal: true
 
 services:
-  nginx:
-    container_name: nginx
-    build: ./nginx
+  nginx-dev:
+    container_name: nginx-dev
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
     ports:
       - "8443:8443"
     networks:
-      - peas
+      - peas-dev
     depends_on:
-      - chat
-      - auth
+      - chat-dev
+      - auth-dev
+      - matchmaking-dev
 
-  chat:
-    container_name: chat
+  chat-dev:
+    container_name: chat-dev
     build:
       context: ./chat
       dockerfile: Dockerfile.dev
@@ -35,30 +38,30 @@ services:
     volumes:
       - ./chat/app:/app/
     networks:
-      - chat
-      - peas
+      - chat-dev
+      - peas-dev
     depends_on:
-      chat-db:
+      chat-db-dev:
         condition: service_healthy
 
-  chat-db:
-    container_name: chat-db
+  chat-db-dev:
+    container_name: chat-db-dev
     image: postgres:14
     restart: on-failure
     volumes:
-      - chat-db-volume:/var/lib/postgresql/data
+      - chat-db-volume-dev:/var/lib/postgresql/data
     env_file:
       - ./conf/dev.env-chat
     networks:
-      - chat
+      - chat-dev
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
       interval: 1s
       timeout: 5s
       retries: 5
 
-  auth:
-    container_name: auth
+  auth-dev:
+    container_name: auth-dev
     build:
       context: ./auth
       dockerfile: Dockerfile.dev
@@ -69,22 +72,22 @@ services:
     ports:
       - "8001:8001"
     networks:
-      - peas
-      - auth
+      - peas-dev
+      - auth-dev
     depends_on:
-      auth-db:
+      auth-db-dev:
         condition: service_healthy
 
-  auth-db:
-    container_name: auth-db
+  auth-db-dev:
+    container_name: auth-db-dev
     image: postgres:14
     restart: on-failure
     volumes:
-      - auth-db-volume:/var/lib/postgresql/data
+      - auth-db-volume-dev:/var/lib/postgresql/data
     env_file:
       - ./conf/dev.env-auth
     networks:
-      - auth
+      - auth-dev
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
       interval: 1s
@@ -92,8 +95,8 @@ services:
       retries: 5
 
 
-  matchmaking:
-    container_name: matchmaking
+  matchmaking-dev:
+    container_name: matchmaking-dev
     build:
       context: ./matchmaking
       dockerfile: Dockerfile.dev
@@ -102,25 +105,25 @@ services:
     volumes:
       - ./matchmaking/app:/app/
     networks:
-      - peas
-      - matchmaking
+      - peas-dev
+      - matchmaking-dev
     ports:
       - "8002:8002"
     depends_on:
-      matchmaking-db:
+      matchmaking-db-dev:
         condition: service_healthy
 
-  matchmaking-db:
-    container_name: matchmaking-db
+  matchmaking-db-dev:
+    container_name: matchmaking-db-dev
     image: postgres:14
     restart: on-failure
     volumes:
-      - matchmaking-db-volume:/var/lib/postgresql/data
+      - matchmaking-db-volume-dev:/var/lib/postgresql/data
     env_file:
       - ./conf/dev.env-matchmaking
     networks:
-      - peas
-      - matchmaking
+      - peas-dev
+      - matchmaking-dev
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
       interval: 1s
@@ -129,6 +132,6 @@ services:
 
 
 volumes:
-  chat-db-volume: {}
-  auth-db-volume: {}
-  matchmaking-db-volume: {}
+  chat-db-volume-dev: {}
+  auth-db-volume-dev: {}
+  matchmaking-db-volume-dev: {}

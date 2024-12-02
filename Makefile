@@ -15,13 +15,19 @@ build:
 	$(DOCKER_COMPOSE) up --build
 
 dev:
-	$(DOCKER_COMPOSE_DEV) up -d
+	$(DOCKER_COMPOSE_DEV) up --build -d
 
 down:
-	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) down -v
+
+devdown:
+	$(DOCKER_COMPOSE_DEV) down -v
 
 stop:
 	$(DOCKER_COMPOSE) stop
+
+devstop:
+	$(DOCKER_COMPOSE_DEV) stop
 
 start:
 	$(DOCKER_COMPOSE) start
@@ -32,6 +38,9 @@ status:
 
 logs:
 	$(DOCKER_COMPOSE) logs -f
+
+devlogs:
+	$(DOCKER_COMPOSE_DEV) logs -f
 
 volume_clean:
 	@read -p "Are you sure? [y/N] " confirmation; \

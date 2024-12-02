@@ -21,6 +21,7 @@ services:
     depends_on:
       - chat
       - auth
+      - matchmaking
 
   chat:
     build: ./chat
