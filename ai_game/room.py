@@ -134,7 +134,7 @@ class Room:
 
     def loop(self):
         if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
-                self.paddle_left.move(True)
+            self.paddle_left.move(True)
         if self.keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
             self.paddle_left.move(False)
         if self.keys_pressed["move_right_up"] and self.paddle_right.y - self.paddle_right.SPEED > 0:
@@ -152,11 +152,11 @@ class Room:
 
         return game_info
 
-    # def reset(self):
-    #     self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
-    #     self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
-    #     self.ball.reset()
-    #     self.score = [0, 0]
-    #     self.left_hits = 0
-    #     self.right_hits = 0
+    def reset(self):
+        self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.ball.reset()
+        self.score = [0, 0]
+        self.left_hits = 0
+        self.right_hits = 0
 

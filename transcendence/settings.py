@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     # "chat.apps.ChatConfig",
     # "game.apps.GameConfig",
     # "frontend.apps.FrontendConfig",
-	"ai_training.apps.AiTrainingConfig",
+	"ai_game.apps.AiGameConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

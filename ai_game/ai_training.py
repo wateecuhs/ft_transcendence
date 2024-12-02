@@ -84,23 +84,25 @@ def eval_genomes(genomes, config):
 			game_instance.train_ai(genome1, genome2, config)
 
 def run_neat(config):
-	# pop = neat.Checkpointer.restore_checkpoint('neat-checkpoint-4')
+	# pop = neat.Checkpointer.restore_checkpoint('ai_training/training_checkpoints/generation-24')
 	pop = neat.Population(config)
+	# pop = load_checkpoint('hard-gen50.pkl')
 	pop.add_reporter(neat.StdOutReporter(True))
 	stats = neat.StatisticsReporter()
 	pop.add_reporter(stats)
-	pop.add_reporter(neat.Checkpointer(25, filename_prefix='generation-'))
+	pop.add_reporter(neat.Checkpointer(50, filename_prefix=os.path.join('ai_training', 'training_checkpoints', 'generation-')))
 
 	winner = pop.run(eval_genomes, 50)
-	with open('winner.pkl', 'wb') as f:
+	winner_path = os.path.join(os.path.dirname(__file__), 'bots', 'gen50.pkl')
+	with open(winner_path, 'wb') as f:
 		pickle.dump(winner, f)
 
-def	load_winner(config):
-	with open('winner.pkl', 'rb') as f:
-		winner = pickle.load(f)
+# def	load_winner(config):
+# 	with open('winner.pkl', 'rb') as f:
+# 		winner = pickle.load(f)
 
-	game = GameInstance('ai', config)
-	game.test_ai(winner, config)
+# 	game = GameInstance('ai', config)
+# 	game.test_ai(winner, config)
 
 if __name__ == '__main__':
 	local_dir = os.path.dirname(__file__)

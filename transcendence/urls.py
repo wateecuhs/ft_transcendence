@@ -22,7 +22,7 @@ urlpatterns = [
     # path("", include("frontend.urls")),
     # path("game/", include("game.urls")),
     # path("admin/", admin.site.urls),
-	path("ai_training/", include("ai_training.urls")),
+	path("ai_game/", include("ai_game.urls")),
 ]
 
 # urlpatterns += [

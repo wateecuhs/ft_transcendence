@@ -17,7 +17,7 @@ const winHeight = 600;
 
 const roomName = "room1"; // Replace with dynamic room name if needed
 // const socket = new WebSocket('ws://' + window.location.host + '/ws/game/' + roomName + '/');
-const socket = new WebSocket('ws://' + window.location.host + '/ws/ai_training/' + roomName + '/');
+const socket = new WebSocket('ws://' + window.location.host + '/ws/ai_game/' + roomName + '/');
 
 
 socket.onopen = function() {

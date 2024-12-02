@@ -38,10 +38,11 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
                                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                                          config_path)
-        with open('winner.pkl', 'rb') as f:
-            self.winner = pickle.load(f)
+        bot_path = os.path.join(local_dir, 'bots', 'hard-gen50.pkl')
+        with open(bot_path, 'rb') as f:
+            self.bot = pickle.load(f)
 
-        self.ai = neat.nn.FeedForwardNetwork.create(self.winner, self.config)
+        self.bot_nn = neat.nn.FeedForwardNetwork.create(self.bot, self.config)
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
@@ -77,7 +78,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.room.keys_pressed["move_right_up"] = False
             self.room.keys_pressed["move_right_down"] = False
 
-            ai_output = self.ai.activate((self.room.paddle_right.y, self.room.ball.y, abs(self.room.paddle_right.x - self.room.ball.x)))
+            ai_output = self.bot_nn.activate((self.room.paddle_right.y, self.room.ball.y, abs(self.room.paddle_right.x - self.room.ball.x)))
             decision = ai_output.index(max(ai_output))
 
             if decision == 0:
