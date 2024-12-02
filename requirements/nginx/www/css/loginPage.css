@@ -4,21 +4,29 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #0000aa; /* Bleu Windows 98 */
+  background-color: #c0c0c0; /* Gris Windows 98 */
+  background-image: url('../img/login_page_win98.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center top;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: "Arial", sans-serif;
-  color: white;
+  font-family: "Tahoma", sans-serif; /* Police Windows 98 */
+  color: black;
   z-index: 9999;
+  border: 2px solid #808080; /* Bordure classique */
+  box-shadow: 4px 4px 0px #ffffff, -2px -2px 0px #404040; /* Effet 3D */
 }
 
 /* Titre principal */
 .login-page-header {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 20px;
   text-align: center;
+  color: black;
+  text-shadow: 1px 1px 0 #ffffff;
 }
 
 /* Section sign-in */
@@ -31,26 +39,28 @@
 
 .input-login-page {
   margin: 5px 0;
-  padding: 10px;
-  border: 2px solid #ffffff;
-  border-radius: 5px;
+  padding: 5px;
+  border: 1px solid #404040; /* Bordure Windows 98 */
+  background-color: #ffffff; /* Fond classique */
+  color: black;
   font-size: 1rem;
   width: 300px;
+  box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080;
 }
 
 .button-login-page {
   margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #0055ff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: #c0c0c0;
+  color: black;
+  border: 1px solid #404040;
   font-size: 1rem;
   cursor: pointer;
+  box-shadow: 1px 1px 0px #ffffff, -1px -1px 0px #808080;
 }
 
 .button-login-page:hover {
-  background-color: #0033cc;
+  background-color: #a0a0a0;
 }
 
 /* Section sign-up */
@@ -64,7 +74,7 @@
   font-style: italic;
   border: none;
   background: none;
-  color: white;
+  color: black;
   font-size: 1rem;
   cursor: pointer;
 }
@@ -80,37 +90,39 @@
   left: 50%;
   transform: translateX(-50%);
   width: 350px;
-  padding: 20px;
-  background-color: #ffffff;
-  color: #000;
-  border-radius: 10px;
+  padding: 10px;
+  background-color: #c0c0c0;
+  color: black;
+  border: 1px solid #404040;
   display: none; /* Masqué par défaut */
   flex-direction: column;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 0px #ffffff, -2px -2px 0px #808080;
 }
 
 .register input {
   margin: 5px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 5px;
+  border: 1px solid #404040;
+  background-color: #ffffff;
+  color: black;
   font-size: 1rem;
   width: 100%;
+  box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #808080;
 }
 
 #button-register-page {
   margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #0055ff;
-  color: white;
-  border: none;
-  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: #c0c0c0;
+  color: black;
+  border: 1px solid #404040;
   font-size: 1rem;
   cursor: pointer;
+  box-shadow: 1px 1px 0px #ffffff, -1px -1px 0px #808080;
 }
 
 #button-register-page:hover {
-  background-color: #0033cc;
+  background-color: #a0a0a0;
 }
 
 /* Bouton login-42 en bas à droite */
@@ -121,37 +133,64 @@
 }
 
 .button-login-42 {
-  padding: 10px 20px;
-  background-color: #00ff00;
-  color: #000;
-  border: 2px solid #ffffff;
-  border-radius: 5px;
+  padding: 5px 10px;
+  background-color: #00aa00;
+  color: black;
+  border: 1px solid #404040;
   font-size: 1rem;
   cursor: pointer;
+  box-shadow: 1px 1px 0px #ffffff, -1px -1px 0px #808080;
 }
 
 .button-login-42:hover {
-  background-color: #00cc00;
+  background-color: #008800;
 }
 
+/* Animations pour Windows 98 */
 @keyframes slide-in {
   from {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
   }
   to {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
 }
 
 @keyframes slide-out {
   from {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
   }
   to {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
   }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100vh);
+  }
+}
+
+@keyframes slide-back {
+  from {
+    transform: translateY(-100vh);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.login-page.slide-up {
+  animation: slide-up 1s ease-in-out forwards;
+}
+
+.login-page.slide-back {
+  animation: slide-back 1s ease-in-out forwards;
 }

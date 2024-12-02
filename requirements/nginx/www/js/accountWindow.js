@@ -1,8 +1,9 @@
-document.getElementById('accountWindow').querySelector('.close-button').addEventListener('click', function() {
-  document.getElementById('accountWindow').style.display = 'none';
-});
-
+const accountWindow = document.getElementById('accountWindow');
 let currentPage = 0;
+
+accountWindow.querySelector('.close-button').addEventListener('click', function() {
+  accountWindow.style.display = 'none';
+});
 
 function displayStylePage(pageIndex) {
  const totalPages = document.querySelectorAll('.account-page');
@@ -16,14 +17,14 @@ function displayStylePage(pageIndex) {
  numberPages.textContent = `${pageIndex + 1}/4`;
 }
 
-document.getElementById('accountWindow').querySelector('.right-arrow').addEventListener('click', function() {
+accountWindow.querySelector('.right-arrow').addEventListener('click', function() {
   if (currentPage < 3) {
     currentPage++;
   }
   displayStylePage(currentPage);
 });
 
-document.getElementById('accountWindow').querySelector('.left-arrow').addEventListener('click', function() {
+accountWindow.querySelector('.left-arrow').addEventListener('click', function() {
   if (currentPage > 0) {
     currentPage--;
   }
@@ -31,7 +32,7 @@ document.getElementById('accountWindow').querySelector('.left-arrow').addEventLi
 });
 
 function toogleAccountWindow() {
-  const work_desk = document.getElementById('accountWindow');
+  const work_desk = accountWindow;
 
   work_desk.style.display = (work_desk.style.display == 'none') ? 'block' : 'none';
   work_desk.style.position = 'absolute';
@@ -40,4 +41,8 @@ function toogleAccountWindow() {
 
   displayDeskInconsInWindow();
   displayStylePage(currentPage);
+}
+
+function setUserInfo() {
+  const page0 = accountWindow.querySelector('#account-page-0 .account-page');
 }

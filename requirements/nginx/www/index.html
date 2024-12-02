@@ -15,11 +15,12 @@
     <link rel="stylesheet" href="css/msn.css">
     <link rel="stylesheet" href="css/winbook.css">
     <link rel="stylesheet" href="css/loginPage.css">
+    <link rel="stylesheet" href="css/updateUserWindow.css">
 </head>
 <body class="desktop">
 
   <div class="login-page" id="login-id-page">
-    
+
     <div class="login-page-header">Demarrage Win98</div>
 
     <div class="sign-in">
@@ -39,7 +40,7 @@
         <input type="text" id="sign-up-email" class="input-login-page" placeholder="email">
         <input type="text" id="sign-up-password" class="input-login-page" placeholder="password">
         <input type="text" id="sign-up-confirm-password" class="input-login-page" placeholder="confirm password">
-        
+
         <button id="button-register-page" class="button-login-page">register</button>
       </div>
 
@@ -113,6 +114,7 @@
         <button class="left-arrow"> &lt </button>
         <button class="right-arrow"> &gt </button>
       </div>
+
       <div class="header-title">Account</div>
       <button class="close-button">X</button>
 
@@ -122,15 +124,18 @@
 
       <div class="account-page" id="account-page-0" style="display: none">
         <div class="user-img">
-          <img src="img/png/game_spider-0.png">
+          <img src="img/png/game_spider-0.png" onclick="alert('Test')">
           <span>default pseudo</span>
         </div>
 
         <ul>
-          <li>name: default </li>
-          <li>email address: default@gmail.com</li>
-          <li>status: active</li>
+          <li> name: default </li>
+          <li> email address: default@gmail.com</li>
+          <li> 42 member: true</li>
+          <li> alias: default_alias</li>
         </ul>
+
+        <button class="change-user-info" onclick="displayUserUpdateWindow()">Update Profile</button>
       </div>
 
       <div class="account-page" id="account-page-1" style="display: none">
@@ -166,6 +171,28 @@
       <div class="number-pages">1/4</div>
     </div>
   </div>
+
+  <div class="window" id="updateUserWindow" style="display: none">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title">Account</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <input type="text" placeholder="username">
+      <button>alias</button>
+    </div>
+  </div>
+
+
 
    <!-- Icone du Bureau -->
   <div class="desktop-icons">
@@ -291,7 +318,11 @@
   <script src="/js/update_time.js"></script>
   <script src="js/msn.js"></script>
   <script src="js/winbook.js"></script>
-  <script src="js/register.js"></script>
+  <script src="js/userInfo.js"></script>
+  <script src="js/account.js"></script>
+  <script src="js/sign.js"></script>
+  <script src="js/loginPageAnim.js"></script>
+  <script src="js/updateUserWindow.js"></script>
   <script>
     window.onload = function () {
       loadMessageHistory();

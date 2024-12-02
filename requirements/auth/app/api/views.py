@@ -28,7 +28,7 @@ class Register(APIView):
 			username = validated_data['username']
 			email = validated_data['email']
 			password = validated_data['password']
-			CustomUser.add_user_by_form(username=username, password=password, email=email, avatar='static/default_pp.png')
+			CustomUser.add_user_by_form(username=username, password=password, email=email, avatar='img/default_pp.jpg')
 			encoded_access_jwt = CreateAccessToken(request, username)
 			CreateRefreshToken(request, username)
 			return JsonResponse({"message": "success", "access_token": encoded_access_jwt}, status=201)
@@ -84,13 +84,13 @@ class UserInfo(APIView):
 				CustomUser.set_alias(user, serializer.validated_data['new_alias'])
 			if serializer.validated_data['new_pp'] is not None:
 				image = serializer.validated_data['new_pp']
-				fs = FileSystemStorage(location=os.path.join(settings.BASE_DIR, 'static/frontend/'))
-				file_path = os.path.join('static/frontend/', image.name)
+				fs = FileSystemStorage(location=os.path.join('../../../nginx/www/'))
+				file_path = os.path.join('img/', image.name)
 				if fs.exists(file_path):
 					full_path = file_path
 				else:
 					filename = fs.save(image.name, image)
-					full_path = os.path.join('static/frontend/', filename)
+					full_path = os.path.join('img/', filename)
 				CustomUser.set_image(user, full_path)
 				user.is_42_pp = False
 			if serializer.validated_data['new_password'] is not '':
@@ -203,7 +203,7 @@ On failure return JsonResponse with failed message an explanation. On success re
 '''
 
 class ConfirmToken(APIView):
-	def get(request):
+	def get(self, request):
 		response = get42_response(request)
 		if not response.ok:
 			return JsonResponse({"message_error": "Failed to access at 42's API"}, status=401)

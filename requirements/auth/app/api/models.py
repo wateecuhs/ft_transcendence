@@ -4,6 +4,7 @@ from django.core.validators import MinLengthValidator
 from rest_framework.exceptions import ValidationError
 from cryptography.fernet import Fernet
 import os, base64, uuid
+from transcendence import settings
 
 key = base64.urlsafe_b64encode(os.urandom(32))
 cipher = Fernet(key)
@@ -30,7 +31,7 @@ class CustomUser(AbstractUser):
         (2, ("Inactive")),
         (3, ("Pending Activation"))
     ], default=1)
-    avatar = models.ImageField(("Avatar"), upload_to="avatars/", default="image/default_pp.png", blank=True)
+    avatar = models.ImageField(("Avatar"), upload_to="avatars/", default="image/default_pp.jpg", blank=True)
     tournament = models.OneToOneField(Tournament,  on_delete=models.SET_NULL, null=True, blank=True, related_name='user')
     email = models.EmailField(unique=True)
     is_42_account = models.BooleanField()
@@ -95,7 +96,7 @@ class CustomUser(AbstractUser):
     def add_user_by_form(cls, username, password, email, avatar, status=1, tournament_id=None):
         if CustomUser.get_user_by_name(name=username) is not None:
             raise ValidationError("Username already taken.")
-        user = cls(username=username, alias=username, email=email, password=password, status=status, avatar=avatar, tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
+        user = cls(username=username, alias=username, email=email, password=password, status=status, avatar=avatar, avatar_path=avatar,tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
         user.save()
         return user
 
