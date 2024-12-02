@@ -62,12 +62,12 @@ def train_ai(genomes, config):
 			game_instance.eval_genomes(genome1, genome2, config)
 
 def run_neat(config):
-	# pop = neat.Checkpointer.restore_checkpoint('ai_training/training_checkpoints/generation-24')
+	# pop = neat.Checkpointer.restore_checkpoint('ai_game/training_checkpoints/generation-39')
 	pop = neat.Population(config)
 	pop.add_reporter(neat.StdOutReporter(True))
 	stats = neat.StatisticsReporter()
 	pop.add_reporter(stats)
-	pop.add_reporter(neat.Checkpointer(50, filename_prefix=os.path.join('ai_training', 'training_checkpoints', 'generation-')))
+	pop.add_reporter(neat.Checkpointer(10, filename_prefix=os.path.join('ai_game', 'training_checkpoints', 'generation-')))
 
 	winner = pop.run(train_ai, 50)
 	winner_path = os.path.join(os.path.dirname(__file__), 'bots', 'gen50.pkl')
