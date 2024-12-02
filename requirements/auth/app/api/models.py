@@ -4,6 +4,7 @@ from django.core.validators import MinLengthValidator
 from rest_framework.exceptions import ValidationError
 from cryptography.fernet import Fernet
 import os, base64, uuid
+from transcendence import settings
 
 key = base64.urlsafe_b64encode(os.urandom(32))
 cipher = Fernet(key)
@@ -30,7 +31,7 @@ class CustomUser(AbstractUser):
         (2, ("Inactive")),
         (3, ("Pending Activation"))
     ], default=1)
-    avatar = models.ImageField(("Avatar"), upload_to="avatars/", default="image/default_pp.png", blank=True)
+    avatar = models.ImageField(("Avatar"), upload_to="avatars/", default="image/default_pp.jpg", blank=True)
     tournament = models.OneToOneField(Tournament,  on_delete=models.SET_NULL, null=True, blank=True, related_name='user')
     email = models.EmailField(unique=True)
     is_42_account = models.BooleanField()
@@ -95,7 +96,7 @@ class CustomUser(AbstractUser):
     def add_user_by_form(cls, username, password, email, avatar, status=1, tournament_id=None):
         if CustomUser.get_user_by_name(name=username) is not None:
             raise ValidationError("Username already taken.")
-        user = cls(username=username, alias=username, email=email, password=password, status=status, avatar=avatar, tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
+        user = cls(username=username, alias=username, email=email, password=password, status=status, avatar=avatar, avatar_path=avatar,tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
         user.save()
         return user
 
@@ -145,32 +146,43 @@ class CustomUser(AbstractUser):
         user.access_token = token
 
 
+class   Status(models.IntegerChoices):
+       WIN = 1, "WIN"
+       LOSE = 2, "LOSE"
+
 class   Match(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
-    user_id = models.UUIDField()
-    status = models.PositiveSmallIntegerField(("Status"), choices=[
-        (1, ("Win")),
-        (2, ("Loss")),
-    ], default=1)
-    opponent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="opponent_match_history")
+
+    user1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
+    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="opponent_match_history")
     date = models.DateField()
-    user_score = models.PositiveSmallIntegerField()
-    opponent_score = models.PositiveSmallIntegerField()
-    opponent_id = models.UUIDField()
+    user1_score = models.PositiveSmallIntegerField()
+    user2_score = models.PositiveSmallIntegerField()
+    user1_status = models.IntegerField(choices=Status.choices, default=Status.WIN)
+    user2_status = models.IntegerField(choices=Status.choices, default=Status.WIN)
 
     class Meta:
         db_table = 'matches'
 
     @classmethod
-    def create_match(cls, user, opponent, date, status, user_score, opponent_score):
-        match = cls(user=user, user_id=user.id, opponent=opponent, opponent_id=opponent.id, date=date, status=status, user_score=user_score, opponent_score=opponent_score)
+    def create_match(cls, user1, user2, date, user1_score, user2_score, user1_status, user2_status):
+        match = cls(user1=user1, user2=user2, date=date, user1_score=user1_score, user2_score=user2_score, user1_status=user1_status, user2_status=user2_status)
         match.save()
-        user.matches_number = user.matches_number + 1
-        if status is "win":
-            user.matches_win = user.matches_win + 1
+        user1.matches_number = user1.matches_number + 1
+        if user1_status == Status.WIN:
+            user1.matches_win = user1.matches_win + 1
         else:
-            user.matches_lose = user.matches_lose + 1
-        user.winrate = (user.matches_win / user.matches_number) * 100
-        user.goal_scored = user.goal_score + user_score
-        user.goal_conceded = user.goal_conded + opponent_score
-        user.save()
+            user1.matches_lose = user1.matches_lose + 1
+        user1.winrate = (user1.matches_win / user1.matches_number) * 100
+        user1.goal_scored = user1.goal_score + user1_score
+        user1.goal_conceded = user1.goal_conded + user2_score
+        user1.save()
+
+        user2.matches_number = user2.matches_number + 1
+        if user2_status is Status.WIN:
+            user2.matches_win = user2.matches_win + 1
+        else:
+            user2.matches_lose = user2.matches_lose + 1
+        user2.winrate = (user2.matches_win / user2.matches_number) * 100
+        user2.goal_scored = user2.goal_score + user2_score
+        user2.goal_conceded = user2.goal_conded + user1_score
+        user2.save()

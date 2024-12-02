@@ -13,7 +13,9 @@ def get42_response(request):
 	token_url = 'https://api.intra.42.fr/oauth/token'
 	client_id = os.getenv('CLIENT_ID')
 	client_secret = os.getenv('CLIENT_SECRET')
-	redirect_uri = 'http://localhost:8000/confirm_token'
+	print(f'salut {client_id}')
+	print(f'coucou {client_secret}')
+	redirect_uri = 'http://localhost:8000/auth/token'
 	params = {
 		'grant_type': 'authorization_code',
 		'client_id': client_id,

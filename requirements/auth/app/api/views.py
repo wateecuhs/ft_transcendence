@@ -28,7 +28,7 @@ class Register(APIView):
 			username = validated_data['username']
 			email = validated_data['email']
 			password = validated_data['password']
-			CustomUser.add_user_by_form(username=username, password=password, email=email, avatar='static/default_pp.png')
+			CustomUser.add_user_by_form(username=username, password=password, email=email, avatar='img/default_pp.jpg')
 			encoded_access_jwt = CreateAccessToken(request, username)
 			CreateRefreshToken(request, username)
 			return JsonResponse({"message": "success", "access_token": encoded_access_jwt}, status=201)
@@ -84,13 +84,13 @@ class UserInfo(APIView):
 				CustomUser.set_alias(user, serializer.validated_data['new_alias'])
 			if serializer.validated_data['new_pp'] is not None:
 				image = serializer.validated_data['new_pp']
-				fs = FileSystemStorage(location=os.path.join(settings.BASE_DIR, 'static/frontend/'))
-				file_path = os.path.join('static/frontend/', image.name)
+				fs = FileSystemStorage(location=os.path.join('../../../nginx/www/'))
+				file_path = os.path.join('img/', image.name)
 				if fs.exists(file_path):
 					full_path = file_path
 				else:
 					filename = fs.save(image.name, image)
-					full_path = os.path.join('static/frontend/', filename)
+					full_path = os.path.join('img/', filename)
 				CustomUser.set_image(user, full_path)
 				user.is_42_pp = False
 			if serializer.validated_data['new_password'] is not '':
@@ -203,7 +203,7 @@ On failure return JsonResponse with failed message an explanation. On success re
 '''
 
 class ConfirmToken(APIView):
-	def get(request):
+	def get(self, request):
 		response = get42_response(request)
 		if not response.ok:
 			return JsonResponse({"message_error": "Failed to access at 42's API"}, status=401)
@@ -273,9 +273,12 @@ class MatchHistory(APIView):
 				encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			user_id = payload.get("id")
-			user = CustomUser.get_user_by_id(user_id)
-			opponent_id = serializer.validated_data['opponent_id']
-			Match.create_match(user=user, opponent=CustomUser.get_user_by_id(opponent_id), date=serializer.validated_data['date'], status=serializer.validated_data['status'], user_score=serializer.validated_data['user_score'], opponent_score=serializer.validated_data['opponent_score'])
+			user1 = CustomUser.get_user_by_id(user_id)
+			user2_id = serializer.validated_data['user2_id']
+			user2 = CustomUser.get_user_by_id(user2_id)
+			if user2 is None :
+				return JsonResponse({"message": "failed : User not found"})
+			Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
 			return JsonResponse({"message": "Success"})
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
@@ -302,11 +305,12 @@ class MatchHistoryId(APIView):
 		if not serializer.is_valid():
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user = CustomUser.get_user_by_id(id)
-		if user is None:
+		user1 = CustomUser.get_user_by_id(id)
+		user2_id = serializer.validated_data['user2_id']
+		user2 = CustomUser.get_user_by_id(user2_id)
+		if user1 is None or user2 is None:
 			return JsonResponse({"message": "failed : User not found"})
-		opponent_id = serializer.validated_data['opponent_id']
-		Match.create_match(user=user, opponent=CustomUser.get_user_by_id(opponent_id), date=serializer.validated_data['date'], status=serializer.validated_data['status'], user_score=serializer.validated_data['user_score'], opponent_score=serializer.validated_data['opponent_score'])
+		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
 		return JsonResponse({"message": "Success"})
 
 class MatchHistoryUsername(APIView):
@@ -328,11 +332,12 @@ class MatchHistoryUsername(APIView):
 		if not serializer.is_valid():
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user = CustomUser.get_user_by_username(username)
-		if user is None:
+		user1 = CustomUser.get_user_by_username(username)
+		user2_id = serializer.validated_data['user2_id']
+		user2 = CustomUser.get_user_by_id(user2_id)
+		if user1 is None or user2 is None:
 			return JsonResponse({"message": "failed : User not found"})
-		opponent_id = serializer.validated_data['opponent_id']
-		Match.create_match(user=user, opponent=CustomUser.get_user_by_id(opponent_id), date=serializer.validated_data['date'], status=serializer.validated_data['status'], user_score=serializer.validated_data['user_score'], opponent_score=serializer.validated_data['opponent_score'])
+		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
 		return JsonResponse({"message": "Success"})
 
 class	UserStat(APIView):

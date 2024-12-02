@@ -21,3 +21,7 @@ urlpatterns = [
     path('', include("api.urls")),
     path('admin/', admin.site.urls),
 ]
+
+# urlpatterns += [
+# 	path('join/<int:room_code>/', include('join.urls')),
+# ]
