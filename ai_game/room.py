@@ -1,5 +1,8 @@
 import asyncio
 import random
+import neat
+import os
+import pickle
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -40,6 +43,31 @@ class Ball:
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
 
+class Bot:
+    def __init__(self, difficulty):
+        self.genome = self.get_genome(difficulty)
+        local_dir = os.path.dirname(__file__)
+        config_path = os.path.join(local_dir, 'config.txt')
+        self.config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                                         config_path)
+        self.net = neat.nn.FeedForwardNetwork.create(self.genome, self.config)
+
+    def get_genome(self, difficulty):
+        local_dir = os.path.dirname(__file__)
+
+        if difficulty == "easy":
+            genome_path = os.path.join(local_dir, 'bots', 'easy-gen30.pkl')
+        elif difficulty == "medium":
+            genome_path = os.path.join(local_dir, 'bots', 'normal-gen50.pkl')
+        elif difficulty == "hard":
+            genome_path = os.path.join(local_dir, 'bots', 'hard-gen50_2.pkl')
+
+        with open(genome_path, 'rb') as f:
+            genome = pickle.load(f)
+
+        return genome
+
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
         self.left_hits = left_hits
@@ -54,6 +82,7 @@ class Room:
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.ball = Ball(WIN_WIDTH // 2, WIN_HEIGHT // 2, BALL_RADIUS)
+        self.bot = Bot("hard")                         # Change difficulty from frontend
         self.score = [0, 0]
         self.players = []
         self.keys_pressed = {
@@ -131,6 +160,21 @@ class Room:
             self.score[0] += 1
             self.ball.reset()
 
+    def move_paddle_ai(self):
+        self.keys_pressed["move_right_up"] = False
+        self.keys_pressed["move_right_down"] = False
+
+        output = self.bot.net.activate((self.paddle_right.y, self.ball.y, abs(self.paddle_right.x - self.ball.x)))
+        decision = output.index(max(output))
+
+        if decision == 0:
+            pass
+        elif decision == 1:
+            self.keys_pressed["move_right_up"] = True
+        elif decision == 2:
+            self.keys_pressed["move_right_down"] = True
+
+    # Used for training purposes
     def loop(self):
         if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
             self.paddle_left.move(True)
@@ -149,7 +193,7 @@ class Room:
 
         return game_info
 
-    # Can be used for training purposes
+    # Can be used for training purposes, currently not used
     def reset(self):
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)

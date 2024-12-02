@@ -2,9 +2,6 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
 from .room import Room
-import os
-import neat
-import pickle
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -31,17 +28,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         if not hasattr(self.room, "game_loop"):
             self.room.game_loop = asyncio.create_task(self.update_game_state())
-
-        local_dir = os.path.dirname(__file__)
-        config_path = os.path.join(local_dir, 'config.txt')
-        self.config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
-                                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
-                                         config_path)
-        bot_path = os.path.join(local_dir, 'bots', 'hard-gen50.pkl')
-        with open(bot_path, 'rb') as f:
-            self.bot = pickle.load(f)
-
-        self.bot_nn = neat.nn.FeedForwardNetwork.create(self.bot, self.config)
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
@@ -74,18 +60,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def update_game_state(self):
         while True:
-            self.room.keys_pressed["move_right_up"] = False
-            self.room.keys_pressed["move_right_down"] = False
-
-            ai_output = self.bot_nn.activate((self.room.paddle_right.y, self.room.ball.y, abs(self.room.paddle_right.x - self.room.ball.x)))
-            decision = ai_output.index(max(ai_output))
-
-            if decision == 0:
-                pass
-            elif decision == 1:
-                self.room.keys_pressed["move_right_up"] = True
-            elif decision == 2:
-                self.room.keys_pressed["move_right_down"] = True
+            self.room.move_paddle_ai()
 
             game_state = await self.room.update_game_state()
             await self.channel_layer.group_send(
