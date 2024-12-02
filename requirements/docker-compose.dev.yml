@@ -19,6 +19,8 @@ services:
       dockerfile: Dockerfile.dev
     ports:
       - "8443:8443"
+    volumes:
+      - ./nginx/www:/var/www/html
     networks:
       - peas-dev
     depends_on:
