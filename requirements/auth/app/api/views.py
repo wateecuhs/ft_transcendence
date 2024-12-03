@@ -50,7 +50,7 @@ class LoginAPI(APIView):
 		username = serializer.validated_data['username']
 		password = serializer.validated_data['password']
 		user = CustomUser.get_user_by_name(username)
-		if not user or user.password != password:
+		if not user or not user.check_password(password):
 			return JsonResponse({"message": f"failed : authentication failed for {username}"}, status=401)
 		encoded_access_jwt = CreateAccessToken(request, username)
 		CreateRefreshToken(request, username)
@@ -101,14 +101,13 @@ class UserInfo(APIView):
 				user.is_42_pp = False
 
 			if 'new_password' in serializer.validated_data and serializer.validated_data['new_password'] is not '':
-				new_password = serializer.validate(data=request.data)
-				CustomUser.set_password(user, new_password)
+				new_password = serializer.validated_data['new_password']
+				CustomUser.set_new_password(user, new_password)
 
 			return JsonResponse({"message": "Success",
 								 "alias": user.alias,
 								 "email": user.email,
-								 "profile_picture": user.avatar_path,
-								 "password": new_password})
+								 "profile_picture": user.avatar_path})
 
 		except ValidationError as e:
 			JsonResponse({"message": f"failed : {e.messages}"}, status=400)

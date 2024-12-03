@@ -1,0 +1,63 @@
+/* Fenêtre plein écran */
+.fullscreen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: #1a1919;
+	z-index: 2000;
+
+	display: flex;
+	flex-direction: column;
+	box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+
+	font-family: "Tahoma", sans-serif;
+	border: 2px solid #000;
+  }
+
+  /* En-tête de la fenêtre */
+  .window-header {
+	background: linear-gradient(#000080, #0000a0);
+	color: #fff;
+	padding: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 14px;
+	border-bottom: 2px solid #fff;
+	z-index: 20001;
+  }
+
+  .arrow-buttons button {
+	background: #c3c7cb;
+	border: 1px solid #404040;
+	font-size: 12px;
+	color: #000;
+	cursor: pointer;
+	margin: 0 2px;
+  }
+
+  .arrow-buttons button:hover {
+	background-color: #000080;
+	color: #fff;
+  }
+
+  .window-header .header-title {
+	font-weight: bold;
+	color: #ffffff;
+  }
+
+  .window-header .close-button {
+	background: #c3c7cb;
+	color: black;
+	border: 1px solid #404040;
+	padding: 2px 6px;
+	cursor: pointer;
+	font-size: 12px;
+  }
+
+  .window-header .close-button:hover {
+	background: #000080;
+	color: #fff;
+  }

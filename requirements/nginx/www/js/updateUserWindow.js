@@ -42,7 +42,7 @@ async function updateUser() {
 					new_email: emailText,
 					old_password: oldPasswordText,
 					new_password: passwordText,
-					new_confirm_password: confirmPasswordText,
+					confirmation_password: confirmPasswordText,
 			};
 
 			const response = await fetch('/auth/user/me/', {
@@ -57,7 +57,6 @@ async function updateUser() {
 			const data = await response.json();
 			if (response.ok && data.message === 'Success') {
 					alert('Les informations ont été changées avec succès.');
-					alert('here');
 
 					const updatedUserInfo = await getUserInfo(user.access_token);
 					if (updatedUserInfo) {

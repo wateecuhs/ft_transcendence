@@ -13,6 +13,10 @@ icons.forEach(icon => {
     if (iconName === 'Winbook') {
       toggleWinbookWindow();
     }
+
+    if (iconName === 'Pong') {
+      togglePongWindow();
+    }
   });
 
   let offsetX, offsetY;

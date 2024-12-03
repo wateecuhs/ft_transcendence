@@ -40,7 +40,6 @@ async function changeUserInfo(accesToken, requestData) {
 }
 
 async function getUserInfo(accessToken) {
-  console.log('test');
   try {
     const response = await fetch('/auth/user/me/', {
       method: 'GET',

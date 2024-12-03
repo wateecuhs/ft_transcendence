@@ -96,7 +96,8 @@ class CustomUser(AbstractUser):
     def add_user_by_form(cls, username, password, email, avatar, status=1, tournament_id=None):
         if CustomUser.get_user_by_name(name=username) is not None:
             raise ValidationError("Username already taken.")
-        user = cls(username=username, alias=username, email=email, password=password, status=status, avatar=avatar, avatar_path=avatar,tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
+        user = cls(username=username, alias=username, email=email, status=status, avatar=avatar, avatar_path=avatar,tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
+        user.set_password(password)
         user.save()
         return user
 
@@ -129,8 +130,8 @@ class CustomUser(AbstractUser):
         user.save()
 
     @classmethod
-    def set_password(cls, user, newPassword):
-        user.password = newPassword
+    def set_new_password(cls, user, newPassword):
+        user.set_password(newPassword)
         user.save()
 
     @classmethod

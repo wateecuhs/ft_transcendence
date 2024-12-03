@@ -47,7 +47,7 @@ function SignIn() {
 			if (userInfo) {
 			  localStorage.setItem(textUsername, JSON.stringify(userInfo));
 			}
-			
+
 			updateUserInfo(textUsername);
 
 			slideUp();
@@ -147,7 +147,7 @@ function SignIn() {
 	});
   }
 
-  function SignIn42() {
+function SignIn42() {
 	const loginPage = document.getElementById('login-id-page');
 
 	if (!loginPage) {
@@ -167,7 +167,37 @@ function SignIn() {
 	});
 }
 
-  document.addEventListener('DOMContentLoaded', function() {
+async function getAuthCodeAndRequestToken() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const access_token = urlParams.get('code');
+	console.log(access_token);
+
+    if (!access_token) {
+        console.error('Code d\'autorisation non trouvé dans l\'URL');
+        return;
+    }
+
+	try {
+		window.location.replace('https://localhost:8843');
+		const userInfo = await getUserInfo(access_token);
+		if (userInfo) {
+			localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
+			updateUserInfo(userInfo.username);
+		}
+		slideUp();
+	} catch (error) {
+		console.error('Erreur lors de la gestion du token:', error);
+	}
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.location.href.includes('/auth/token/')) {
+		alert('test44');
+        getAuthCodeAndRequestToken();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
 	SignIn();
 	SignUp();
 	SignIn42();

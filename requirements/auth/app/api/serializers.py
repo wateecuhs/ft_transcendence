@@ -93,9 +93,9 @@ class EditAccountSerializer(serializers.ModelSerializer):
 	new_alias = serializers.CharField(label='New Alias', max_length=30, min_length=2, required=False, allow_blank=True)
 	new_email = serializers.EmailField(label='New Email', required=False, allow_blank=True)
 	new_pp = serializers.ImageField(label='New Profile Picture', required=False, allow_empty_file=False)
-	old_password = serializers.CharField(label='Old Password', required=False)
+	old_password = serializers.CharField(label='Old Password', required=False, allow_blank=True)
 	new_password = serializers.CharField(label='New Password', required=False, allow_blank=True)
-	confirmation_password = serializers.CharField(label='Confirm New Password', required=False)
+	confirmation_password = serializers.CharField(label='Confirm New Password', required=False, allow_blank=True)
 
 	def validate(self, data):
 		user = self.context.get('user')
@@ -105,8 +105,8 @@ class EditAccountSerializer(serializers.ModelSerializer):
 		old_password = data.get('old_password')
 		new_password = data.get('new_password')
 		confirmation_password = data.get('confirmation_password')
-		if old_password is not None and new_password and confirmation_password:
-			if old_password and password and old_password != user.password:
+		if old_password is not "" and new_password is not "" and confirmation_password is not "":
+			if old_password and new_password and not user.check_password(old_password):
 				raise BadPasswordError(message="Bad old password")
 
 			if new_password and new_password != confirmation_password:
@@ -123,8 +123,8 @@ class EditAccountSerializer(serializers.ModelSerializer):
 			if not has_digit:
 				raise ValidationError(message="No digit in password")
 
-			elif old_password or new_password or confirmation_password:
-				raise ValidationError("All change password field are not fill")
+		elif old_password is not "" or new_password is not "" or confirmation_password is not "":
+			raise ValidationError("All change password field are not fill")
 		return data
 
 class	ChangeRoomSerializer(serializers.ModelSerializer):
