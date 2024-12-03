@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Status
+from .models import CustomUser, Status, Match
 from django.core.exceptions import ValidationError
 import uuid
 
@@ -85,38 +85,46 @@ class LoginSerializer(serializers.ModelSerializer):
 
 
 class EditAccountSerializer(serializers.ModelSerializer):
-	new_alias = serializers.CharField(label='New Alias', max_length=30, min_length=2, required=False)
-	new_email = serializers.EmailField(label='New Email', required=False)
+
+	class Meta:
+		model = CustomUser
+		fields = ['new_alias', 'new_email', 'new_pp', 'old_password', 'new_password', 'confirmation_password']
+
+	new_alias = serializers.CharField(label='New Alias', max_length=30, min_length=2, required=False, allow_blank=True)
+	new_email = serializers.EmailField(label='New Email', required=False, allow_blank=True)
 	new_pp = serializers.ImageField(label='New Profile Picture', required=False, allow_empty_file=False)
 	old_password = serializers.CharField(label='Old Password', required=False)
-	new_password = serializers.CharField(label='New Password', required=False)
+	new_password = serializers.CharField(label='New Password', required=False, allow_blank=True)
 	confirmation_password = serializers.CharField(label='Confirm New Password', required=False)
 
-	def validate(self, data, user):
+	def validate(self, data):
+		user = self.context.get('user')
+		if not user:
+			raise serializers.ValidationError("User context is required for validation.")
+
 		old_password = data.get('old_password')
 		new_password = data.get('new_password')
 		confirmation_password = data.get('confirmation_password')
+		if old_password is not None and new_password and confirmation_password:
+			if old_password and password and old_password != user.password:
+				raise BadPasswordError(message="Bad old password")
 
-		if old_password == '' or new_password == '' or confirmation_password == '':
-			raise ValidationError("All change password field are not fill")
+			if new_password and new_password != confirmation_password:
+				raise ConfirmationError(message="New password and Confirm New Password are different")
 
-		if old_password != user.password:
-			raise BadPasswordError(message="Bad old password")
+			if len(new_password) < 8:
+				raise ValidationError(message="Password too short")
 
-		if new_password != confirmation_password:
-			raise ConfirmationError(message="New password and Confirm New Password are different")
+			has_upper = any(char.isupper() for char in new_password)
+			has_digit = any(char.isdigit() for char in new_password)
 
-		if len(new_password) < 8:
-			raise ValidationError(message="Password too short")
+			if not has_upper:
+				raise ValidationError(message="No uppercase in password")
+			if not has_digit:
+				raise ValidationError(message="No digit in password")
 
-		has_upper = any(char.isupper() for char in new_password)
-		has_digit = any(char.isdigit() for char in new_password)
-
-		if not has_upper:
-			raise ValidationError(message="No uppercase in password")
-		if not has_digit:
-			raise ValidationError(message="No digit in password")
-
+			elif old_password or new_password or confirmation_password:
+				raise ValidationError("All change password field are not fill")
 		return data
 
 class	ChangeRoomSerializer(serializers.ModelSerializer):

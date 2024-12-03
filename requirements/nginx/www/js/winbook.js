@@ -9,14 +9,6 @@ const createTournamentButton = winBook.querySelector('#create-tournament-button'
 
 let currentPageIndex = 0;
 
-var roomWS = new WebSocket("wss://localhost:8443/matchmaking/rooms");
-roomWS.onopen = function(event) {
-  console.log("Connected");
-};
-
-roomWS.onmessage = function(event) {
-  console.log("Message received: " + event.data);
-};
 
 let tournaments = [
     { name: 'Tournoi 1', maxPlayers: 4, creator: 'player1', players: [{ name: 'player1', status: 'Ready' }, { name: 'test', status: 'Ready'}] },

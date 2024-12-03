@@ -10,7 +10,7 @@ from .forms import  BadPasswordError, ConfirmationError
 from .models import CustomUser, Match
 from django.core.serializers.json import DjangoJSONEncoder
 from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, AddMatchSerializer
-from .utils import get42_response, get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
+from .utils import get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
 
 """
 register take a POST request of the CustomUserSerializer. The function verify that all fields are valid
@@ -65,24 +65,30 @@ UserInfo can also take a GET request to return on success all informartions abou
 
 class UserInfo(APIView):
 	def put(self, request):
-		serializer = EditAccountSerializer(data=request.data)
-		if not serializer.is_valid():
-			errors = serializer.errors
-			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		try:
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
 			if authorization_header.startswith("Bearer "):
 				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			else:
+				return JsonResponse({'message': 'failed header not start with Bearer'})
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			username = payload.get("username")
 			user = CustomUser.get_user_by_name(username)
-			if serializer.validated_data['new_email'] is not None:
+			serializer = EditAccountSerializer(data=request.data, context={'user': user})
+			if not serializer.is_valid():
+				errors = serializer.errors
+				print(errors)
+				return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
+
+			if 'new_email' in serializer.validated_data and serializer.validated_data['new_email'] is not None and serializer.validated_data['new_email'] != "":
 				CustomUser.set_email(user, serializer.validated_data['new_email'])
-			if serializer.validated_data['new_alias'] is not '':
+
+			if 'new_alias' in serializer.validated_data and serializer.validated_data['new_alias'] is not '':
 				CustomUser.set_alias(user, serializer.validated_data['new_alias'])
-			if serializer.validated_data['new_pp'] is not None:
+
+			if 'new_pp' in serializer.validated_data and serializer.validated_data['new_pp'] is not None:
 				image = serializer.validated_data['new_pp']
 				fs = FileSystemStorage(location=os.path.join('../../../nginx/www/'))
 				file_path = os.path.join('img/', image.name)
@@ -93,13 +99,17 @@ class UserInfo(APIView):
 					full_path = os.path.join('img/', filename)
 				CustomUser.set_image(user, full_path)
 				user.is_42_pp = False
-			if serializer.validated_data['new_password'] is not '':
-				new_password = serializer.validate(user=user)
+
+			if 'new_password' in serializer.validated_data and serializer.validated_data['new_password'] is not '':
+				new_password = serializer.validate(data=request.data)
 				CustomUser.set_password(user, new_password)
+
 			return JsonResponse({"message": "Success",
 								 "alias": user.alias,
 								 "email": user.email,
-								 "profile_picture": user.avatar_path})
+								 "profile_picture": user.avatar_path,
+								 "password": new_password})
+
 		except ValidationError as e:
 			JsonResponse({"message": f"failed : {e.messages}"}, status=400)
 		except BadPasswordError as e:
@@ -203,17 +213,29 @@ On failure return JsonResponse with failed message an explanation. On success re
 '''
 
 class ConfirmToken(APIView):
-	def get(self, request):
-		response = get42_response(request)
-		if not response.ok:
-			return JsonResponse({"message_error": "Failed to access at 42's API"}, status=401)
-		access_token = response.json()['access_token']
-		response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}).json()
-		username = response['login']
-		CustomUser.add_user(username=username, avatar_path=response['image']['versions']['small'], avatar=response['image']['versions']['small'], tournament_id=None, email=response['email'])
-		encoded_access_jwt = CreateAccessToken(request, username)
-		CreateRefreshToken(request, username)
-		return JsonResponse({"access_token": encoded_access_jwt})
+    def get(self, request):
+        code = request.GET.get('code')
+        token_url = 'https://api.intra.42.fr/oauth/token'
+        client_id = os.getenv('CLIENT_ID')
+        client_secret = os.getenv('CLIENT_SECRET')
+        redirect_uri = 'https://localhost:8443/auth/token/'
+        params = {
+            'grant_type': 'authorization_code',
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'code': code,
+            'redirect_uri': redirect_uri
+        }
+        response = requests.post(token_url, data=params)
+        if not response.ok:
+            return JsonResponse({'code': code, 'client id' : client_id, 'client secret' : client_secret})
+        access_token = response.json()['access_token']
+        response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}).json()
+        username = response['login']
+        CustomUser.add_user(username=username, avatar_path=response['image']['versions']['small'], avatar=response['image']['versions']['small'], tournament_id=None, email=response['email'])
+        encoded_access_jwt = CreateAccessToken(request, username)
+        CreateRefreshToken(request, username)
+        return JsonResponse({"access_token": encoded_access_jwt})
 
 
 '''

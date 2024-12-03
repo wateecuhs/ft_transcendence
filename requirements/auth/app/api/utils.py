@@ -5,28 +5,6 @@ from django.http import HttpResponse
 from jwt import InvalidTokenError, ExpiredSignatureError
 
 '''
-get42_response take a request with a code. This code will be use to request a response at 42's API. Return this response
-'''
-
-def get42_response(request):
-	code = request.GET.get('code')
-	token_url = 'https://api.intra.42.fr/oauth/token'
-	client_id = os.getenv('CLIENT_ID')
-	client_secret = os.getenv('CLIENT_SECRET')
-	print(f'salut {client_id}')
-	print(f'coucou {client_secret}')
-	redirect_uri = 'http://localhost:8000/auth/token'
-	params = {
-		'grant_type': 'authorization_code',
-		'client_id': client_id,
-		'client_secret': client_secret,
-		'code': code,
-		'redirect_uri': redirect_uri
-	}
-	response = requests.post(token_url, data=params)
-	return response
-
-'''
 CreateAccessToken take an username. Create, stock in DB and return an encoded_access_token
 '''
 

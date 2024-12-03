@@ -19,7 +19,7 @@ icons.forEach(icon => {
 
   icon.addEventListener('mousedown', function(e) {
     e.preventDefault();
-    
+
     const iconRect = icon.getBoundingClientRect();
     offsetX = e.clientX - iconRect.left;
     offsetY = e.clientY - iconRect.top;
@@ -47,7 +47,7 @@ icons.forEach(icon => {
 
     const paddingLeft = parseInt(window.getComputedStyle(container).paddingLeft);
     const paddingTop = parseInt(window.getComputedStyle(container).paddingTop);
-    
+
     let gridX = Math.round((e.clientX - offsetX - containerRect.left - paddingLeft) / gridSize) * gridSize + paddingLeft;
     let gridY = Math.round((e.clientY - offsetY - containerRect.top - paddingTop) / gridSize) * gridSize + paddingTop;
 
@@ -58,7 +58,7 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow');
+const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');
@@ -87,6 +87,3 @@ windows.forEach(window => {
         document.removeEventListener('mouseup', releaseWindow);
     }
 });
-
-
-
