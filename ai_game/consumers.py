@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
-from .room import Room
+from .game import Room
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600

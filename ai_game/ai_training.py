@@ -1,4 +1,4 @@
-from room import Room
+from ai_game.game import Room
 import neat
 import os
 import pickle
