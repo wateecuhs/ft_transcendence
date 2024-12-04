@@ -7,7 +7,8 @@ RUN pip install -r requirements.txt
 COPY app /app
 
 WORKDIR /app
-
+EXPOSE 8005
+RUN ls
 COPY ./conf/run.sh /run.sh
 
 CMD ["/run.sh"]
