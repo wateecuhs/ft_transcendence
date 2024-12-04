@@ -92,7 +92,7 @@ class EditAccountSerializer(serializers.ModelSerializer):
 
 	new_alias = serializers.CharField(label='New Alias', max_length=30, min_length=2, required=False, allow_blank=True)
 	new_email = serializers.EmailField(label='New Email', required=False, allow_blank=True)
-	new_pp = serializers.ImageField(label='New Profile Picture', required=False, allow_empty_file=False)
+	new_pp = serializers.CharField(label='New Profile Picture', required=False, allow_blank=True)
 	old_password = serializers.CharField(label='Old Password', required=False, allow_blank=True)
 	new_password = serializers.CharField(label='New Password', required=False, allow_blank=True)
 	confirmation_password = serializers.CharField(label='Confirm New Password', required=False, allow_blank=True)
@@ -112,22 +112,23 @@ class EditAccountSerializer(serializers.ModelSerializer):
 			if new_password and new_password != confirmation_password:
 				raise ConfirmationError(message="New password and Confirm New Password are different")
 
-			if len(new_password) < 8:
-				raise ValidationError(message="Password too short")
+			if new_password:
+				if len(new_password) < 8:
+					raise ValidationError(message="Password too short")
 
-			has_upper = any(char.isupper() for char in new_password)
-			has_digit = any(char.isdigit() for char in new_password)
+				has_upper = any(char.isupper() for char in new_password)
+				has_digit = any(char.isdigit() for char in new_password)
 
-			if not has_upper:
-				raise ValidationError(message="No uppercase in password")
-			if not has_digit:
-				raise ValidationError(message="No digit in password")
+				if not has_upper:
+					raise ValidationError(message="No uppercase in password")
+				if not has_digit:
+					raise ValidationError(message="No digit in password")
 
 		elif old_password is not "" or new_password is not "" or confirmation_password is not "":
 			raise ValidationError("All change password field are not fill")
 		return data
 
-class	ChangeRoomSerializer(serializers.ModelSerializer):
+class	ChangeRoomSerializer(serializers.Serializer):
 	room_id = serializers.UUIDField(label='Room Id')
 
 

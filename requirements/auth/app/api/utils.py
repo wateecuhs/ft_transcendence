@@ -90,3 +90,14 @@ def decodeRefreshToken(encoded_jwt):
 		raise ExpiredSignatureError
 	except jwt.InvalidTokenError:
 		raise InvalidTokenError
+
+
+def decode_and_save_base64_image(base64_image, file_name):
+    if base64_image.startswith('data:image'):
+        header, base64_str = base64_image.split(',', 1)
+
+        image_data = base64.b64decode(base64_str)
+
+        return ContentFile(image_data, name=file_name)
+    else:
+        raise ValueError("Invalid base64 image data")

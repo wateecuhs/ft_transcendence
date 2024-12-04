@@ -1,5 +1,5 @@
 const icons = document.querySelectorAll('.icon');
-const gridSize = 100;
+const gridSize = 128;
 
 icons.forEach(icon => {
 
@@ -91,3 +91,33 @@ windows.forEach(window => {
         document.removeEventListener('mouseup', releaseWindow);
     }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const icons = document.querySelectorAll('.desktop-icons .icon');
+  const gridSize = 128; // Taille de la grille (modifiez selon vos besoins)
+  organizeIcons(icons, gridSize);
+});
+
+function organizeIcons(icons, gridSize) {
+  const container = document.querySelector('.desktop-icons');
+  const paddingLeft = parseInt(window.getComputedStyle(container).paddingLeft);
+  const paddingTop = parseInt(window.getComputedStyle(container).paddingTop);
+
+  let currentX = paddingLeft;
+  let currentY = paddingTop;
+  const containerWidth = container.clientWidth;
+
+  icons.forEach(icon => {
+    icon.style.position = 'absolute'; // S'assure que les icônes sont positionnées en absolu.
+    icon.style.left = `${currentX}px`;
+    icon.style.top = `${currentY}px`;
+
+    currentX += gridSize; // Passe à la prochaine colonne.
+
+    // Si l'icône dépasse la largeur du conteneur, retourne à la première colonne et descend d'une ligne.
+    if (currentX + gridSize > containerWidth - paddingLeft) {
+      currentX = paddingLeft;
+      currentY += gridSize;
+    }
+  });
+}

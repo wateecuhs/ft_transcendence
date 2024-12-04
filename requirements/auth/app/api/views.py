@@ -77,6 +77,7 @@ class UserInfo(APIView):
 			username = payload.get("username")
 			user = CustomUser.get_user_by_name(username)
 			serializer = EditAccountSerializer(data=request.data, context={'user': user})
+			
 			if not serializer.is_valid():
 				errors = serializer.errors
 				print(errors)
@@ -89,6 +90,7 @@ class UserInfo(APIView):
 				CustomUser.set_alias(user, serializer.validated_data['new_alias'])
 
 			if 'new_pp' in serializer.validated_data and serializer.validated_data['new_pp'] is not None:
+				return JsonResponse({"message": "ca marche"})
 				image = serializer.validated_data['new_pp']
 				fs = FileSystemStorage(location=os.path.join('../../../nginx/www/'))
 				file_path = os.path.join('img/', image.name)

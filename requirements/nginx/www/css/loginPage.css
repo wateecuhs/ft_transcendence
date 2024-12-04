@@ -70,10 +70,10 @@
   margin-top: 20px;
 }
 
-#button-sign-up-page {
+.button-login-page #button-sign-up-page {
   font-style: italic;
   border: none;
-  background: none;
+  background-color: #008800;
   color: black;
   font-size: 1rem;
   cursor: pointer;
