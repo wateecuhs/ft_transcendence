@@ -4,6 +4,7 @@ function togglePongWindow() {
 	if (pongWindow.style.display === 'none') {
 	  pongWindow.style.display = 'flex';
 	  history.pushState({ page: "pong" }, "", "#pong");
+	  initAIGame();
 	} else {
 	  pongWindow.style.display = 'none';
 	}

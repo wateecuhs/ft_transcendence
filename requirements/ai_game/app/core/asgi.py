@@ -24,11 +24,11 @@ socket_app = socketio.ASGIApp(sio)
 
 application = ProtocolTypeRouter(
     {
-        "http": get_asgi_application(),
         "websocket": SessionMiddlewareStack(
             URLRouter(
                 ai_game.routing.websocket_urlpatterns
             )
         ),
+        "http": get_asgi_application(),
     }
 )

@@ -10,6 +10,9 @@ networks:
   matchmaking-dev:
     name: matchmaking-dev
     internal: true
+  ai_game-dev:
+    name: ai_game-dev
+    internal: true
 
 services:
   nginx-dev:
@@ -132,20 +135,23 @@ services:
       timeout: 5s
       retries: 5
 
-  ai_game:
-    build: ./ai_game
-    env_file:
-      - ./conf/.env-ai_game
+  ai_game-dev:
+    container_name: ai_game-dev
+    build: 
+      context: ./ai_game
+      dockerfile: Dockerfile.dev
+    # env_file:
+    #   - ./conf/dev.env-ai_game
     networks:
-      - peas
-      - ai_game
+      - peas-dev
+      - ai_game-dev
     volumes:
       - ./ai_game/app:/app/
     ports:
       - "8003:8003"
-    depends_on:
-      game-db:
-        condition: service_healthy
+    # depends_on:
+    #   game-db:
+    #     condition: service_healthy
     
   # game-db:
   #   image: postgres:14
