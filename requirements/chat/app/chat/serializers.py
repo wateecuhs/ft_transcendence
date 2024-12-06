@@ -7,9 +7,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'status']
 
 class RelationshipSerializer(serializers.ModelSerializer):
-    sender = UserSerializer()
-    receiver = UserSerializer()
-
     class Meta:
         model = Relationship
         fields = ['sender', 'receiver', 'status']

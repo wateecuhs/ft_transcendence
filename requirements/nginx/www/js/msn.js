@@ -17,6 +17,13 @@ function initWebSocket() {
     if (message.type === "chat.public") {
       displayChatMessage(message.data);
     }
+    else if (message.type === "chat.private") {
+      displayPrivateMessage(message.data);
+    }
+    else {
+      console.log("Unknown message type");
+      console.log(message);
+    }
   }
   return ws;
 }
@@ -94,6 +101,21 @@ function displayChatMessage(data) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message');
   messageDiv.textContent = data.author + ': ' + data.content;
+  chatMessages.appendChild(messageDiv);
+  const timestampSpan = document.createElement('span');
+  timestampSpan.classList.add('timestamp');
+  timestampSpan.textContent = data.created_at;
+  messageDiv.appendChild(timestampSpan);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function displayPrivateMessage(data) {
+  const chatMessages = document.querySelector('#msnWindow .chat-messages');
+  const messageDiv = document.createElement('div');
+  messageDiv.classList.add('message');
+  const prefix = data.is_author ? '[To] ' : '[From] ';
+  const who = data.is_author ? data.target : data.author;
+  messageDiv.textContent = prefix + who + ': ' + data.content;
   chatMessages.appendChild(messageDiv);
   const timestampSpan = document.createElement('span');
   timestampSpan.classList.add('timestamp');

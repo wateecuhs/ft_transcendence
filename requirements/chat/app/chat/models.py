@@ -8,12 +8,13 @@ class Relationship(models.Model):
         PENDING = "PENDING", "Pending"
         ACCEPTED = "ACCEPTED", "Accepted"
         REJECTED = "REJECTED", "Rejected"
+        NEUTRAL = "NEUTRAL", "Neutral"
         BLOCKED = "BLOCKED", "Blocked"
 
-    sender = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sender")
-    receiver = models.ForeignKey("User", on_delete=models.CASCADE, related_name="receiver")
+    sender = models.CharField(max_length=100)
+    receiver = models.CharField(max_length=100)
     status = models.CharField(
-        max_length=8, choices=Status.choices, default=Status.PENDING
+        max_length=20, choices=Status.choices, default=Status.PENDING
     )
 
     class Meta:
@@ -32,6 +33,14 @@ class Relationship(models.Model):
     
     def block(self):
         self.status = Relationship.Status.BLOCKED
+        self.save()
+    
+    def unblock(self):
+        self.status = Relationship.Status.NEUTRAL
+        self.save()
+    
+    def pending(self):
+        self.status = Relationship.Status.PENDING
         self.save()
 
 class User(models.Model):
