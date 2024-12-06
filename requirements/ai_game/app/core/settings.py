@@ -34,8 +34,10 @@ ALLOWED_HOSTS = []
 CHANNEL_LAYERS = {"default": {"BACKEND": "channels.layers.InMemoryChannelLayer"}}
 
 INSTALLED_APPS = [
+    "rest_framework",
+    'ai_game',
+    'daphne',
     'channels',
-	'ai_game.apps.AiGameConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

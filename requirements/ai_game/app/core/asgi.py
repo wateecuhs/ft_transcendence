@@ -25,7 +25,7 @@ socket_app = socketio.ASGIApp(sio)
 application = ProtocolTypeRouter(
     {
         "websocket": SessionMiddlewareStack(
-            URLRouter(
+            URLRouter( 
                 ai_game.routing.websocket_urlpatterns
             )
         ),

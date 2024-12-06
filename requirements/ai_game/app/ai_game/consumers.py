@@ -14,6 +14,7 @@ rooms = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print("Connected", flush=True)
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         if self.room_name not in rooms:
             rooms[self.room_name] = Room(self.room_name)
@@ -24,10 +25,10 @@ class GameConsumer(AsyncWebsocketConsumer):
             return
 
         await self.channel_layer.group_add(self.room_name, self.channel_name)
-        await self.accept()
 
         if not hasattr(self.room, "game_loop"):
             self.room.game_loop = asyncio.create_task(self.update_game_state())
+        await self.accept()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
