@@ -3,6 +3,7 @@ import random
 import neat
 import os
 import pickle
+import time
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -32,10 +33,14 @@ class Ball:
         self.radius = radius
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
+        # self.prev_time = time.time()
 
     def move(self):
-        self.x += self.dx
-        self.y += self.dy
+        # delta_time = time.time() - self.prev_time
+        # self.prev_time = time.time()
+
+        self.x += self.dx #* delta_time
+        self.y += self.dy #* delta_time
 
     def reset(self):
         self.x = self.base_x
@@ -125,12 +130,14 @@ class Room:
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                 "score": self.score
             }
+            # await asyncio.sleep(0.005)
             return game_state
 
     def handle_collision(self):
         # Wall collision
         if self.ball.y - self.ball.radius < 0 or self.ball.y + self.ball.radius > WIN_HEIGHT:
             self.ball.dy = -self.ball.dy
+            return
 
         # Paddle collision
         if self.ball.dx < 0:

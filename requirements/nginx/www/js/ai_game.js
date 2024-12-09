@@ -1,4 +1,6 @@
-function initAIGame() {
+function runAIGame() {
+
+console.log('runAIGame() called');
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -25,26 +27,64 @@ socket.onerror = function(error) {
 socket.onmessage = function(event) {
     // console.log('Received message:', event.data);
     const gameState = JSON.parse(event.data);
+    if (gameState.type === 'handler') {
+        return;
+    }
+    requestAnimationFrame(() => drawGame(state));
     drawGame(gameState);
 };
 
-document.addEventListener('keydown', (event) => {
-    const command = {};
+// function throttle(func, limit) {
+//     let inThrottle;
+//     return function() {
+//       const args = arguments;
+//       const context = this;
+//       if (!inThrottle) {
+//         func.apply(context, args);
+//         inThrottle = true;
+//         setTimeout(() => inThrottle = false, limit);
+//       }
+//     }
+//   }
+
+function handleKeyDown(event) {
+    const command = { type: 'handler'};
     if (event.key === 'w') command.move_left_up = true;
     if (event.key === 's') command.move_left_down = true;
     if (event.key === 'ArrowUp') command.move_right_up = true;
     if (event.key === 'ArrowDown') command.move_right_down = true;
     socket.send(JSON.stringify(command));
-});
-
-document.addEventListener('keyup', (event) => {
-    const command = {};
+  }
+  
+function handleKeyUp(event) {
+    const command = { type: 'handler'};
     if (event.key === 'w') command.move_left_up = false;
     if (event.key === 's') command.move_left_down = false;
     if (event.key === 'ArrowUp') command.move_right_up = false;
     if (event.key === 'ArrowDown') command.move_right_down = false;
     socket.send(JSON.stringify(command));
-});
+    }
+
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keyup', handleKeyUp);
+
+// document.addEventListener('keydown', (event) => {
+//     const command = {};
+//     if (event.key === 'w') command.move_left_up = true;
+//     if (event.key === 's') command.move_left_down = true;
+//     if (event.key === 'ArrowUp') command.move_right_up = true;
+//     if (event.key === 'ArrowDown') command.move_right_down = true;
+//     socket.send(JSON.stringify(command));
+// });
+
+// document.addEventListener('keyup', (event) => {
+//     const command = {};
+//     if (event.key === 'w') command.move_left_up = false;
+//     if (event.key === 's') command.move_left_down = false;
+//     if (event.key === 'ArrowUp') command.move_right_up = false;
+//     if (event.key === 'ArrowDown') command.move_right_down = false;
+//     socket.send(JSON.stringify(command));
+// });
 
 function resizeCanvas() {
     const width = window.innerWidth * 0.8;
@@ -62,6 +102,11 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 function drawGame(state) {
+    if (!state || !state.paddle_left || !state.paddle_right || !state.ball || !state.score) {
+        console.error('Invalid game state:', state);
+        return;
+    }
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw paddles
@@ -83,6 +128,6 @@ function drawGame(state) {
     requestAnimationFrame(() => drawGame(state));
 }
 
-requestAnimationFrame(() => drawGame({}));
+// requestAnimationFrame(() => drawGame({}));
 
 }

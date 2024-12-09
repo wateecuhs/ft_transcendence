@@ -4,7 +4,7 @@ function togglePongWindow() {
 	if (pongWindow.style.display === 'none') {
 	  pongWindow.style.display = 'flex';
 	  history.pushState({ page: "pong" }, "", "#pong");
-	  initAIGame();
+	  runAIGame();
 	} else {
 	  pongWindow.style.display = 'none';
 	  stopGameInstance();
@@ -29,6 +29,8 @@ function togglePongWindow() {
 	const socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + roomName + '/');
 	socket.onopen = function() {
 		socket.send(JSON.stringify({ type: 'disconnect' }));
-		// socket.close();
+		document.removeEventListener('keydown', handleKeyDown);
+		document.removeEventListener('keyup', handleKeyUp);
+		socket.close();
 	};
  }
