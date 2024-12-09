@@ -40,6 +40,13 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         command = json.loads(text_data)
+        if command.get('type') == 'disconnect':
+            print("Disconnected", flush=True)
+            # await self.disconnect(1000)
+            self.room.game_loop.cancel()
+            del rooms[self.room_name]
+            return
+
         player_index = self.room.players.index(self)
 
         if player_index == 0:

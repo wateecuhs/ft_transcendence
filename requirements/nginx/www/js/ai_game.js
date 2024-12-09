@@ -14,6 +14,7 @@ const socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/'
 
 socket.onopen = function() {
     console.log('WebSocket connection established');
+    console.log('socket', socket);
 };
 
 socket.onerror = function(error) {
@@ -22,7 +23,7 @@ socket.onerror = function(error) {
 };
 
 socket.onmessage = function(event) {
-    console.log('Received message:', event.data);
+    // console.log('Received message:', event.data);
     const gameState = JSON.parse(event.data);
     drawGame(gameState);
 };

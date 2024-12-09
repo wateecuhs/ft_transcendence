@@ -7,7 +7,13 @@ function togglePongWindow() {
 	  initAIGame();
 	} else {
 	  pongWindow.style.display = 'none';
+	  stopGameInstance();
 	}
+
+	pongWindow.querySelector('.close-button').addEventListener('click', function() {
+		pongWindow.style.display = 'none';
+		stopGameInstance();
+	  });
   }
 
   window.addEventListener('popstate', function (event) {
@@ -17,3 +23,12 @@ function togglePongWindow() {
 		togglePongWindow();
 	}
   });
+
+  function stopGameInstance() {
+	const roomName = "room1"; // Replace with dynamic room name
+	const socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + roomName + '/');
+	socket.onopen = function() {
+		socket.send(JSON.stringify({ type: 'disconnect' }));
+		// socket.close();
+	};
+ }
