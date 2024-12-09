@@ -47,26 +47,51 @@ socket.onmessage = function(event) {
 //     }
 //   }
 
+let commandBuffer = {};
+
+// function handleKeyDown(event) {
+//     const command = { type: 'handler'};
+//     if (event.key === 'w') command.move_left_up = true;
+//     if (event.key === 's') command.move_left_down = true;
+//     if (event.key === 'ArrowUp') command.move_right_up = true;
+//     if (event.key === 'ArrowDown') command.move_right_down = true;
+//     socket.send(JSON.stringify(command));
+//   }
+  
+// function handleKeyUp(event) {
+//     const command = { type: 'handler'};
+//     if (event.key === 'w') command.move_left_up = false;
+//     if (event.key === 's') command.move_left_down = false;
+//     if (event.key === 'ArrowUp') command.move_right_up = false;
+//     if (event.key === 'ArrowDown') command.move_right_down = false;
+//     socket.send(JSON.stringify(command));
+//     }
+
 function handleKeyDown(event) {
     const command = { type: 'handler'};
-    if (event.key === 'w') command.move_left_up = true;
-    if (event.key === 's') command.move_left_down = true;
-    if (event.key === 'ArrowUp') command.move_right_up = true;
-    if (event.key === 'ArrowDown') command.move_right_down = true;
-    socket.send(JSON.stringify(command));
-  }
-  
+    if (event.key === 'w') commandBuffer.move_left_up = true;
+    if (event.key === 's') commandBuffer.move_left_down = true;
+    if (event.key === 'ArrowUp') commandBuffer.move_right_up = true;
+    if (event.key === 'ArrowDown') commandBuffer.move_right_down = true;
+}
+
 function handleKeyUp(event) {
     const command = { type: 'handler'};
-    if (event.key === 'w') command.move_left_up = false;
-    if (event.key === 's') command.move_left_down = false;
-    if (event.key === 'ArrowUp') command.move_right_up = false;
-    if (event.key === 'ArrowDown') command.move_right_down = false;
-    socket.send(JSON.stringify(command));
-    }
+    if (event.key === 'w') commandBuffer.move_left_up = false;
+    if (event.key === 's') commandBuffer.move_left_down = false;
+    if (event.key === 'ArrowUp') commandBuffer.move_right_up = false;
+    if (event.key === 'ArrowDown') commandBuffer.move_right_down = false;
+}
 
 document.addEventListener('keydown', handleKeyDown);
 document.addEventListener('keyup', handleKeyUp);
+
+setInterval(() => {
+    if (Object.keys(commandBuffer).length > 0) {
+        socket.send(JSON.stringify(commandBuffer));
+        commandBuffer = {};
+    }
+}, 20); // Send commands every 20ms
 
 // document.addEventListener('keydown', (event) => {
 //     const command = {};
