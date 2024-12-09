@@ -1,8 +1,9 @@
-import requests, jwt, os, uuid
+import requests, os, uuid, base64
 from datetime import datetime, timedelta
 from .models import CustomUser
 from django.http import HttpResponse
-from jwt import InvalidTokenError, ExpiredSignatureError
+from django.core.files.base import ContentFile
+import jwt
 
 '''
 CreateAccessToken take an username. Create, stock in DB and return an encoded_access_token
@@ -56,7 +57,7 @@ checkRefreshToken check if the refresh token in cookies is the same that the ref
 def checkRefreshToken(encoded_refresh_token, username):
 	user = CustomUser.get_user_by_name(username)
 	if user.refresh_token is not encoded_refresh_token:
-		raise InvalidTokenError
+		raise jwt.InvalidTokenError
 
 '''
 decodeAccessToken take an access_token. Check if access token is valid and not expire and return the payload with information.
@@ -70,9 +71,9 @@ def decodeAccessToken(request, encoded_jwt):
 			payload["id"] = uuid.UUID(payload["id"])
 		return payload
 	except jwt.ExpiredSignatureError:
-		raise ExpiredSignatureError
+		raise jwt.ExpiredSignatureError
 	except jwt.InvalidTokenError:
-		raise InvalidTokenError
+		raise jwt.InvalidTokenError
 
 '''
 decodeRefreshToken take a refresh_token. Check if access token is valid and not expire and return the payload with information.
@@ -87,9 +88,9 @@ def decodeRefreshToken(encoded_jwt):
 		return payload
 		return payload
 	except jwt.ExpiredSignatureError:
-		raise ExpiredSignatureError
+		raise jwt.ExpiredSignatureError
 	except jwt.InvalidTokenError:
-		raise InvalidTokenError
+		raise jwt.InvalidTokenError
 
 
 def decode_and_save_base64_image(base64_image, file_name):

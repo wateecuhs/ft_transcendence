@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = "/requirements/"
 
 
 # Quick-start development settings - unsuitable for production
@@ -38,8 +38,6 @@ CHANNEL_LAYERS = {
 
 
 INSTALLED_APPS = [
-	'channels',
-    "daphne",
 	'api.apps.GameConfig',
 	'django.contrib.admin',
 	'django.contrib.auth',
@@ -47,7 +45,6 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'rest_framework',
 ]
 
 STATIC_URL = '/static/'
@@ -66,6 +63,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django_otp.middleware.OTPMiddleware',
 ]
 
 ROOT_URLCONF = 'transcendence.urls'
@@ -148,3 +146,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 AUTH_USER_MODEL = 'api.CustomUser'
+
+NGINX_STATIC_ROOT = "/requirements/nginx/www"

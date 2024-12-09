@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #c0c0c0; /* Gris Windows 98 */
+  background-color: #c0c0c0;
   background-image: url('../img/login_page_win98.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -13,11 +13,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-family: "Tahoma", sans-serif; /* Police Windows 98 */
+  font-family: "Tahoma", sans-serif;
   color: black;
   z-index: 9999;
-  border: 2px solid #808080; /* Bordure classique */
-  box-shadow: 4px 4px 0px #ffffff, -2px -2px 0px #404040; /* Effet 3D */
+  border: 2px solid #808080;
+  box-shadow: 4px 4px 0px #ffffff, -2px -2px 0px #404040;
 }
 
 /* Titre principal */

@@ -19,7 +19,8 @@ function openFileSelector() {
                 alert("Erreur : Impossible de récupérer l'utilisateur.");
                 return;
             }
-            const user = JSON.parse(storedUserInfo);
+
+            let access_token = getTokenCookie();
 
             const requestData = {
                 new_pp: event.target.result
@@ -29,29 +30,23 @@ function openFileSelector() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.access_token}`,
+                    'Authorization': `Bearer ${access_token}`,
                 },
                 body: JSON.stringify(requestData),
             });
 
             try {
-                const contentType = response.headers.get('Content-Type');
-                if (contentType && contentType.includes('application/json')) {
                     const data = await response.json();
                     if (response.ok && data.message === 'Success') {
-                        const updatedUserInfo = await getUserInfo(user.username);
+                        const updatedUserInfo = await getUserInfo(access_token);
 
                         if (updatedUserInfo) {
                             localStorage.setItem(userNameText, JSON.stringify(updatedUserInfo));
                             updateUserInfo(userNameText);
                         }
                     } else {
-                        console.error('Echec: ' + (data.message || 'Erreur inconnue.'));
+                        raiseAlert(data.message);
                     }
-                } else {
-                    const textData = await response.text();
-                    console.error('Unexpected response format:', textData);
-                }
             } catch (error) {
                 console.error('Failed to parse JSON response:', error);
                 const rawResponse = await response.text();

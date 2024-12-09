@@ -54,4 +54,7 @@ server {
         proxy_read_timeout 86400;
         proxy_redirect off;
     }
+    location /static/ {
+        root /requirements/nginx/www/;
+    }
 }

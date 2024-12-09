@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from cryptography.fernet import Fernet
 import os, base64, uuid
 from transcendence import settings
+import pyotp
 
 key = base64.urlsafe_b64encode(os.urandom(32))
 cipher = Fernet(key)
@@ -44,9 +45,12 @@ class CustomUser(AbstractUser):
     matches_number = models.PositiveIntegerField(default=0)
     matches_win = models.PositiveIntegerField(default=0)
     matches_lose = models.PositiveIntegerField(default=0)
-    winrate = models.PositiveIntegerField(default=0)
+    winrate = models.PositiveIntegerField(default=100)
     goal_scored = models.PositiveIntegerField(default=0)
     goal_conceded = models.PositiveIntegerField(default=0)
+    totp = models.CharField(default=pyotp.random_base32)
+    qrcode_path = models.CharField(null=True)
+    is_2FA = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'users'

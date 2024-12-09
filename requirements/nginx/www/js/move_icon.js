@@ -62,7 +62,7 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow');
+const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');
@@ -94,7 +94,7 @@ windows.forEach(window => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const icons = document.querySelectorAll('.desktop-icons .icon');
-  const gridSize = 128; // Taille de la grille (modifiez selon vos besoins)
+  const gridSize = 128;
   organizeIcons(icons, gridSize);
 });
 
@@ -108,13 +108,12 @@ function organizeIcons(icons, gridSize) {
   const containerWidth = container.clientWidth;
 
   icons.forEach(icon => {
-    icon.style.position = 'absolute'; // S'assure que les icônes sont positionnées en absolu.
+    icon.style.position = 'absolute';
     icon.style.left = `${currentX}px`;
     icon.style.top = `${currentY}px`;
 
-    currentX += gridSize; // Passe à la prochaine colonne.
+    currentX += gridSize;
 
-    // Si l'icône dépasse la largeur du conteneur, retourne à la première colonne et descend d'une ligne.
     if (currentX + gridSize > containerWidth - paddingLeft) {
       currentX = paddingLeft;
       currentY += gridSize;

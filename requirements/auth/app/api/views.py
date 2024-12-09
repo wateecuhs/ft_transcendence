@@ -1,16 +1,19 @@
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework.request import Request
-import jwt, os, requests, json
-from jwt import InvalidTokenError, ExpiredSignatureError
+import jwt, os, requests, json, base64, random, qrcode, io, pyotp
+from pathlib import Path
+from transcendence import settings
+from django.core.files.base import ContentFile, File
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from .forms import  BadPasswordError, ConfirmationError
 from .models import CustomUser, Match
 from django.core.serializers.json import DjangoJSONEncoder
-from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, AddMatchSerializer
+from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, AddMatchSerializer, CodeSerializer, Serializer2FA
 from .utils import get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
+from django.shortcuts import redirect
 
 """
 register take a POST request of the CustomUserSerializer. The function verify that all fields are valid
@@ -69,18 +72,16 @@ class UserInfo(APIView):
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
-			if authorization_header.startswith("Bearer "):
-				encoded_access_jwt = authorization_header.split(" ", 1)[1]
-			else:
-				return JsonResponse({'message': 'failed header not start with Bearer'})
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access_token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			username = payload.get("username")
 			user = CustomUser.get_user_by_name(username)
 			serializer = EditAccountSerializer(data=request.data, context={'user': user})
-			
+
 			if not serializer.is_valid():
 				errors = serializer.errors
-				print(errors)
 				return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 
 			if 'new_email' in serializer.validated_data and serializer.validated_data['new_email'] is not None and serializer.validated_data['new_email'] != "":
@@ -90,17 +91,27 @@ class UserInfo(APIView):
 				CustomUser.set_alias(user, serializer.validated_data['new_alias'])
 
 			if 'new_pp' in serializer.validated_data and serializer.validated_data['new_pp'] is not None:
-				return JsonResponse({"message": "ca marche"})
-				image = serializer.validated_data['new_pp']
-				fs = FileSystemStorage(location=os.path.join('../../../nginx/www/'))
-				file_path = os.path.join('img/', image.name)
-				if fs.exists(file_path):
-					full_path = file_path
-				else:
-					filename = fs.save(image.name, image)
-					full_path = os.path.join('img/', filename)
-				CustomUser.set_image(user, full_path)
+				base64_str = serializer.validated_data['new_pp']
+				if base64_str.startswith("data:image"):
+					base64_str = base64_str.split(",")[1]
+
+				image_data = base64.b64decode(base64_str)
+				random_number = random.randint(0, 10000000)
+				file_name = f"img/avatar/new_pp_{user.username}{random_number}.png"
+				file_path = Path(settings.NGINX_STATIC_ROOT) / file_name
+				old_path = Path(settings.NGINX_STATIC_ROOT) / user.avatar_path
+				if user.avatar_path != 'img/default_pp.jpg' and old_path.exists():
+					old_path.unlink()
+				file_path.parent.mkdir(parents=True, exist_ok=True)
+				with open(file_path, "wb") as image_file:
+					image_file.write(image_data)
+
+				image = ContentFile(image_data, name=file_name)
+				user.avatar.delete()
+				user.avatar = image
+				user.avatar_path = file_name
 				user.is_42_pp = False
+				user.save()
 
 			if 'new_password' in serializer.validated_data and serializer.validated_data['new_password'] is not '':
 				new_password = serializer.validated_data['new_password']
@@ -109,7 +120,8 @@ class UserInfo(APIView):
 			return JsonResponse({"message": "Success",
 								 "alias": user.alias,
 								 "email": user.email,
-								 "profile_picture": user.avatar_path})
+								 "profile_picture": user.avatar_path,
+								"access_token": encoded_access_jwt})
 
 		except ValidationError as e:
 			JsonResponse({"message": f"failed : {e.messages}"}, status=400)
@@ -127,9 +139,9 @@ class UserInfo(APIView):
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
-			if authorization_header.startswith("Bearer "):
-				encoded_access_jwt = authorization_header.split(" ", 1)[1]
-			print(f'encoded_access_jwt')
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access_token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			username = payload.get("username")
 			user = CustomUser.get_user_by_name(username)
@@ -143,7 +155,9 @@ class UserInfo(APIView):
 								 "is_42_pp": user.is_42_pp,
 								 "access_token": user.access_token,
 								 "id": user.id,
-								 "room_id": user.room_id})
+								 "room_id": user.room_id,
+								"access_token": encoded_access_jwt,
+								"is_2FA": user.is_2FA})
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
 		except jwt.ExpiredSignatureError:
@@ -214,12 +228,15 @@ On failure return JsonResponse with failed message an explanation. On success re
 '''
 
 class ConfirmToken(APIView):
-    def get(self, request):
-        code = request.GET.get('code')
+    def post(self, request):
+        serializer = CodeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return JsonResponse({'message': "failed serializer is not valid"})
+        code = serializer.validated_data['code']
         token_url = 'https://api.intra.42.fr/oauth/token'
         client_id = os.getenv('CLIENT_ID')
         client_secret = os.getenv('CLIENT_SECRET')
-        redirect_uri = 'https://localhost:8443/auth/token/'
+        redirect_uri = 'https://localhost:8443'
         params = {
             'grant_type': 'authorization_code',
             'client_id': client_id,
@@ -236,7 +253,7 @@ class ConfirmToken(APIView):
         CustomUser.add_user(username=username, avatar_path=response['image']['versions']['small'], avatar=response['image']['versions']['small'], tournament_id=None, email=response['email'])
         encoded_access_jwt = CreateAccessToken(request, username)
         CreateRefreshToken(request, username)
-        return JsonResponse({"access_token": encoded_access_jwt})
+        return JsonResponse({"message": "Success", "access_token": encoded_access_jwt})
 
 
 '''
@@ -254,9 +271,9 @@ class refresh(APIView):
 			checkRefreshToken(encoded_refresh_jwt, username)
 			new_access_jwt = CreateAccessToken(request, username)
 			return JsonResponse({"message": "Success", "access_token": new_access_jwt})
-		except ExpiredSignatureError:
+		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : Refresh token has expired"}, status=401)
-		except InvalidTokenError:
+		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : Refresh token is invalid"}, status=400)
 
 class MatchHistory(APIView):
@@ -265,8 +282,9 @@ class MatchHistory(APIView):
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
-			if authorization_header.startswith("Bearer "):
-				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			user_id = payload.get("id")
 			user = CustomUser.get_user_by_id(user_id)
@@ -292,8 +310,9 @@ class MatchHistory(APIView):
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
-			if authorization_header.startswith("Bearer "):
-				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			user_id = payload.get("id")
 			user1 = CustomUser.get_user_by_id(user_id)
@@ -369,8 +388,9 @@ class	UserStat(APIView):
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
-			if authorization_header.startswith("Bearer "):
-				encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			user_id = payload.get("id")
 			user = CustomUser.get_user_by_id(user_id)
@@ -411,3 +431,131 @@ class	UserStatUsername(APIView):
 							"winrate": user.winrate,
 							"goal_scored": user.goal_scored,
 							"goal_conceded": user.goal_conceded})
+
+class Api42(APIView):
+	def get(self, request):
+		access_token = request.session.get('access_token')
+		if not access_token:
+			return JsonResponse({'message': 'failed : access token not found'}, status=400)
+		return JsonResponse({'message': 'Success', 'access_token': access_token})
+
+
+class Activate2FA(APIView):
+	def get(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed no access token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			user_id = payload.get("id")
+			user = CustomUser.get_user_by_id(user_id)
+
+			upload_dir = Path(settings.NGINX_STATIC_ROOT) / "img/qr_codes/"
+			upload_dir.mkdir(parents=True, exist_ok=True)
+
+			file_name = f"qr_{user.username}.png"
+			file_path = upload_dir / file_name
+
+			totp_uri = f"otpauth://totp/{user.email}?secret={user.totp}&issuer=Transcendence"
+			qr = qrcode.QRCode(box_size=10, border=5)
+			qr.add_data(totp_uri)
+			qr.make(fit=True)
+			img = qr.make_image(fill="black", back_color="white")
+
+			with open(file_path, "wb") as image_file:
+				img.save(image_file)
+
+			user.qrcode_path = "img/qr_codes/" + file_name
+			user.save()
+
+			return JsonResponse({'message': 'Success', 'qrcode_path': user.qrcode_path})
+
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+	def post(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access_token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			username = payload.get("username")
+			user = CustomUser.get_user_by_name(username)
+			serializer = Serializer2FA(data=request.data)
+			if not serializer.is_valid():
+				return JsonResponse({'message': 'failed : serializer is not valid'})
+			otp_code = serializer.validated_data['otp_code']
+			totp = pyotp.TOTP(user.totp)
+
+			if totp.verify(otp_code):
+				user.is_2FA = True
+				user.save()
+				return JsonResponse({'message': 'Success'})
+
+			else:
+				return JsonResponse({'message': 'failed : wrong 2FA code'})
+
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+class Verify2FA(APIView):
+	def post(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access_token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			username = payload.get("username")
+			user = CustomUser.get_user_by_name(username)
+			serializer = Serializer2FA(data=request.data)
+			if not serializer.is_valid():
+				error = serializer.errors
+				return JsonResponse({'message': 'failed : serializer is not valid', 'errors': error})
+			otp_code = serializer.validated_data['otp_code']
+			totp = pyotp.TOTP(user.totp)
+
+			if totp.verify(otp_code):
+				return JsonResponse({'message': 'Success'})
+
+			else:
+				return JsonResponse({'message': 'failed : wrong 2FA code'}, status=401)
+
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+class Desactivate2FA(APIView):
+	def put(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"})
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access_token in header'})
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			username = payload.get("username")
+			user = CustomUser.get_user_by_name(username)
+
+			user.is_2FA = False
+			user.save()
+			return JsonResponse({'message': 'Success'})
+
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
