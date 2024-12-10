@@ -19,7 +19,7 @@ function SignIn() {
 	  const textPassword = passwordInput.value.trim();
 
 	  if (!textUsername || !textPassword) {
-		alert('Veuillez remplir tous les champs.');
+		raiseAlert('Veuillez remplir tous les champs.');
 		return;
 	  }
 
@@ -48,16 +48,20 @@ function SignIn() {
 			  localStorage.setItem(textUsername, JSON.stringify(userInfo));
 			}
 
-			updateUserInfo(textUsername);
+			if (userInfo.is_2FA === true) {
+				const win_2fa = loginPage.querySelector('#window-2fa-sign');
+				win_2fa.style.display = 'flex';
+			} else {
+				updateUserInfo(textUsername);
+				updateUserStat();
+				slideUp();
+			}
 
-			slideUp();
 		  } else {
-			alert('Échec : ' + (data.message || 'Erreur inconnue.'));
+			raiseAlert(data.message);
 		  }
 		} else {
-
-		  const errorData = await response.json();
-		  alert('Erreur : ' + (errorData.message || 'Problème de connexion au serveur.'));
+		  raiseAlert(errorData.message);
 		}
 	  } catch (error) {
 		alert('Une erreur est survenue lors de la connexion au serveur.');
@@ -86,18 +90,18 @@ function SignIn() {
 	}
 
 	signUpButton.addEventListener('click', async function() {
-	  const textUsername = usernameInput.value.trim();
-	  const textEmail = emailInput.value.trim();
-	  const textPassword = passwordInput.value.trim();
-	  const textConfirmPassword = confirmPasswordInput.value.trim();
+	const textUsername = usernameInput.value.trim();
+	const textEmail = emailInput.value.trim();
+	const textPassword = passwordInput.value.trim();
+	const textConfirmPassword = confirmPasswordInput.value.trim();
 
 	  if (!usernameInput || !emailInput || !passwordInput || !signUpButton) {
-		alert('Veuillez remplir tous les champs.');
+		raiseAlert('Veuillez remplir tous les champs.');
 		return ;
 	  }
 
 	  if (!(textPassword === textConfirmPassword)) {
-		alert('Les mots de passe envoyes ne sont pas les memes.');
+		raiseAlert('Les mots de passe envoyes ne sont pas les memes.');
 		return ;
 	  }
 
@@ -121,11 +125,11 @@ function SignIn() {
 		  const data = await response.json();
 
 		  if (data.message === 'success') {
-				alert('Inscription reussie');
+				raiseAlert('Inscription reussie');
 				displayRegister();
 				document.cookie = `access_token=${data.access_token}; path=/`;
 			} else {
-				alert('Echec : ' + (data.errors || 'Erreur incconue.'));
+				raiseAlert(data.message);
 			}
 		} else {
 		  const errorData = await response.json();
@@ -147,7 +151,7 @@ function SignIn() {
 	});
   }
 
-function SignIn42() {
+async function SignIn42() {
 	const loginPage = document.getElementById('login-id-page');
 
 	if (!loginPage) {
@@ -163,42 +167,97 @@ function SignIn42() {
 	}
 
 	login42.addEventListener('click', async function () {
-		location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443%2Fauth%2Ftoken%2F&response_type=code'
+		location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443&response_type=code'
 	});
-}
 
-async function getAuthCodeAndRequestToken() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const access_token = urlParams.get('code');
-	console.log(access_token);
+	const urlParams = new URLSearchParams(window.location.search);
 
-    if (!access_token) {
-        console.error('Code d\'autorisation non trouvé dans l\'URL');
-        return;
+	const code = urlParams.get('code');
+
+	if (code) {
+        console.log('Code récupéré:', code);
+
+        try {
+            const response = await fetch('/auth/token/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: code })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.message === 'Success') {
+					const userInfo = await getUserInfo(data.access_token);
+
+					if (userInfo) {
+						document.cookie = `access_token=${data.access_token}; path=/`;
+						localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
+						updateUserInfo(userInfo.username);
+						updateUserStat();
+						slideUp();
+					} else {
+						raiseAlert('Token was not valid');
+					}
+                } else {
+                    raiseAlert(data);
+                }
+            } else {
+				raiseAlert('Error: response 42 is not ok');
+			}
+        } catch (error) {
+            console.error('Erreur réseau:', error);
+        }
+    } else {
+        console.error('Aucun code trouvé dans l\'URL');
     }
-
-	try {
-		window.location.replace('https://localhost:8843');
-		const userInfo = await getUserInfo(access_token);
-		if (userInfo) {
-			localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
-			updateUserInfo(userInfo.username);
-		}
-		slideUp();
-	} catch (error) {
-		console.error('Erreur lors de la gestion du token:', error);
-	}
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    if (window.location.href.includes('/auth/token/')) {
-		alert('test44');
-        getAuthCodeAndRequestToken();
-    }
-});
 
 document.addEventListener('DOMContentLoaded', function() {
 	SignIn();
 	SignUp();
 	SignIn42();
-  });
+
+	const loginPage = document.getElementById('login-id-page');
+    const win_content = loginPage.querySelector('.window-content');
+    const button_2fa = win_content.querySelector('.button-login-page');
+
+
+	button_2fa.addEventListener('click', async function() {
+
+		const access_token = getTokenCookie();
+		const inputText = win_content.querySelector('.input-login-page');
+		const code = inputText.value.trim();
+
+		request_data = {
+			otp_code: code
+		};
+
+		try {
+			const response = await fetch('/auth/2FA/verify/', {
+				method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+					'Authorization': `Bearer ${access_token}`,
+                },
+                body: JSON.stringify(request_data)
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				if (data.message === 'Success') {
+					const user = await getUserInfo(access_token);
+					updateUserInfo(user.username);
+					slideUp();
+				} else {
+					raiseAlert(data.message);
+				}
+			} else {
+				raiseAlert('Wrong 2FA code');
+			}
+		} catch(error) {
+			console.log(error);
+		}
+	});
+});

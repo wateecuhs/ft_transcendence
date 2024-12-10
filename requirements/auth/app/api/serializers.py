@@ -140,3 +140,9 @@ class	AddMatchSerializer(serializers.ModelSerializer):
 	user1_status = serializers.ChoiceField(required=True, choices=Status.choices)
 	user2_status = serializers.ChoiceField(required=True, choices=Status.choices)
 	date = serializers.DateField(required=True)
+
+class CodeSerializer(serializers.Serializer):
+	code = serializers.CharField(required=True)
+
+class Serializer2FA(serializers.Serializer):
+	otp_code = serializers.CharField(required=True)

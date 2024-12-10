@@ -17,13 +17,6 @@ async function updateUser() {
 			const fullNameText = accountWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent.trim();
 			const userNameText = fullNameText.replace("Name: ", "").trim();
 
-			const storedUserInfo = localStorage.getItem(userNameText);
-			if (!storedUserInfo) {
-					alert("Erreur : Impossible de récupérer l'utilisateur.");
-					return;
-			}
-			const user = JSON.parse(storedUserInfo);
-
 			const updateUserWindow = document.getElementById("updateUserWindow");
 			const inputAlias = updateUserWindow.querySelector('.window-content input:nth-child(1)');
 			const inputEmail = updateUserWindow.querySelector('.window-content input:nth-child(2)');
@@ -37,6 +30,19 @@ async function updateUser() {
 			const passwordText = inputPassword.value.trim();
 			const confirmPasswordText = inputConfirmPassword.value.trim();
 
+			let access_token = getTokenCookie();
+
+			try {
+				const userInfo = await getUserInfo(access_token);
+				if (userInfo.is_42_account && (oldPasswordText || passwordText || confirmPasswordText)) {
+					raiseAlert("Your account is linked to 42, can't change password");
+					return ;
+				}
+			} catch (error) {
+				console.log(error);
+				return ;
+			}
+
 			const requestData = {
 					new_alias: aliasText,
 					new_email: emailText,
@@ -49,32 +55,32 @@ async function updateUser() {
 					method: 'PUT',
 					headers: {
 							'Content-Type': 'application/json',
-							'Authorization': `Bearer ${user.access_token}`,
+							'Authorization': `Bearer ${access_token}`,
 					},
 					body: JSON.stringify(requestData),
 			});
 
 			const data = await response.json();
 			if (response.ok && data.message === 'Success') {
-					alert('Les informations ont été changées avec succès.');
+					raiseAlert('Les informations ont été changées avec succès.');
 
-					const updatedUserInfo = await getUserInfo(user.access_token);
+					const updatedUserInfo = await getUserInfo(access_token);
 					if (updatedUserInfo) {
 							localStorage.setItem(userNameText, JSON.stringify(updatedUserInfo));
 							updateUserInfo(userNameText);
 					}
 
-					alert(userNameText);
-
 					inputAlias.value = '';
 					inputEmail.value = '';
+					inputOldPassword.value='';
 					inputPassword.value = '';
 					inputConfirmPassword.value = '';
 			} else {
-					alert('Échec : ' + (data.message || 'Erreur inconnue.'));
+					console.log("Token coucou: ", access_token);
+					raiseAlert(data.message);
 			}
 	} catch (error) {
-			alert('Une erreur est survenue lors de la mise à jour des informations utilisateur.');
+			raiseAlert('Une erreur est survenue lors de la mise à jour des informations utilisateur.');
 			console.error('Erreur lors de la mise à jour de l\'utilisateur :', error);
 	}
 }
@@ -82,7 +88,6 @@ async function updateUser() {
 document.addEventListener("DOMContentLoaded", () => {
 	const updateButton = document.getElementById('updateButton');
 	if (updateButton) {
-		console.log('test');
 		updateButton.addEventListener('click', updateUser);
 	} else {
 			console.error("Update button not found in the DOM.");

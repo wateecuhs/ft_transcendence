@@ -14,11 +14,11 @@ function displayStylePage(pageIndex) {
 
  const numberPages = document.querySelector(".number-pages");
  numberPages.innerHTML = '';
- numberPages.textContent = `${pageIndex + 1}/4`;
+ numberPages.textContent = `${pageIndex + 1}/3`;
 }
 
 accountWindow.querySelector('.right-arrow').addEventListener('click', function() {
-  if (currentPage < 3) {
+  if (currentPage < 2) {
     currentPage++;
   }
   displayStylePage(currentPage);
@@ -42,3 +42,10 @@ function toogleAccountWindow() {
   displayDeskInconsInWindow();
   displayStylePage(currentPage);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const button_2fa = document.getElementById('user2FA');
+	if (button_2fa) {
+		button_2fa.addEventListener('click', activate_2fa);
+	}
+});

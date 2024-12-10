@@ -16,7 +16,10 @@
     <link rel="stylesheet" href="css/winbook.css">
     <link rel="stylesheet" href="css/loginPage.css">
     <link rel="stylesheet" href="css/updateUserWindow.css">
-    <link rel="stylesheet" href="css/pong.css"
+    <link rel="stylesheet" href="css/pong.css">
+    <link rel="stylesheet" href="css/activate_2fa.css">
+    <link rel="stylesheet" href="css/sign_2fa.css">
+    <link rel="stylesheet" href="css/alert_win98.css">
 </head>
 <body class="desktop">
 
@@ -27,7 +30,7 @@
     <div class="sign-in">
 
       <input type="text" id="sign-in-username" class="input-login-page" placeholder="username">
-      <input type="text" id="sign-in-password" class="input-login-page" placeholder="password">
+      <input type="password" id="sign-in-password" class="input-login-page" placeholder="password">
       <button id="sign-in-button" class="button-login-page">sign-in</button>
 
     </div>
@@ -39,8 +42,8 @@
 
         <input type="text" id="sign-up-username" class="input-login-page" placeholder="username">
         <input type="text" id="sign-up-email" class="input-login-page" placeholder="email">
-        <input type="text" id="sign-up-password" class="input-login-page" placeholder="password">
-        <input type="text" id="sign-up-confirm-password" class="input-login-page" placeholder="confirm password">
+        <input type="password" id="sign-up-password" class="input-login-page" placeholder="password">
+        <input type="password" id="sign-up-confirm-password" class="input-login-page" placeholder="confirm password">
 
         <button id="button-register-page" class="button-login-page">register</button>
       </div>
@@ -49,6 +52,45 @@
 
     <div class="login-42">
       <button class="button-login-42">Login 42</button>
+    </div>
+
+  <div class="window" id="window-2fa-sign" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title">Sign 2FA</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <p>Enter your 2fa code</p>
+      <input type="text" id="2fa-input" class="input-login-page" placeholder="Code">
+      <button class="button-login-page" id="2fa-button">Validate</button>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Alerte Windows -->
+  <div class="window" id="window-alert" style="display: none">
+    <div class="window-header">
+
+      <div class="header-title">MiniSoft DataLink</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <div>
+        <img src="img/png/msg_warning-0.png" class="warning-img" alt="message-warning">
+        <span class="warning-text">This is a message</span>
+      </div>
+      <button class="close-button-alert">OK</button>
     </div>
   </div>
 
@@ -129,6 +171,9 @@
         <div class="user-img">
           <img src="img/png/game_spider-0.png" onclick="openFileSelector()">
           <span>default pseudo</span>
+          <span>
+            <button id="user2FA">2FA</button>
+          </span>
         </div>
 
         <ul>
@@ -195,11 +240,32 @@
     <div class="window-content">
       <input type="text" placeholder="alias">
       <input type="text" placeholder="email">
-      <input typ="text" placeholder="old_password">
-      <input type="text" placeholder="password">
-      <input type="text" placeholder="confirm password">
+      <input type="password" placeholder="old_password">
+      <input type="password" placeholder="password">
+      <input type="password" placeholder="confirm password">
 
       <button id="updateButton">Update Info</button>
+    </div>
+  </div>
+
+  <div class="window" id="activate-2fa" style="display: none">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title">Activate 2FA</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <img id="img-qr-code">
+      <input type="text" placeholder="Enter Code">
+      <button id="valide-qr-code-id">Validate</button>
     </div>
   </div>
 
@@ -346,6 +412,8 @@
   <script src="js/updateUserWindow.js"></script>
   <script src="js/changeImage.js"></script>
   <script src="js/pong.js"></script>
+  <script src="js/2fa.js"></script>
+  <script src="js/alertWin98.js"></script>
   <script>
     window.onload = function () {
       loadMessageHistory();
