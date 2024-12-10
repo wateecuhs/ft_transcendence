@@ -33,14 +33,14 @@ class Ball:
         self.radius = radius
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
-        # self.prev_time = time.time()
+        self.prev_time = time.time()
 
     def move(self):
-        # delta_time = time.time() - self.prev_time
-        # self.prev_time = time.time()
+        delta_time = (time.time() - self.prev_time) * FPS
+        self.prev_time = time.time()
 
-        self.x += self.dx #* delta_time
-        self.y += self.dy #* delta_time
+        self.x += self.dx * delta_time
+        self.y += self.dy * delta_time
 
     def reset(self):
         self.x = self.base_x

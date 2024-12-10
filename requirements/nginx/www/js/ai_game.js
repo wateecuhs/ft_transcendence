@@ -14,6 +14,9 @@ const winHeight = 600;
 const roomName = "room1"; // Replace with dynamic room name if needed
 const socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + roomName + '/');
 
+// let lastGameState = null;
+// let lastUpdateTime = null;
+
 socket.onopen = function() {
     console.log('WebSocket connection established');
     console.log('socket', socket);
@@ -32,9 +35,37 @@ socket.onmessage = function(event) {
     if (gameState.type === 'handler') {
         return;
     }
+    lastGameState = gameState;
+    lastUpdateTime = performance.now();
     // requestAnimationFrame(() => drawGame(gameState));
     drawGame(gameState);
 };
+
+// function getPredictedState() {
+//     if (!lastGameState || !lastUpdateTime) {
+//         return null;
+//     }
+
+//     const currentTime = performance.now();
+//     const deltaTime = (currentTime - lastUpdateTime) / 1000; // Convert to seconds
+
+//     // const predictedState = JSON.parse(JSON.stringify(lastGameState)); // Deep copy the last known state
+//     const predictedState = lastGameState; // Shallow copy the last known state
+
+//     // Predict paddle positions
+//     if (lastGameState.paddle_left.dy) {
+//         predictedState.paddle_left.y += lastGameState.paddle_left.dy * deltaTime;
+//     }
+//     if (lastGameState.paddle_right.dy) {
+//         predictedState.paddle_right.y += lastGameState.paddle_right.dy * deltaTime;
+//     }
+
+//     // Predict ball position
+//     predictedState.ball.x += lastGameState.ball.dx * deltaTime;
+//     predictedState.ball.y += lastGameState.ball.dy * deltaTime;
+
+//     return predictedState;
+// }
 
 // function throttle(func, limit) {
 //     let inThrottle;
@@ -95,7 +126,7 @@ setInterval(() => {
         socket.send(JSON.stringify(commandBuffer));
         commandBuffer = {};
     }
-}, 15); // Send commands every 15ms
+}, 16); // Send commands every 16ms
 
 // document.addEventListener('keydown', (event) => {
 //     const command = {};
@@ -114,6 +145,13 @@ setInterval(() => {
 //     if (event.key === 'ArrowDown') command.move_right_down = false;
 //     socket.send(JSON.stringify(command));
 // });
+
+// setInterval(() => {
+//     const predictedState = getPredictedState();
+//     if (predictedState) {
+//         drawGame(predictedState);
+//     }
+// }, 8); // Update predicted state every 8ms
 
 function resizeCanvas() {
     const width = window.innerWidth * 0.8;
