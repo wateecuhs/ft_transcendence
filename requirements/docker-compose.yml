@@ -109,8 +109,37 @@ services:
       timeout: 5s
       retries: 5
 
+  ai_game:
+    build: ./ai_game
+    env_file:
+      - ./conf/.env-ai_game
+    networks:
+      - peas
+      - ai_game
+    ports:
+      - "8003:8003"
+    depends_on:
+      game-db:
+        condition: service_healthy
+    
+  # game-db:
+  #   image: postgres:14
+  #   restart: on-failure
+  #   volumes:
+  #     - game-db-volume:/var/lib/postgresql/data
+  #   env_file:
+  #     - ./conf/.env-game
+  #   networks:
+  #     - game
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
+  #     interval: 1s
+  #     timeout: 5s
+  #     retries: 5
+
 
 volumes:
   chat-db-volume: {}
   auth-db-volume: {}
+  game-db-volume: {}
   matchmaking-db-volume: {}

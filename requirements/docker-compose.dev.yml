@@ -10,10 +10,13 @@ networks:
   matchmaking-dev:
     name: matchmaking-dev
     internal: true
+  ai_game-dev:
+    name: ai_game-dev
+    internal: true
 
 services:
-  nginx:
-    container_name: nginx
+  nginx-dev:
+    container_name: nginx-dev
     build:
       context: ./nginx
       dockerfile: Dockerfile.dev
@@ -24,12 +27,12 @@ services:
     networks:
       - peas-dev
     depends_on:
-      - chat
-      - auth
-      - matchmaking
+      - chat-dev
+      - auth-dev
+      - matchmaking-dev
 
-  chat:
-    container_name: chat
+  chat-dev:
+    container_name: chat-dev
     build:
       context: ./chat
       dockerfile: Dockerfile.dev
@@ -42,7 +45,6 @@ services:
     networks:
       - chat-dev
       - peas-dev
-      - auth-dev
     depends_on:
       chat-db-dev:
         condition: service_healthy
@@ -63,8 +65,8 @@ services:
       timeout: 5s
       retries: 5
 
-  auth:
-    container_name: auth
+  auth-dev:
+    container_name: auth-dev
     build:
       context: ./auth
       dockerfile: Dockerfile.dev
@@ -98,8 +100,8 @@ services:
       retries: 5
 
 
-  matchmaking:
-    container_name: matchmaking
+  matchmaking-dev:
+    container_name: matchmaking-dev
     build:
       context: ./matchmaking
       dockerfile: Dockerfile.dev
@@ -133,8 +135,41 @@ services:
       timeout: 5s
       retries: 5
 
+  ai_game-dev:
+    container_name: ai_game-dev
+    build: 
+      context: ./ai_game
+      dockerfile: Dockerfile.dev
+    # env_file:
+    #   - ./conf/dev.env-ai_game
+    networks:
+      - peas-dev
+      - ai_game-dev
+    volumes:
+      - ./ai_game/app:/app/
+    ports:
+      - "8003:8003"
+    # depends_on:
+    #   game-db:
+    #     condition: service_healthy
+    
+  # game-db:
+  #   image: postgres:14
+  #   restart: on-failure
+  #   volumes:
+  #     - game-db-volume:/var/lib/postgresql/data
+  #   env_file:
+  #     - ./conf/.env-game
+  #   networks:
+  #     - game
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
+  #     interval: 1s
+  #     timeout: 5s
+  #     retries: 5
 
 volumes:
   chat-db-volume-dev: {}
   auth-db-volume-dev: {}
+  game-db-volume-dev: {}
   matchmaking-db-volume-dev: {}

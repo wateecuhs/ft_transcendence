@@ -15,7 +15,7 @@ server {
     }
 
     location /chat/ {
-        proxy_pass http://chat:8000/;
+        proxy_pass http://chat-dev:8000/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection upgrade;
@@ -29,7 +29,7 @@ server {
         proxy_redirect off;
     }
     location /auth/ {
-        proxy_pass http://auth:8001/;
+        proxy_pass http://auth-dev:8001/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection upgrade;
@@ -42,7 +42,20 @@ server {
         proxy_redirect off;
     }
     location /matchmaking/ {
-        proxy_pass http://matchmaking:8002/;
+        proxy_pass http://matchmaking-dev:8002/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $server_name;
+        proxy_read_timeout 86400;
+        proxy_redirect off;
+    }
+    location /ai_game/ {
+        proxy_pass http://ai_game-dev:8003/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection upgrade;
