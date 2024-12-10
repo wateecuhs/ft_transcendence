@@ -8,23 +8,39 @@ class Room(models.Model):
         FINISHED = "FINISHED", "Finished"
         READY = "READY", "Ready"
 
-    class Type(models.TextChoices):
-        TOURNAMENT = "TOURNAMENT", "Tournament"
-        MATCH = "MATCH", "Match"
-
-    class MaxPlayers(models.IntegerChoices):
-        TWO = 2
-        FOUR = 4
-        EIGHT = 8
-
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     label = models.CharField(max_length=255)
 
     owner = models.UUIDField()
-    room_type = models.CharField(max_length=10, choices=Type.choices, default=Type.MATCH)
-    max_players = models.IntegerField(choices=MaxPlayers.choices, default=MaxPlayers.TWO)
     status = models.CharField(max_length=8, choices=Status.choices, default=Status.WAITING)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.label
+
+class Tournament(models.Model):
+    class Status(models.TextChoices):
+        PLAYING = "PLAYING", "Playing"
+        WAITING = "WAITING", "Waiting"
+        FINISHED = "FINISHED", "Finished"
+        READY = "READY", "Ready"
+
+    class Round(models.TextChoices):
+        FIRST = "FIRST", "First"
+        FINAL = "FINAL", "Final"
+
+    class MaxPlayers(models.IntegerChoices):
+        TWO = 2
+        FOUR = 4
+
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    label = models.CharField(max_length=255)
+    owner = models.UUIDField()
+    players = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=8, choices=Status.choices, default=Status.WAITING)
+    round = models.CharField(max_length=5, choices=Round.choices, default=Round.FIRST)
+    max_players = models.IntegerField(choices=MaxPlayers.choices, default=MaxPlayers.FOUR)
+
+    def __str__(self):
+        return self.room.label
