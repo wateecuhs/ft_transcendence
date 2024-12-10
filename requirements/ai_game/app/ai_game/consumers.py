@@ -68,7 +68,7 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def update_game_state(self):
         while True:
-            self.room.move_paddle_ai()
+            # self.room.move_paddle_ai()
 
             game_state = await self.room.update_game_state()
             await self.channel_layer.group_send(

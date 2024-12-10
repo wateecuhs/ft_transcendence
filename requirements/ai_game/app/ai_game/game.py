@@ -109,17 +109,21 @@ class Room:
         if player in self.players:
             self.players.remove(player)
 
+    def move_paddles(self):
+        # async with self.lock:
+        if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
+            self.paddle_left.move(True)
+        if self.keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
+            self.paddle_left.move(False)
+        if self.keys_pressed["move_right_up"] and self.paddle_right.y - self.paddle_right.SPEED > 0:
+            self.paddle_right.move(True)
+        if self.keys_pressed["move_right_down"] and self.paddle_right.y + self.paddle_right.height + self.paddle_right.SPEED < WIN_HEIGHT:
+            self.paddle_right.move(False)
+
     async def update_game_state(self):
         async with self.lock:
-            if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
-                self.paddle_left.move(True)
-            if self.keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
-                self.paddle_left.move(False)
-            if self.keys_pressed["move_right_up"] and self.paddle_right.y - self.paddle_right.SPEED > 0:
-                self.paddle_right.move(True)
-            if self.keys_pressed["move_right_down"] and self.paddle_right.y + self.paddle_right.height + self.paddle_right.SPEED < WIN_HEIGHT:
-                self.paddle_right.move(False)
-
+            self.move_paddle_ai()
+            self.move_paddles()
             self.ball.move()
             self.handle_collision()
             self.update_score()
@@ -130,8 +134,8 @@ class Room:
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                 "score": self.score
             }
-            # await asyncio.sleep(0.005)
-            return game_state
+        # await asyncio.sleep(0.005)
+        return game_state
 
     def handle_collision(self):
         # Wall collision

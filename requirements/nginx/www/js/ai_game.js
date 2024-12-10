@@ -24,13 +24,15 @@ socket.onerror = function(error) {
     console.error('window.location.host:', window.location.host);
 };
 
+// let gameState = {};
+
 socket.onmessage = function(event) {
     // console.log('Received message:', event.data);
     const gameState = JSON.parse(event.data);
     if (gameState.type === 'handler') {
         return;
     }
-    requestAnimationFrame(() => drawGame(state));
+    // requestAnimationFrame(() => drawGame(gameState));
     drawGame(gameState);
 };
 
@@ -68,7 +70,8 @@ let commandBuffer = {};
 //     }
 
 function handleKeyDown(event) {
-    const command = { type: 'handler'};
+    // const command = { type: 'handler'};
+    commandBuffer.type = 'handler';
     if (event.key === 'w') commandBuffer.move_left_up = true;
     if (event.key === 's') commandBuffer.move_left_down = true;
     if (event.key === 'ArrowUp') commandBuffer.move_right_up = true;
@@ -76,7 +79,8 @@ function handleKeyDown(event) {
 }
 
 function handleKeyUp(event) {
-    const command = { type: 'handler'};
+    // const command = { type: 'handler'};
+    commandBuffer.type = 'handler';
     if (event.key === 'w') commandBuffer.move_left_up = false;
     if (event.key === 's') commandBuffer.move_left_down = false;
     if (event.key === 'ArrowUp') commandBuffer.move_right_up = false;
@@ -91,7 +95,7 @@ setInterval(() => {
         socket.send(JSON.stringify(commandBuffer));
         commandBuffer = {};
     }
-}, 20); // Send commands every 20ms
+}, 15); // Send commands every 15ms
 
 // document.addEventListener('keydown', (event) => {
 //     const command = {};
@@ -150,7 +154,7 @@ function drawGame(state) {
     ctx.fillText(state.score[0], canvas.width / 4, canvas.height * 0.1);
     ctx.fillText(state.score[1], canvas.width * 3 / 4, canvas.height * 0.1);
 
-    requestAnimationFrame(() => drawGame(state));
+    // requestAnimationFrame(() => drawGame(state));
 }
 
 // requestAnimationFrame(() => drawGame({}));
