@@ -8,4 +8,9 @@ class MessageType:
         DELETE = "room.delete"
         KICK = "room.kick"
 
+    class Matchmaking(TextChoices):
+        JOIN = "matchmaking.join"
+        LEAVE = "matchmaking.leave"
+        ACCEPT = "matchmaking.accept"
+
     

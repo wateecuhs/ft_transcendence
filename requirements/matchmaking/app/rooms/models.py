@@ -1,17 +1,6 @@
 from django.db import models
 from uuid import uuid4
 
-# THIS IS A TEMP MODEL WAITING FOR THE USER SERVICE TO BE READY
-class User(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    username = models.CharField(max_length=255)
-    status = models.CharField(max_length=8, default="ONLINE")
-    room = models.CharField(null=True, blank=True)
-
-    def __str__(self):
-        return self.username
-
-
 class Room(models.Model):
     class Status(models.TextChoices):
         PLAYING = "PLAYING", "Playing"
