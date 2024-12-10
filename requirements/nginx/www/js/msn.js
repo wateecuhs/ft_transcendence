@@ -21,7 +21,6 @@ function initWebSocket() {
       displayPrivateMessage(message.data);
     }
     else {
-      console.log("Unknown message type");
       console.log(message);
     }
   }
