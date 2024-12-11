@@ -1,256 +1,256 @@
-/* Fenêtre plein écran */
-.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: #e0e0e0;
-  z-index: 2000;
 
-  display: flex;
-  flex-direction: column;
-  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
-
-  font-family: "Tahoma", sans-serif;
+#winBook {
+  width: 700px;
+  height: 400px;
   border: 2px solid #000;
-}
-
-/* En-tête de la fenêtre */
-.window-header {
-  background: linear-gradient(#000080, #0000a0);
-  color: #fff;
-  padding: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 14px;
-  border-bottom: 2px solid #fff;
-  z-index: 20001;
-}
-
-.arrow-buttons button {
-  background: #c3c7cb;
-  border: 1px solid #404040;
-  font-size: 12px;
-  color: #000;
-  cursor: pointer;
-  margin: 0 2px;
-}
-
-.arrow-buttons button:hover {
-  background-color: #000080;
-  color: #fff;
-}
-
-.window-header .header-title {
-  font-weight: bold;
-  color: #ffffff;
-}
-
-.window-header .close-button {
-  background: #c3c7cb;
-  color: black;
-  border: 1px solid #404040;
-  padding: 2px 6px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.window-header .close-button:hover {
-  background: #000080;
-  color: #fff;
-}
-
-.winBook-page {
-  display: flex;
-  position: relative;
-  justify-content: space-between;
-  flex-direction: row;
-  background: #dbdada;
-  padding: 15px;
-  flex: 1;
-  overflow-y: auto;
-  border: 2px solid #808080;
-  margin: 10px;
-  box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #404040;
-}
-
-
-/* -------- CONTENUE DE LA PAGE -------- */
-
-
-
-/* Panneaux latéraux */
-.left-panel {
+  background-color: #f9f6f6;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 45%;
-  margin-top: 30px;
-  position: relative;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 2000;
 }
 
-.result-list {
-  font-size: 18px;
-  margin-top: 10px;
-  padding-left: 0;
-  list-style-type: none;
-  overflow-y: auto;
-  display: none;
-
-  background-color: #c3c7cb; /* Fond gris clair */
-  border: 2px solid #808080; /* Bordure grise foncée */
-  box-shadow: inset -2px -2px 0 #ffffff, inset 2px 2px 0 #404040, 2px 2px 0 #808080; /* Effet 3D Win98 */
-
-  top: 15%;
-  height: 80%;
-  width: 100%;
-  position: absolute;
-  margin-top: 20px;
-  max-width: 414px;
-}
-
-.tournament-button {
-  background-color: #c3c7cb;
-  border: 2px solid #808080;
-  font-size: 16px;
+#winBook .window-header {
+  background: linear-gradient(to bottom, #0a68a2, #005a8c);
+  color: #fff;
   padding: 8px;
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #404040;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  border-bottom: 2px solid #000;
 }
 
-.tournament-button:hover {
-  background-color: #808080;
+#winBook .window-content {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+  background-color: #dcdcdc;
+  border: 2px solid #808080;
+  box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #404040;
+}
+
+#winBook .tab-pane {
+  flex-direction: column;
+}
+
+/*Search pannel */
+
+#winBook .seach-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+}
+
+#winBook .search-section {
+  display: flex;
+  flex-direction: row;
+}
+
+#winBook #search-tournament {
+  height: 30px;
+  padding: 5px;
+  font-size: 14px;
+  margin-bottom: 1px;
+  border: 2px solid #000;
+  background-color: #f0f0f0;
+}
+
+#winBook #search-button {
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #0a68a2;
   color: white;
-}
-
-.result-list li {
-  padding: 10px 12px;
-  background-color: #e0e0e0; /* Fond gris plus clair pour contraste */
-  border-top: 1px solid #f0f0f0; /* Ligne supérieure plus claire */
-  border-bottom: 1px solid #404040; /* Ligne inférieure foncée */
-  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040; /* Incrustation 3D des éléments */
-  
+  height: 30px;
+  border: 2px solid #000;
   cursor: pointer;
+}
+
+#winBook #search-button:hover {
+  background-color: #005a8c;
+}
+
+#winBook .result-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+  border: 2px solid #808080;
+  box-shadow: inset -2px -2px 0 #ffffff, inset 2px 2px 0 #404040, 2px 2px 0 #808080;
+  overflow-y: auto;
+  max-height: 200px;
+  background-color: #d3d3d3;
   font-family: "MS Sans Serif", Arial, sans-serif;
+}
+
+#winBook .result-list li {
+  padding: 10px;
+  background-color: #e0e0e0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #404040;
+  cursor: pointer;
+  font-size: 16px;
+  color: black;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
+}
+
+#winBook .result-list li:hover {
+  background-color: #a0a0a0;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
+  border-top: 1px solid #d0d0d0;
+}
+
+#winBook #create-tournament-name {
+  height: 30px;
+  padding: 5px;
+  font-size: 14px;
+  margin-bottom: 1px;
+  border: 2px solid #000;
+  background-color: #f0f0f0;
+}
+
+#winBook #create-tournament-button {
+  width: 105px;
+  font-size: 14px;
+  background-color: #0a68a2;
+  color: white;
+  height: 30px;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+
+#winBook #create-tournament-button:hover {
+  background-color: #005a8c;
+}
+
+
+/*Search pannel */
+
+
+/*Tournament pannel */
+
+#winBook .tournament-content {
+  flex: 1;
+  padding: 10px;
+  background-color: #dcdcdc;
+  box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #404040;
+}
+
+#winBook .tournament-pane {
+  margin-top: 11%;
+  border: 2px solid #808080;
+  box-shadow: inset 2px 2px #fff, inset -2px -2px #404040;
+  padding: 10px;
+  background: #f9f9f9;
+  overflow-y: auto;
+  flex-grow: 1;
+  height: 85%;
+}
+
+#winBook .tournament-pane h2 {
   font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
   color: #000;
+  text-shadow: 1px 1px #fff, -1px -1px #404040;
 }
 
-.result-list li:hover {
-  background-color: #a0a0a0; /* Fond foncé au survol */
-  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040; /* Effet d'incrustation inchangé au survol */
-  border-top: 1px solid #d0d0d0; /* Bordure supérieure plus foncée au survol */
+#winBook #player-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+  border: 2px solid #808080;
+  background-color: #f9f9f9;
+  box-shadow: inset -2px -2px 0 #ffffff, inset 2px 2px 0 #404040;
+  max-height: 150px;
+  overflow-y: auto;
 }
 
-/* Afficher la liste des résultats quand elle contient des éléments */
-.left-panel .result-list.show {
+#winBook #player-list li {
+  padding: 5px 10px;
+  font-size: 14px;
+  background-color: #e0e0e0;
+  color: #000;
+  border-bottom: 1px solid #404040;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
+  cursor: default;
+}
+
+#winBook #player-list li:hover {
+  background-color: #c0c0c0;
+}
+
+#winBook #ready-button {
+  display: block;
+  margin: 10px auto 0;
+  padding: 5px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+  background: linear-gradient(to bottom, #a9a9a9, #c0c0c0);
+  border: 2px solid #606060;
+  box-shadow: inset 1px 1px 0 #bfbfbf, inset -1px -1px 0 #303030;
+  cursor: pointer;
+}
+
+#winBook #ready-button:hover {
+  background: linear-gradient(to bottom, #bdbdbd, #a3a3a3);
+  box-shadow: inset 1px 1px 0 #b0b0b0, inset -1px -1px 0 #202020;
+}
+
+
+#winBook .tabs {
+  display: flex;
+  border-bottom: 2px solid #808080;
+  background-color: #c0c0c0;
+  cursor: pointer;
+}
+
+#winBook .tab {
+  flex: 1;
+  text-align: center;
+  padding: 5px 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-bottom: none;
+  box-sizing: border-box;
+  font-size: 14px;
+  background: #d0d0d0;
+  color: black;
+}
+
+#winBook .tab.active {
+  background: #f0f0f0;
+  border-color: #808080 #808080 #f0f0f0;
+  box-shadow: inset 1px 1px 1px #ffffff, inset -1px -1px 1px #404040;
+  z-index: 2000;
+}
+
+#winBook .tab-content {
+  border: 2px solid #808080;
+  box-shadow: inset 2px 2px #fff, inset -2px -2px #404040;
+  padding: 10px;
+  background: #f9f9f9;
+  overflow-y: auto;
+  flex-grow: 1;
+  height: 85%;
+}
+
+#winBook .tab-pane {
+  display: none;
+}
+
+#winBook .tab-pane.active {
   display: block;
 }
 
-/* Champs de saisie */
-.search-section {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Espace entre le champ et le bouton */
-  margin-bottom: 12px; /* Espace sous la section */
-}
-
-/* Section de création */
-.create-section {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Espace entre le champ et le bouton */
-}
-
-/* Champ de saisie et boutons (style Win98) */
-.input-field, .button-98 {
-  padding: 6px;
-  font-size: 18px;
-  border: 2px solid #646363;
-  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #404040;
-  background-color: #c3c7cb;
-  color: #000;
-  font-family: "MS Sans Serif", Arial, sans-serif;
-}
-
-.button-98 {
-  cursor: pointer;
-  font-weight: bold;
-}
-
-.button-98:hover {
-  background-color: #000080;
+#winBook .button {
+  padding: 5px 10px;
+  margin-top: 5px;
   color: white;
+  border: none;
 }
 
-.vertical-bar {
-  position: absolute;
-  top: 0;
-  width: 20px; /* Largeur de la barre */
-  height: 100%; /* Prendre toute la hauteur du conteneur */
-  background-color: #c3c7cb; /* Couleur de fond claire */
-  border: 2px solid #808080; /* Bordure grise foncée */
-  margin-left: 48%; /* Centrer la barre */
-  box-shadow: 
-    inset 1px 1px 0 #ffffff,    /* Ombre interne blanche (éclat) */
-    inset -1px -1px 0 #404040,  /* Ombre interne noire (profondeur) */
-    2px 2px 3px #808080,       /* Ombre extérieure pour effet 3D */
-    1px 1px 2px #ffffff;       /* Ombre extérieure pour accentuer le relief */
-}
-
-.right-panel {
-  display: flex;
-  flex-direction: column;
-  width: 45%;
-  margin-top: 30px;
-  padding: 10px;
-  background: #e0e0e0;
-  border: 2px solid #808080;
-  box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #404040;
-  font-family: "MS Sans Serif", Arial, sans-serif;
-}
-
-.tournament-info {
-  margin-bottom: 20px;
-}
-
-#tournament-name {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000080;
-}
-
-#players-count {
-  font-size: 14px;
-  margin: 10px 0;
-}
-
-#players-list {
-  list-style-type: none;
-  padding-left: 0;
-  font-size: 14px;
-}
-
-.player {
-  display: flex;
-  justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid #d0d0d0;
-}
-
-.player-name {
-  font-weight: bold;
-}
-
-.player-status {
-  color: #000080;
-}
-
-.player:hover {
-  background-color: #d0d0d0;
+#winBook .button:hover {
   cursor: pointer;
 }

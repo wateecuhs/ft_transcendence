@@ -1,166 +1,174 @@
-const winBook = document.getElementById('winBook');
-const winBookPages = winBook.querySelectorAll('.winBook-page');
-
-const winSearchTournament = winBook.querySelector('#search-button');
-const winSearchInput = winBook.querySelector('#search-tournament');
-const tournamentResultsList = winBook.querySelector('#tournament-results');
-
-const createTournamentButton = winBook.querySelector('#create-tournament-button');
-
-let currentPageIndex = 0;
-
-
-let tournaments = [
-    { name: 'Tournoi 1', maxPlayers: 4, creator: 'player1', players: [{ name: 'player1', status: 'Ready' }, { name: 'test', status: 'Ready'}] },
-    { name: 'Tournoi 2', maxPlayers: 4, creator: 'player2', players: [{ name: 'player2', status: 'Not Ready' }] },
+const playersPool = [
+  'player1', 'player2', 'player3', 'player4', 'Jesniar', 'Shadow', 
+  'Ace', 'DragonSlayer', 'Nexus', 'Frost', 'Blaze', 'Viper'
 ];
 
-function displayTournamentInfo(tournament) {
-  console.log("TEST");
-  const displayTournament = document.querySelector(".tournament-info");
+function getRandomPlayers(maxPlayers) {
+  const shuffled = playersPool.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, maxPlayers);
+}
 
-  if (displayTournament) {
-    console.log("TEST_2");
-    const tournamentElement = displayTournament.querySelector(".tournament-name");
-    if (tournamentElement) {
-      tournamentElement.innerHTML = "";
-      tournamentElement.textContent = tournament.name;
-    }
+const tournaments = [
+  { name: 'Tournoi 1', maxPlayers: 4, creator: 'player1', players: getRandomPlayers(4) },
+  { name: 'Tournoi 2', maxPlayers: 4, creator: 'player2', players: getRandomPlayers(4) },
+  { name: 'Pong Championship', maxPlayers: 4, creator: 'player3', players: getRandomPlayers(4) },
+  { name: 'Winter Tournament', maxPlayers: 4, creator: 'player4', players: getRandomPlayers(4) },
+  { name: 'Last Stand', maxPlayers: 4, creator: 'Jesniar', players: getRandomPlayers(4) },
+  { name: 'Summer Tournament', maxPlayers: 4, creator: 'player4', players: getRandomPlayers(4) }
+];
 
-    const playersCountElement = displayTournament.querySelector("#players-count");
-    if (playersCountElement) {
-      playersCountElement.innerHTML = "";
-      playersCountElement.textContent = `Nombre de joueurs : ${tournament.players.length}`;
-    }
+document.getElementById('winBook').querySelector('.close-button').addEventListener('click', function() {
+  document.getElementById('winBook').style.display = 'none';
+});
 
-    const playersList = document.getElementById("players-list");
-    if (playersList) {
-      console.log("HERE 2");
-      playersList.innerHTML = "";
-
-      tournament.players.forEach(player => {
-        const playerItem = document.createElement("li");
-        playerItem.classList.add("player");
-
-        const playerName = document.createElement("span");
-        playerName.classList.add("player-name");
-        playerName.textContent = player.name;
-
-        const playerStatus = document.createElement("span");
-        playerStatus.classList.add("player-status");
-        playerStatus.textContent = player.status;
-
-        playerItem.appendChild(playerName);
-        playerItem.appendChild(playerStatus);
-
-        playersList.appendChild(playerItem);
-      });
-    }
-  } else {
-      console.error("Element .tournament-info non trouvé");
+function toggleWinbookWindow() {
+  const msnWindow = document.getElementById('winBook');
+  if (msnWindow.style.display === 'none') {
+    msnWindow.style.display = 'flex';
+    msnWindow.style.position = 'absolute';
+    msnWindow.style.top = `${window.innerHeight / 2 - msnWindow.offsetHeight / 2}px`;
+    msnWindow.style.left = `${window.innerWidth / 2 - msnWindow.offsetWidth / 2}px`;
   }
 }
 
-function showTournament() {
-  const query = winSearchInput.value.toLowerCase();
-  console.log("Saisie de l'utilisateur :", query);
-
-  const filteredTournaments = tournaments.filter(tournament => {
-      console.log("Vérification tournoi :", tournament.name);
-      return tournament.name.toLowerCase().includes(query);
-  });
-
-  console.log("Tournois filtrés :", filteredTournaments);
-
-  tournamentResultsList.innerHTML = '';
-
-  if (filteredTournaments.length > 0) {
-    filteredTournaments.forEach(tournament => {
-      const button = document.createElement('button');
-      button.textContent = `${tournament.name} (Max: ${tournament.maxPlayers} joueurs)`;
-      button.classList.add('tournament-button');
-
-      button.addEventListener('click', function() {
-          console.log("Tournoi sélectionné :", tournament.name);
-          displayTournamentInfo(tournament);
-      });
-
-      tournamentResultsList.appendChild(button);
-  });
-  tournamentResultsList.classList.add('show');
-  } else {
-      const noResultsItem = document.createElement('li');
-      noResultsItem.textContent = 'Aucun tournoi trouvé';
-      tournamentResultsList.appendChild(noResultsItem);
-      tournamentResultsList.classList.add('show');
-  }
-}
-
-function addNewTournament() {
-  const tournamentNameInput = document.getElementById('new-tournament-name');
-  const tournamentName = tournamentNameInput.value.trim();
-
-  if (!tournamentName) {
-    alert("Veuillez entrer un nom pour le tournoi");
+document.addEventListener("DOMContentLoaded", () => {
+  const winBookWindow = document.getElementById("winBook");
+  if (!winBookWindow) {
+    console.error("L'élément #winBook est introuvable !");
     return;
   }
 
-  const newTournament = {
-    name: tournamentName,
-    maxPlayers: 4,
-    creator: 'player1',
-    players: []
-  };
+  const tabs = winBookWindow.querySelectorAll(".tabs .tab");
+  const panes = winBookWindow.querySelectorAll(".tab-content .tab-pane");
 
-  tournaments.push(newTournament);
-
-  tournamentNameInput.value = '';
-
-  showTournament();
-}
-
-winSearchTournament.addEventListener('click', showTournament);
-createTournamentButton.addEventListener('click', addNewTournament);
-
-winSearchInput.addEventListener('keypress', function(event) {
-  if(event.key == 'Enter') {
-    showTournament();
+  if (tabs.length === 0 || panes.length === 0) {
+    console.error("Aucun onglet ou contenu d'onglet trouvé !");
+    return;
   }
-});
 
-function showPage(pageIndex) {
-  winBookPages.forEach((page, index) => {
-    page.style.display = (index === pageIndex) ? 'block' : 'none';
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.classList.remove("active"));
+      panes.forEach((pane) => (pane.style.display = "none"));
+
+      tab.classList.add("active");
+      const targetId = tab.dataset.tab;
+      const targetPane = winBookWindow.querySelector(`#${targetId}`);
+      if (targetPane) {
+        targetPane.style.display = "flex";
+      } else {
+        console.error(`Le contenu de l'onglet #${targetId} est introuvable !`);
+      }
+    });
   });
-  currentPageIndex = pageIndex;
 
-  if (pageIndex === 0) {
-    history.replaceState({ page: pageIndex }, "", "#winbook");
-  } else {
-    history.pushState({ page: pageIndex }, "", `#page${pageIndex}`);
+  const tournamentResultsList = winBookWindow.querySelector('#tournament-results');
+  const winSearchInput = winBookWindow.querySelector('#search-tournament');
+  const searchButton = winBookWindow.querySelector('#search-button');
+
+  const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
+  const playerListElement = winBookWindow.querySelector('#player-list');
+  const readyButton = winBookWindow.querySelector('#ready-button');
+
+  const createTournamentNameInput = document.querySelector('#create-tournament-name');
+  const createTournamentButton = document.querySelector('#create-tournament-button');
+
+  createTournamentButton.addEventListener('click', () => {
+    const tournamentName = createTournamentNameInput.value.trim();
+
+    if (tournamentName === '') {
+      raiseAlert('Veuillez entrer un nom pour le tournoi.', 'error');
+      return;
+    }
+
+    const newTournament = {
+      name: tournamentName,
+      maxPlayers: 4,
+      creator: 'Vous',
+      players: [],
+    };
+
+    tournaments.push(newTournament);
+    raiseAlert(`Le tournoi "${tournamentName}" a été créé avec succès.`, 'success');
+    showTournamentDetails(newTournament);
+    createTournamentNameInput.value = '';
+  });
+
+  function showTournamentResults(query) {
+    const filteredTournaments = tournaments.filter(tournament =>
+      tournament.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    tournamentResultsList.innerHTML = '';
+
+    if (filteredTournaments.length > 0) {
+      filteredTournaments.forEach(tournament => {
+        const li = document.createElement('li');
+        li.textContent = `${tournament.name} (Max: ${tournament.maxPlayers} joueurs)`;
+
+        li.addEventListener('click', function() {
+          raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+          showTournamentDetails(tournament);
+        });
+
+        tournamentResultsList.appendChild(li);
+      });
+    } else {
+      const noResultsItem = document.createElement('li');
+      noResultsItem.textContent = 'Aucun tournoi trouvé';
+      tournamentResultsList.appendChild(noResultsItem);
+    }
   }
-}
 
-function toggleWinbookWindow() {
-  const winbookWindow = document.getElementById('winBook');
-  if (winbookWindow.style.display === 'none') {
-    winbookWindow.style.display = 'flex';
-    showPage(0);
-    history.pushState({ page: "winbook" }, "", "#winbook");
-  } else {
-    winbookWindow.style.display = 'none';
+  function showAllTournaments() {
+    tournamentResultsList.innerHTML = '';
+    tournaments.forEach(tournament => {
+      const li = document.createElement('li');
+      li.textContent = `${tournament.name} (Max: ${tournament.maxPlayers} joueurs)`;
+
+      li.addEventListener('click', function() {
+        raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+        showTournamentDetails(tournament);
+      });
+
+      tournamentResultsList.appendChild(li);
+    });
   }
-}
 
-window.addEventListener('popstate', function (event) {
-  const currentPage = window.location.hash;
 
-  if (currentPage === "#winbook") {
-    toggleWinbookWindow(true);
-  } else if (currentPage.startsWith("#page")) {
-    const pageIndex = parseInt(currentPage.replace("#page", ""));
-    showPage(pageIndex);
-  } else if (currentPage === "") {
-    toggleWinbookWindow(false);
+  function showTournamentDetails(tournament) {
+    tournamentNameElement.textContent = tournament.name;
+    playerListElement.innerHTML = '';
+
+    tournament.players.forEach(player => {
+      const li = document.createElement('li');
+      li.textContent = player;
+      playerListElement.appendChild(li);
+    });
+
+    readyButton.style.display = 'block';
+    readyButton.addEventListener('click', () => {
+      raiseAlert(`Vous êtes maintenant prêt pour ${tournament.name}`);
+      readyButton.disabled = true;
+      readyButton.textContent = 'Vous êtes prêt';
+    });
   }
+
+  searchButton.addEventListener('click', () => {
+    const query = winSearchInput.value.trim();
+    if (query === '') {
+      showAllTournaments();
+    } else {
+      showTournamentResults(query);
+    }
+  });
+
+  winSearchInput.addEventListener('keydown', (event) => {
+    if (event.key === "Enter") {
+      searchButton.click();
+    }
+  });
+
+  showAllTournaments();
 });
+

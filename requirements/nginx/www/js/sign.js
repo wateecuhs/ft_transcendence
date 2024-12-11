@@ -214,7 +214,25 @@ async function SignIn42() {
     }
 }
 
+async function can_sign_in() {
+	try {
+		const access_token = getTokenCookie();
+		if (access_token) {
+			const userInfo = await getUserInfo(access_token);
+			if (userInfo) {
+				updateUserInfo(userInfo.username);
+				updateUserStat();
+				const loginPage = document.getElementById('login-id-page');
+				loginPage.style.display = 'none';
+			}
+		}
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+	can_sign_in();
 	SignIn();
 	SignUp();
 	SignIn42();
