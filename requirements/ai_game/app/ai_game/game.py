@@ -142,7 +142,6 @@ class Room:
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                 "score": self.score
             }
-        # await asyncio.sleep(0.005)
         return game_state
 
     def handle_collision(self):
@@ -192,8 +191,6 @@ class Room:
     def move_paddle_ai(self):
         self.keys_pressed["move_right_up"] = False
         self.keys_pressed["move_right_down"] = False
-
-        # current_time = time.time()
 
         output = self.bot.net.activate((self.paddle_right.y, self.ball.y, abs(self.paddle_right.x - self.ball.x)))
         decision = output.index(max(output))
