@@ -64,6 +64,10 @@ class Bot:
                                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                                          config_path)
         self.net = neat.nn.FeedForwardNetwork.create(self.genome, self.config)
+        self.paddle_x = WIN_WIDTH - PADDLE_WIDTH - 10
+        self.paddle_y = WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2
+        self.ball_x = WIN_WIDTH // 2
+        self.ball_y = WIN_HEIGHT // 2
 
     def get_genome(self, difficulty):
         local_dir = os.path.dirname(__file__)
@@ -79,6 +83,11 @@ class Bot:
             genome = pickle.load(f)
 
         return genome
+
+    def update(self, paddle_y, ball_y, ball_x):
+        self.paddle_y = paddle_y
+        self.ball_y = ball_y
+        self.ball_x = ball_x
 
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
@@ -106,6 +115,7 @@ class Room:
         self.left_hits = 0
         self.right_hits = 0
         self.ball.serve()
+        self.prev_time = time.time()
 
     async def add_player(self, player):
         if len(self.players) < 2:
@@ -192,7 +202,13 @@ class Room:
         self.keys_pressed["move_right_up"] = False
         self.keys_pressed["move_right_down"] = False
 
-        output = self.bot.net.activate((self.paddle_right.y, self.ball.y, abs(self.paddle_right.x - self.ball.x)))
+        # Bot gets updated once per second
+        delta_time = time.time() - self.prev_time
+        if delta_time >= 1:
+            self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x)
+            self.prev_time = time.time()
+
+        output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x)))
         decision = output.index(max(output))
 
         if decision == 0:
