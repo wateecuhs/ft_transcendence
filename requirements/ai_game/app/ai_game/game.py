@@ -167,9 +167,11 @@ class Room:
         if self.ball.x < 0:
             self.score[1] += 1
             self.ball.reset()
+            self.ball.MAX_VELOCITY *= 1.05
         elif self.ball.x > WIN_WIDTH:
             self.score[0] += 1
             self.ball.reset()
+            self.ball.MAX_VELOCITY *= 1.05
 
     def move_paddle_ai(self):
         self.keys_pressed["move_right_up"] = False
