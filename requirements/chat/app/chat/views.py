@@ -1,8 +1,10 @@
 from rest_framework.views import APIView
+from rest_framework.request import Request
 from rest_framework.response import Response
 from .serializers import MessageSerializer
 from .models import Message
 from .enums import MessageType
+import chat.models as cmod
 from datetime import datetime
 
 
@@ -19,3 +21,7 @@ class MessagesView(APIView):
                 'created_at': formatted_time
             }})
         return Response(message_history)
+    
+class FriendsView(APIView):
+    def get(self, request: Request, username: str):
+         return Response(list(cmod.User.objects.get(username=username).get_friends()))
