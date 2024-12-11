@@ -35,8 +35,8 @@ socket.onmessage = function(event) {
     if (gameState.type === 'handler') {
         return;
     }
-    lastGameState = gameState;
-    lastUpdateTime = performance.now();
+    // lastGameState = gameState;
+    // lastUpdateTime = performance.now();
     // requestAnimationFrame(() => drawGame(gameState));
     drawGame(gameState);
 };
@@ -90,7 +90,7 @@ let commandBuffer = {};
 //     if (event.key === 'ArrowDown') command.move_right_down = true;
 //     socket.send(JSON.stringify(command));
 //   }
-  
+
 // function handleKeyUp(event) {
 //     const command = { type: 'handler'};
 //     if (event.key === 'w') command.move_left_up = false;

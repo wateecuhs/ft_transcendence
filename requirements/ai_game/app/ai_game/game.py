@@ -33,20 +33,27 @@ class Ball:
         self.radius = radius
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
-        self.prev_time = time.time()
+        self.serving = True
+        # self.prev_time = time.time()
 
     def move(self):
-        delta_time = (time.time() - self.prev_time) * FPS
-        self.prev_time = time.time()
+        # delta_time = (time.time() - self.prev_time) * FPS
+        # self.prev_time = time.time()
 
-        self.x += self.dx * delta_time
-        self.y += self.dy * delta_time
+        self.x += self.dx #* delta_time
+        self.y += self.dy #* delta_time
 
     def reset(self):
         self.x = self.base_x
         self.y = self.base_y
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
+        self.serve()
+
+    def serve(self):
+        self.serving = True
+        self.dx *= 0.5
+        self.dy *= 0.5
 
 class Bot:
     def __init__(self, difficulty):
@@ -98,6 +105,7 @@ class Room:
         }
         self.left_hits = 0
         self.right_hits = 0
+        self.ball.serve()
 
     async def add_player(self, player):
         if len(self.players) < 2:
@@ -153,6 +161,10 @@ class Room:
                 bounce_mod = (self.paddle_left.height / 2) / self.ball.MAX_VELOCITY
                 self.ball.dy = y_diff / bounce_mod
                 self.left_hits += 1
+                if self.ball.serving:
+                    self.ball.serving = False
+                    self.ball.dx *= 2
+                    self.ball.dy *= 2
         else:
             if (self.paddle_right.y - self.ball.radius <= self.ball.y <= self.paddle_right.y + self.paddle_right.height and
                 self.ball.x + self.ball.radius >= self.paddle_right.x):
@@ -162,6 +174,10 @@ class Room:
                 bounce_mod = (self.paddle_right.height / 2) / self.ball.MAX_VELOCITY
                 self.ball.dy = y_diff / bounce_mod
                 self.right_hits += 1
+                if self.ball.serving:
+                    self.ball.serving = False
+                    self.ball.dx *= 2
+                    self.ball.dy *= 2
 
     def update_score(self):
         if self.ball.x < 0:
@@ -176,6 +192,8 @@ class Room:
     def move_paddle_ai(self):
         self.keys_pressed["move_right_up"] = False
         self.keys_pressed["move_right_down"] = False
+
+        # current_time = time.time()
 
         output = self.bot.net.activate((self.paddle_right.y, self.ball.y, abs(self.paddle_right.x - self.ball.x)))
         decision = output.index(max(output))
