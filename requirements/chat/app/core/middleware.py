@@ -10,6 +10,7 @@ class TokenAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         try:
             headers = dict(scope["headers"])
+            print(headers, flush=True)
             cookies = {}
             for cookie in headers[b"cookie"].decode().split("; "):
                 cookies[cookie.split("=")[0]] = cookie.split("=")[1]
@@ -21,8 +22,10 @@ class TokenAuthMiddleware(BaseMiddleware):
             scope["user"] = None
             return await super().__call__(scope, receive, send)
         user_data = r.json()
-        user, created = await database_sync_to_async(User.objects.get_or_create)(username=user_data["username"], defaults={'status':User.Status.ONLINE})
-        print(user, created, flush=True)
+        try:
+            user = await database_sync_to_async(User.objects.get)(username=(user_data["username"]))
+        except ObjectDoesNotExist:
+            user = await database_sync_to_async(User.objects.create)(username=user_data["username"], status=User.Status.ONLINE)
         scope["user"] = user
         return await super().__call__(scope, receive, send)
 
