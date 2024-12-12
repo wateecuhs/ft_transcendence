@@ -68,26 +68,30 @@ class Bot:
         self.paddle_y = WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2
         self.ball_x = WIN_WIDTH // 2
         self.ball_y = WIN_HEIGHT // 2
+        self.ball_dx = 0
+        self.ball_dy = 0
 
     def get_genome(self, difficulty):
         local_dir = os.path.dirname(__file__)
 
-        if difficulty == "easy":
-            genome_path = os.path.join(local_dir, 'bots', 'easy-gen30.pkl')
-        elif difficulty == "medium":
-            genome_path = os.path.join(local_dir, 'bots', 'normal-gen50.pkl')
-        elif difficulty == "hard":
-            genome_path = os.path.join(local_dir, 'bots', 'hard-gen50_2.pkl')
+        # if difficulty == "easy":
+        #     genome_path = os.path.join(local_dir, 'bots', 'easy-gen30.pkl')
+        # elif difficulty == "medium":
+        #     genome_path = os.path.join(local_dir, 'bots', 'normal-gen50.pkl')
+        if difficulty == "hard":
+            genome_path = os.path.join(local_dir, 'bots', 'new.pkl')
 
         with open(genome_path, 'rb') as f:
             genome = pickle.load(f)
 
         return genome
 
-    def update(self, paddle_y, ball_y, ball_x):
+    def update(self, paddle_y, ball_y, ball_x, ball_dx, ball_dy):
         self.paddle_y = paddle_y
         self.ball_y = ball_y
         self.ball_x = ball_x
+        self.ball_dx = ball_dx
+        self.ball_dy = ball_dy
 
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
@@ -192,11 +196,11 @@ class Room:
         if self.ball.x < 0:
             self.score[1] += 1
             self.ball.reset()
-            self.ball.MAX_VELOCITY *= 1.05
+            self.ball.MAX_VELOCITY *= 1.025
         elif self.ball.x > WIN_WIDTH:
             self.score[0] += 1
             self.ball.reset()
-            self.ball.MAX_VELOCITY *= 1.05
+            self.ball.MAX_VELOCITY *= 1.025
 
     def move_paddle_ai(self):
         self.keys_pressed["move_right_up"] = False
@@ -205,10 +209,10 @@ class Room:
         # Bot gets updated once per second
         delta_time = time.time() - self.prev_time
         if delta_time >= 1:
-            self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x)
+            self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x, self.ball.dx, self.ball.dy)
             self.prev_time = time.time()
 
-        output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x)))
+        output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x), self.bot.ball_dx, self.bot.ball_dy))
         decision = output.index(max(output))
 
         if decision == 0:
