@@ -86,12 +86,12 @@ class Bot:
 
         return genome
 
-    def update(self, paddle_y, ball_y, ball_x, ball_dx, ball_dy):
+    def update(self, paddle_y, ball_y, ball_x):#, ball_dx, ball_dy):
         self.paddle_y = paddle_y
         self.ball_y = ball_y
         self.ball_x = ball_x
-        self.ball_dx = ball_dx
-        self.ball_dy = ball_dy
+        # self.ball_dx = ball_dx
+        # self.ball_dy = ball_dy
 
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
@@ -209,10 +209,10 @@ class Room:
         # Bot gets updated once per second
         delta_time = time.time() - self.prev_time
         if delta_time >= 1:
-            self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x, self.ball.dx, self.ball.dy)
+            self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x)#, self.ball.dx, self.ball.dy)
             self.prev_time = time.time()
 
-        output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x), self.bot.ball_dx, self.bot.ball_dy))
+        output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x)))#, self.bot.ball_dx, self.bot.ball_dy))
         decision = output.index(max(output))
 
         if decision == 0:

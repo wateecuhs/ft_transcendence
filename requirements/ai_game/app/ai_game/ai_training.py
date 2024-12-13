@@ -22,8 +22,8 @@ class GameInstance:
 		self.paddle_right_y = self.game.paddle_right.y
 		self.ball_x = self.game.ball.x
 		self.ball_y = self.game.ball.y
-		self.ball_dx = self.game.ball.dx
-		self.ball_dy = self.game.ball.dy
+		# self.ball_dx = self.game.ball.dx
+		# self.ball_dy = self.game.ball.dy
 		self.loops_done = 0
 
 	def update_bot(self):
@@ -33,8 +33,8 @@ class GameInstance:
 		self.paddle_right_y = self.game.paddle_right.y
 		self.ball_x = self.game.ball.x
 		self.ball_y = self.game.ball.y
-		self.ball_dx = self.game.ball.dx
-		self.ball_dy = self.game.ball.dy
+		# self.ball_dx = self.game.ball.dx
+		# self.ball_dy = self.game.ball.dy
 
 	def eval_genomes(self, genome1, genome2, config):
 		ai1 = neat.nn.FeedForwardNetwork.create(genome1, config)
@@ -49,27 +49,41 @@ class GameInstance:
 				self.loops_done = 0
 				# self.prev_time = time.time()
 
+			# self.key_pressed['move_left_up'] = False
+			# self.key_pressed['move_left_down'] = False
+			self.game.keys_pressed['move_left_up'] = False
+			self.game.keys_pressed['move_left_down'] = False
+
 			# output1 = ai1.activate((self.paddle_left.y, self.ball.y, abs(self.paddle_left.x - self.ball.x)))
-			output1 = ai1.activate((self.paddle_left_y, self.ball_y, abs(self.paddle_left_x - self.ball_x), self.ball_dx, self.ball_dy))
+			output1 = ai1.activate((self.paddle_left_y, self.ball_y, abs(self.paddle_left_x - self.ball_x)))#, self.ball_dx, self.ball_dy))
 			decision1 = output1.index(max(output1))
 
 			if decision1 == 0:
 				pass
 			elif decision1 == 1:
-				self.key_pressed['move_left_up'] = True
+				# self.key_pressed['move_left_up'] = True
+				self.game.keys_pressed['move_left_up'] = True
 			elif decision1 == 2:
-				self.key_pressed['move_left_down'] = True
+				# self.key_pressed['move_left_down'] = True
+				self.game.keys_pressed['move_left_down'] = True
+
+			# self.key_pressed['move_right_up'] = False
+			# self.key_pressed['move_right_down'] = False
+			self.game.keys_pressed['move_right_up'] = False
+			self.game.keys_pressed['move_right_down'] = False
 
 			# output2 = ai2.activate((self.paddle_right.y, self.ball.y, abs(self.paddle_right.x - self.ball.x)))
-			output2 = ai2.activate((self.paddle_right_y, self.ball_y, abs(self.paddle_right_x - self.ball_x), self.ball_dx, self.ball_dy))
+			output2 = ai2.activate((self.paddle_right_y, self.ball_y, abs(self.paddle_right_x - self.ball_x)))#, self.ball_dx, self.ball_dy))
 			decision2 = output2.index(max(output2))
 
 			if decision2 == 0:
 				pass
 			elif decision2 == 1:
-				self.key_pressed['move_right_up'] = True
+				# self.key_pressed['move_right_up'] = True
+				self.game.keys_pressed['move_right_up'] = True
 			elif decision2 == 2:
-				self.key_pressed['move_right_down'] = True
+				# self.key_pressed['move_right_down'] = True
+				self.game.keys_pressed['move_right_down'] = True
 
 			game_info = self.game.loop()
 
@@ -98,7 +112,8 @@ def train_ai(genomes, config):
 			game_instance.eval_genomes(genome1, genome2, config)
 
 def run_neat(config):
-	# pop = neat.Checkpointer.restore_checkpoint('ai_game/training_checkpoints/generation-39')
+	# checkpoint_path = os.path.join(os.path.dirname(__file__), 'training_checkpoints', 'generation-24')
+	# pop = neat.Checkpointer.restore_checkpoint(checkpoint_path)
 	pop = neat.Population(config)
 	pop.add_reporter(neat.StdOutReporter(True))
 	stats = neat.StatisticsReporter()
