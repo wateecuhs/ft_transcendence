@@ -425,7 +425,8 @@
   <script>
     window.onload = function () {
       loadMessageHistory();
-      ws = initWebSocket();
+      chatWS = initChatWebSocket();
+      mmWS = initMMWebSocket();
       updateTime();
       setInterval(updateTime, 1000);
     }

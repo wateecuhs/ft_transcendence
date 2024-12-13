@@ -9,6 +9,8 @@ class RoomsView(APIView):
         if request.query_params.get('status'):
             rooms = Room.objects.filter(status=request.query_params.get("status"))
         rooms = Room.objects.all()
+        if not rooms.exists():
+            return Response({"message": "No rooms found."})
         serializer = RoomSerializer(rooms, many=True)
         return Response(serializer.data)
 
@@ -30,5 +32,7 @@ class RoomView(APIView):
 class TournamentsView(APIView):
     def get(self, request: Request):
         tournaments = Tournament.objects.all()
+        if not tournaments.exists():
+            return Response({"message": "No tournaments found."})
         serializer = TournamentSerializer(tournaments, many=True)
         return Response(serializer.data)
