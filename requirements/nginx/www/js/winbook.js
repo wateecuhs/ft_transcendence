@@ -8,15 +8,13 @@ function getRandomPlayers(maxPlayers) {
   return shuffled.slice(0, maxPlayers);
 }
 
-function initWebSocket() {
+function initMMWebSocket() {
   var ws = new WebSocket('wss://localhost:8443/matchmaking/');
   ws.onmessage = function(event) {
     const message = JSON.parse(event.data);
-    if (message.type === "chat.public") {
-      displayChatMessage(message.data);
-    }
-    else if (message.type === "chat.private") {
-      displayPrivateMessage(message.data);
+    if (message.type === "tournament.join") {
+      showTournamentDetails(message.data);
+      console.log(message);
     }
     else {
       console.log(message);
@@ -94,8 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: tournamentName,
       maxPlayers: 4,
     };
-    ws.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
-    tournaments.push(newTournament);
+    mmWS.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
     raiseAlert(`Le tournoi "${tournamentName}" a été créé avec succès.`, 'success');
     showTournamentDetails(newTournament);
     createTournamentNameInput.value = '';
@@ -169,9 +166,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     readyButton.style.display = 'block';
     readyButton.addEventListener('click', () => {
+      mmWS.send(JSON.stringify({ type: 'tournament.join', data: tournament }));
       raiseAlert(`Vous êtes maintenant prêt pour ${tournament.name}`);
       readyButton.disabled = true;
-      readyButton.textContent = 'Vous êtes prêt';
+      readyButton.textContent = 'rejoint';
     });
   }
 

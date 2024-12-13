@@ -422,7 +422,7 @@
   <script>
     window.onload = function () {
       loadMessageHistory();
-      ws = initWebSocket();
+      mmWS = initMMWebSocket();
       updateTime();
       setInterval(updateTime, 1000);
     }

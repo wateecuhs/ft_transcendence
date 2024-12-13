@@ -40,17 +40,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         logger.info(f"[{self.username}] Disconnected. ({close_code})")
-        user_owned_rooms = await sync_to_async(get_user_rooms)(self.user_id)
-        user_owned_tournaments = await sync_to_async(get_user_tournaments)(self.user_id)
-        print(user_owned_rooms, user_owned_tournaments, flush=True)
-        for room in user_owned_rooms:
-            print(f"Deleting room {room.name}", flush=True)
-            await self._handle_delete_room({"data": {"name": room.name}})
-        for tournament in user_owned_tournaments:
-            print(f"Deleting tournament {tournament.name}", flush=True)
-            await self._handle_tournament_delete({"data": {"name": tournament.name}})
-            print(f"Deleted tournament {tournament.name}", flush=True)
-            await self.channel_layer.group_discard(f"tournament.{tournament.name}", self.channel_name)
+        self.leave_rooms()
         await self.channel_layer.group_discard(f"user.{self.username}", self.channel_name)
         await self.channel_layer.group_discard("matchmaking", self.channel_name)
 
@@ -143,12 +133,17 @@ class RoomConsumer(AsyncWebsocketConsumer):
             if len(tournament.players) >= tournament.max_players:
                 await self.error("Tournament is full.")
                 return
+            if self.username in tournament.players:
+                await self.error("You are already in this tournament.")
+                return
             await self.leave_rooms()
             await self.channel_layer.group_add(f"tournament.{data['name']}", self.channel_name)
             self.room = data["name"]
             data["author"] = self.username
+            tournament.players.append(self.username)
+            await sync_to_async(tournament.save)()
+            data["players"] = tournament.players
             await self.channel_layer.group_send(f"tournament.{data['name']}", {"type": MessageType.Tournament.JOIN, "data": data})
-            await sync_to_async(self.username.save)()
 
         except Tournament.DoesNotExist:
             await self.error("Tournament does not exist.")
@@ -160,7 +155,9 @@ class RoomConsumer(AsyncWebsocketConsumer):
         try:
             await self.channel_layer.group_discard(f"tournament.{data['name']}", self.channel_name)
             self.room = None
-            await sync_to_async(self.username.save)()
+            tournament = await sync_to_async(Tournament.objects.get)(name=data["name"])
+            tournament.players.remove(self.username)
+            await sync_to_async(tournament.save)()
             data["author"] = self.username
             await self.channel_layer.group_send(f"tournament.{data['name']}", {"type": MessageType.Tournament.LEAVE, "data": data})
         except Exception as e:
@@ -200,8 +197,10 @@ class RoomConsumer(AsyncWebsocketConsumer):
         try:
             await self.channel_layer.group_discard(f"room.{data['name']}", self.channel_name)
             self.room = None
-            await sync_to_async(self.username.save)()
             data["author"] = self.username
+            room = await sync_to_async(Room.objects.get)(name=data["name"])
+            room.players.remove(self.username)
+            await sync_to_async(room.save)()
             await self.channel_layer.group_send(f"room.{data['name']}", {"type": MessageType.Room.LEAVE, "data": data})
         except Exception as e:
             await self.error(str(e))
@@ -294,18 +293,25 @@ class RoomConsumer(AsyncWebsocketConsumer):
     async def tournament_create(self, event):
         logger.info(f"[{self.username}] Tournament create: {event['data']}")
         await self.send(json.dumps(("tournament.create", event["data"])))
+
+    async def tournament_join(self, event):
+        logger.info(f"[{self.username}] Tournament join: {event['data']}")
+        await self.send(json.dumps(("tournament.join", event["data"])))
     
+    async def tournament_leave(self, event):
+        logger.info(f"[{self.username}] Tournament leave: {event['data']}")
+        await self.send(json.dumps(("tournament.leave", event["data"])))
+    
+    async def tournament_start(self, event):
+        logger.info(f"[{self.username}] Tournament start: {event['data']}")
+        await self.send(json.dumps(("tournament.start", event["data"])))
+
     """utils"""
     async def leave_rooms(self):
-        user_owned_rooms = await sync_to_async(get_user_rooms)(self.user_id)
-        for room in user_owned_rooms:
-            await self._handle_delete_room({"data": {"name": room.name}})
         user_owned_tournaments = await sync_to_async(get_user_tournaments)(self.user_id)
         for tournament in user_owned_tournaments:
             await self._handle_tournament_delete({"data": {"name": tournament.name}})
-        user_rooms = await sync_to_async(get_user_playing_rooms)(self.user_id)
-        for room in user_rooms:
-            await self._handle_leave_room({"data": {"name": room.name}})
+        
         user_tournaments = await sync_to_async(get_user_playing_tournaments)(self.user_id)
         for tournament in user_tournaments:
             await self._handle_tournament_leave({"data": {"name": tournament.name}})
