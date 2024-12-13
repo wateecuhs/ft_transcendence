@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.request import Request
-from .serializers import RoomSerializer
-from .models import Room
+from .serializers import RoomSerializer, TournamentSerializer
+from .models import Room, Tournament
 
 class RoomsView(APIView):
     def get(self, request: Request):
@@ -22,7 +22,13 @@ class RoomsView(APIView):
             return Response({"error": str(e)}, status=400)
 
 class RoomView(APIView):
-    def get(self, request: Request, label: str):
-        room = Room.objects.get(label=label)
+    def get(self, request: Request, name: str):
+        room = Room.objects.get(name=name)
 
         return Response({"message": "Hello, world!"})
+    
+class TournamentsView(APIView):
+    def get(self, request: Request):
+        tournaments = Tournament.objects.all()
+        serializer = TournamentSerializer(tournaments, many=True)
+        return Response(serializer.data)
