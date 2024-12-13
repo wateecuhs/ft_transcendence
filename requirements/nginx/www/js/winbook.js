@@ -8,14 +8,23 @@ function getRandomPlayers(maxPlayers) {
   return shuffled.slice(0, maxPlayers);
 }
 
-const tournaments = [
-  { name: 'Tournoi 1', maxPlayers: 4, creator: 'player1', players: getRandomPlayers(4) },
-  { name: 'Tournoi 2', maxPlayers: 4, creator: 'player2', players: getRandomPlayers(4) },
-  { name: 'Pong Championship', maxPlayers: 4, creator: 'player3', players: getRandomPlayers(4) },
-  { name: 'Winter Tournament', maxPlayers: 4, creator: 'player4', players: getRandomPlayers(4) },
-  { name: 'Last Stand', maxPlayers: 4, creator: 'Jesniar', players: getRandomPlayers(4) },
-  { name: 'Summer Tournament', maxPlayers: 4, creator: 'player4', players: getRandomPlayers(4) }
-];
+function initWebSocket() {
+  var ws = new WebSocket('wss://localhost:8443/matchmaking/');
+  ws.onmessage = function(event) {
+    const message = JSON.parse(event.data);
+    if (message.type === "chat.public") {
+      displayChatMessage(message.data);
+    }
+    else if (message.type === "chat.private") {
+      displayPrivateMessage(message.data);
+    }
+    else {
+      console.log(message);
+    }
+  }
+  return ws;
+}
+
 
 document.getElementById('winBook').querySelector('.close-button').addEventListener('click', function() {
   document.getElementById('winBook').style.display = 'none';
@@ -84,10 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const newTournament = {
       name: tournamentName,
       maxPlayers: 4,
-      creator: 'Vous',
-      players: [],
     };
-
+    ws.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
     tournaments.push(newTournament);
     raiseAlert(`Le tournoi "${tournamentName}" a été créé avec succès.`, 'success');
     showTournamentDetails(newTournament);
@@ -95,44 +102,58 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function showTournamentResults(query) {
-    const filteredTournaments = tournaments.filter(tournament =>
-      tournament.name.toLowerCase().includes(query.toLowerCase())
-    );
-
     tournamentResultsList.innerHTML = '';
-
-    if (filteredTournaments.length > 0) {
-      filteredTournaments.forEach(tournament => {
-        const li = document.createElement('li');
-        li.textContent = `${tournament.name} (Max: ${tournament.maxPlayers} joueurs)`;
-
-        li.addEventListener('click', function() {
-          raiseAlert(`Vous avez sélectionné ${tournament.name}`);
-          showTournamentDetails(tournament);
-        });
-
-        tournamentResultsList.appendChild(li);
-      });
-    } else {
-      const noResultsItem = document.createElement('li');
-      noResultsItem.textContent = 'Aucun tournoi trouvé';
-      tournamentResultsList.appendChild(noResultsItem);
+    fetch('https://localhost:8443/matchmaking/tournaments/')
+      .then(response => response.json())
+      .then(data => {
+        const tournaments = data;
+        const filteredTournaments = tournaments.filter(tournament =>
+          tournament.name.toLowerCase().includes(query.toLowerCase())
+        );
+        tournamentResultsList.innerHTML = '';
+        
+        if (filteredTournaments.length > 0) {
+          filteredTournaments.forEach(tournament => {
+            const li = document.createElement('li');
+            li.textContent = `${tournament.name} (Max: 4 joueurs)`;
+            
+            li.addEventListener('click', function() {
+              raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+              showTournamentDetails(tournament);
+            });
+            
+            tournamentResultsList.appendChild(li);
+          });
+        } else {
+          const noResultsItem = document.createElement('li');
+          noResultsItem.textContent = 'Aucun tournoi trouvé';
+          tournamentResultsList.appendChild(noResultsItem);
+        }
+      })
     }
-  }
+
 
   function showAllTournaments() {
     tournamentResultsList.innerHTML = '';
-    tournaments.forEach(tournament => {
-      const li = document.createElement('li');
-      li.textContent = `${tournament.name} (Max: ${tournament.maxPlayers} joueurs)`;
-
-      li.addEventListener('click', function() {
-        raiseAlert(`Vous avez sélectionné ${tournament.name}`);
-        showTournamentDetails(tournament);
+    fetch('https://localhost:8443/matchmaking/tournaments/')
+      .then(response => response.json())
+      .then(data => {
+        const tournaments = data;
+        tournaments.forEach(tournament => {
+          const li = document.createElement('li');
+          li.textContent = `${tournament.name} (Max: 4 joueurs)`;
+    
+          li.addEventListener('click', function() {
+            raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+            showTournamentDetails(tournament);
+          });
+    
+          tournamentResultsList.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des tournois', error);
       });
-
-      tournamentResultsList.appendChild(li);
-    });
   }
 
 

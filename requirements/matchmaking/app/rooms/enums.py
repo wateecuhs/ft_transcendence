@@ -15,6 +15,7 @@ class MessageType:
         ACCEPT = "matchmaking.accept"
     
     class Tournament(TextChoices):
+        CREATE = "tournament.create"
         JOIN = "tournament.join"
         LEAVE = "tournament.leave"
         START = "tournament.start"

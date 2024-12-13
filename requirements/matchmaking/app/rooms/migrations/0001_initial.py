@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                         serialize=False,
                     ),
                 ),
-                ("label", models.CharField(max_length=255)),
+                ("name", models.CharField(max_length=255)),
                 ("owner", models.UUIDField()),
                 (
                     "status",
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
                         serialize=False,
                     ),
                 ),
-                ("label", models.CharField(max_length=255)),
+                ("name", models.CharField(max_length=255)),
                 ("owner", models.UUIDField()),
                 ("players", models.JSONField()),
                 ("created_at", models.DateTimeField(auto_now_add=True)),

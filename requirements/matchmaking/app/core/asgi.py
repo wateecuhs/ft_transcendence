@@ -24,7 +24,7 @@ application = ProtocolTypeRouter(
             SessionMiddlewareStack(
                 URLRouter(
                     [
-                        path("rooms", RoomConsumer.as_asgi()),
+                        path("", RoomConsumer.as_asgi()),
                     ]
                 )
             )
