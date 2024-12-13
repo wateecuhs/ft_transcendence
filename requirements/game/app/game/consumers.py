@@ -12,7 +12,7 @@ FPS = 60
 
 rooms = {}
 
-class AIGameConsumer(AsyncWebsocketConsumer):
+class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         print("Connected", flush=True)
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -49,11 +49,17 @@ class AIGameConsumer(AsyncWebsocketConsumer):
 
         player_index = self.room.players.index(self)
 
-        if player_index == 0:
+        if player_index == 0 or len(self.room.players) == 1:
             if "move_left_up" in command:
                 self.room.keys_pressed["move_left_up"] = command["move_left_up"]
             if "move_left_down" in command:
                 self.room.keys_pressed["move_left_down"] = command["move_left_down"]
+
+        if player_index == 1 or len(self.room.players) == 1:
+            if "move_right_up" in command:
+                self.room.keys_pressed["move_right_up"] = command["move_right_up"]
+            if "move_right_down" in command:
+                self.room.keys_pressed["move_right_down"] = command["move_right_down"]
 
         await self.channel_layer.group_send(
             self.room_name,
@@ -68,8 +74,6 @@ class AIGameConsumer(AsyncWebsocketConsumer):
 
     async def update_game_state(self):
         while True:
-            # self.room.move_paddle_ai()
-
             game_state = await self.room.update_game_state()
             await self.channel_layer.group_send(
                 self.room_name,

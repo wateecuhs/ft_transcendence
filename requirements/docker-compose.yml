@@ -13,6 +13,9 @@ networks:
   ai_game:
     name: ai_game
     internal: true
+  game:
+    name: game
+    internal: true
 
 services:
   nginx:
@@ -143,6 +146,21 @@ services:
   #     timeout: 5s
   #     retries: 5
 
+  game:
+    container_name: game
+    build:
+      context: ./game
+      dockerfile: Dockerfile
+    # env_file:
+    #   - ./conf/.env-game
+    networks:
+      - peas
+      - game
+    ports:
+      - "8004:8004"
+    # depends_on:
+    #   game-db:
+    #     condition: service_healthy
 
 volumes:
   chat-db-volume: {}
