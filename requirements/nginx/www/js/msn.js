@@ -10,9 +10,9 @@ function loadMessageHistory() {
     })
 }
 
-function initChatWebSocket() {
-  var chatWS = new WebSocket('wss://localhost:8443/chat/');
-  chatWS.onmessage = function(event) {
+function initWebSocket() {
+  var ws = new WebSocket('wss://localhost:8443/chat/');
+  ws.onmessage = function(event) {
     const message = JSON.parse(event.data);
     if (message.type === "chat.public") {
       displayChatMessage(message.data);
@@ -24,7 +24,7 @@ function initChatWebSocket() {
       console.log(message);
     }
   }
-  return chatWS;
+  return ws;
 }
 
 function showMsnPage(pageIndex) {
@@ -76,7 +76,7 @@ function setupSendMessage() {
     const message = chatInput.value.trim();
     if (message) {
       console.log("Sending stuff");
-      chatWS.send(JSON.stringify({
+      ws.send(JSON.stringify({
 				'type': 'chat_message',
 				'data': {
 					'sender': document.getElementsByClassName('chat-input').innerHTML,

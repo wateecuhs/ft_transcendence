@@ -8,9 +8,9 @@ function getRandomPlayers(maxPlayers) {
   return shuffled.slice(0, maxPlayers);
 }
 
-function initMMWebSocket() {
-  var mmWS = new WebSocket('wss://localhost:8443/matchmaking/');
-  mmWS.onmessage = function(event) {
+function initWebSocket() {
+  var ws = new WebSocket('wss://localhost:8443/matchmaking/');
+  ws.onmessage = function(event) {
     const message = JSON.parse(event.data);
     if (message.type === "chat.public") {
       displayChatMessage(message.data);
@@ -22,7 +22,7 @@ function initMMWebSocket() {
       console.log(message);
     }
   }
-  return mmWS;
+  return ws;
 }
 
 
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
       name: tournamentName,
       maxPlayers: 4,
     };
-    mmWS.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
+    ws.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
     tournaments.push(newTournament);
     raiseAlert(`Le tournoi "${tournamentName}" a été créé avec succès.`, 'success');
     showTournamentDetails(newTournament);

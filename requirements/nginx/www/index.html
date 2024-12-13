@@ -20,10 +20,6 @@
     <link rel="stylesheet" href="css/activate_2fa.css">
     <link rel="stylesheet" href="css/sign_2fa.css">
     <link rel="stylesheet" href="css/alert_win98.css">
-    <link rel="stylesheet" href="css/pong.css">
-    <link rel="stylesheet" href="css/activate_2fa.css">
-    <link rel="stylesheet" href="css/sign_2fa.css">
-    <link rel="stylesheet" href="css/alert_win98.css">
 </head>
 <body class="desktop">
 
@@ -348,51 +344,46 @@
 
   </div>
 
-  <div class="window" id="winBook" style="display: none">
+  <div class="window fullscreen" id="winBook" style="display: none">
     <div class="window-header">
       <div class="arrow-buttons">
-        <button class="left-arrow">&lt</button>
-        <button class="right-arrow">&gt</button>
+        <button class="left-arrow">&lt;</button>
+        <button class="right-arrow">&gt;</button>
       </div>
       <div class="header-title">Winbook - Inscription Tournoi Pong</div>
       <button class="close-button">X</button>
     </div>
 
-    <div class="window-content">
-      <div class="search-content">
-        <div class="tabs">
-          <div class="tab active" data-tab="tab-search">Search</div>
-          <div class="tab" data-tab="tab-create">Create</div>
+    <!-- Page 1 - Formulaire d'inscription -->
+    <div class="winBook-page" id="page1">
+
+      <div class="left-panel">
+
+        <div class="search-section">
+          <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
+          <button id="search-button" class="button-98">Rechercher</button>
+        </div>
+        <ul class="result-list" id="tournament-results"></ul>
+
+        <div class="create-section">
+          <input type="text" id="new-tournament-name" class="input-field" placeholder="Nom du nouveau tournoi">
+          <button id="create-tournament-button" class="button-98">Créer un tournoi</button>
         </div>
 
-        <div class="tab-content">
+      </div>
 
-          <div class="tab-pane" id="tab-search" style="display: flex;">
-            <div class="search-section">
-              <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
-              <button id="search-button" class="button-98">Rechercher</button>
-            </div>
-            <ul class="result-list" id="tournament-results"></ul>
-          </div>
+      <div class="right-panel">
+        <div class="tournament-info">
+          <h3 class="tournament-name">Nom du tournoi</h3>
+          <p id="players-count">Nombre de joueurs : 0</p>
 
-          <div class="tab-pane" id="tab-create" style="display: none;">
-            <div class="create-section">
-              <input type="text" id="create-tournament-name" class="input-field" placeholder="Nom du tournoi">
-              <button id="create-tournament-button" class="button-98">Créer</button>
-            </div>
-          </div>
+          <ul id="players-list">
+
+          </ul>
         </div>
       </div>
-      
-      <div class="tournament-content">
-        <div class="tournament-pane">
-          <h2 id="tournament-name">No Tournament Selected</h2> 
-        <ul id="player-list">
-          <li>Empty</li>
-        </ul>
-        <button id="ready-button" class="button">Ready</button>
-        </div>
-      </div>
+    </div>
+    <div class="vertical-bar"></div>
   </div>
 
   <div class="window fullscreen" id="PongGame" style="display: none">
@@ -429,8 +420,7 @@
   <script>
     window.onload = function () {
       loadMessageHistory();
-      chatWS = initChatWebSocket();
-      mmWS = initMMWebSocket();
+      ws = initWebSocket();
       updateTime();
       setInterval(updateTime, 1000);
     }
