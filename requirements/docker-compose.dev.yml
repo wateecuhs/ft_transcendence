@@ -27,6 +27,7 @@ services:
       - "8443:8443"
     volumes:
       - ./nginx/www:/var/www/html
+      - ./nginx/www/:/requirements/nginx/www/
     networks:
       - peas-dev
     depends_on:
@@ -77,6 +78,7 @@ services:
       - ./conf/dev.env-auth
     volumes:
       - ./auth/app:/app/
+      - ./nginx/www/:/requirements/nginx/www/
     ports:
       - "8001:8001"
     networks:
