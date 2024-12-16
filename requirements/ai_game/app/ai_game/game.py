@@ -120,6 +120,7 @@ class Room:
         self.right_hits = 0
         self.ball.serve()
         self.prev_time = time.time()
+        self.winner = None
 
     async def add_player(self, player):
         if len(self.players) < 2:
@@ -149,6 +150,9 @@ class Room:
             self.ball.move()
             self.handle_collision()
             self.update_score()
+
+            if self.score[0] == 10 or self.score[1] == 10:
+                return self.game_over()
 
             game_state = {
                 "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
@@ -201,6 +205,22 @@ class Room:
             self.score[0] += 1
             self.ball.reset()
             self.ball.MAX_VELOCITY *= 1.025
+
+    def game_over(self):
+        if self.score[0] == 10:
+            self.winner = "Player 1"
+        else:
+            self.winner = "Player 2"
+
+        game_state = {
+            "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
+            "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
+            "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
+            "score": self.score,
+            "winner": self.winner
+        }
+
+        return game_state
 
     def move_paddle_ai(self):
         self.keys_pressed["move_right_up"] = False
