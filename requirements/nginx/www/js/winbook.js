@@ -1,13 +1,3 @@
-const playersPool = [
-  'player1', 'player2', 'player3', 'player4', 'Jesniar', 'Shadow', 
-  'Ace', 'DragonSlayer', 'Nexus', 'Frost', 'Blaze', 'Viper'
-];
-
-function getRandomPlayers(maxPlayers) {
-  const shuffled = playersPool.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, maxPlayers);
-}
-
 function initWebSocket() {
   var ws = new WebSocket('wss://localhost:8443/matchmaking/');
   ws.onmessage = function(event) {
@@ -24,7 +14,6 @@ function initWebSocket() {
   }
   return ws;
 }
-
 
 document.getElementById('winBook').querySelector('.close-button').addEventListener('click', function() {
   document.getElementById('winBook').style.display = 'none';
@@ -95,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
       maxPlayers: 4,
     };
     ws.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
-    tournaments.push(newTournament);
     raiseAlert(`Le tournoi "${tournamentName}" a été créé avec succès.`, 'success');
     showTournamentDetails(newTournament);
     createTournamentNameInput.value = '';
