@@ -81,7 +81,7 @@ function runGame() {
     }
 
     function drawPaddles(state) {
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "grey";
         ctx.fillRect(state.paddle_left.x / winWidth * canvas.width, state.paddle_left.y / winHeight * canvas.height, paddleWidth, paddleHeight);
         ctx.fillRect(state.paddle_right.x / winWidth * canvas.width, state.paddle_right.y / winHeight * canvas.height, paddleWidth, paddleHeight);
 
@@ -114,7 +114,7 @@ function runGame() {
         ctx.globalAlpha = 1.0;
         ctx.beginPath();
         ctx.arc(state.ball.x / winWidth * canvas.width, state.ball.y / winHeight * canvas.height, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "grey";
         ctx.fill();
         ctx.stroke();
         ctx.closePath();

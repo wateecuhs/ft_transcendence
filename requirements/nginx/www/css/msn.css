@@ -130,6 +130,7 @@
   background-color: #dcdcdc;
   border: 1px solid #808080;
   margin: 8px;
+  overflow-y: auto;
   box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
   display: flex;
   flex-direction: column;

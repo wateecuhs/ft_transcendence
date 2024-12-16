@@ -7,12 +7,12 @@ function togglePongWindow() {
 	} else {
 	  pongWindow.style.display = 'none';
 	}
+	pongWindow.querySelector('.close-button').addEventListener('click', function() {
+		pongWindow.style.display = 'none';
+		stopGameInstance();
+	});
 }
 
-pongWindow.querySelector('.close-button').addEventListener('click', function() {
-	pongWindow.style.display = 'none';
-	stopGameInstance();
-});
 
   window.addEventListener('popstate', function (event) {
 	const currentPage = window.location.hash;

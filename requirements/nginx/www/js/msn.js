@@ -22,9 +22,7 @@ function initWebSocket() {
   if (!window.ws || window.ws.readyState === WebSocket.CLOSED) {
     window.ws = new WebSocket('wss://localhost:8443/chat/');
   }
-  console.log('after init');
 
-  console.log(window.ws);
   window.ws.onmessage = function(event) {
     const message = JSON.parse(event.data);
     if (message.type === "chat.public") {
@@ -102,9 +100,7 @@ function setupSendMessage() {
   const chatInput = document.querySelector('#msnWindow .chat-input');
 
   sendButton.addEventListener('click', function() {
-    console.log('should send message');
     const message = chatInput.value.trim();
-    console.log(window.ws);
 
     if (message && window.ws && window.ws.readyState === WebSocket.OPEN) {
       window.ws.send(JSON.stringify({

@@ -72,17 +72,28 @@ document.addEventListener("DOMContentLoaded", () => {
     createTournamentNameInput.value = '';
   });
 
-  function showTournamentResults(query) {
+  async function showTournamentResults(query) {
     tournamentResultsList.innerHTML = '';
-    fetch('https://localhost:8443/matchmaking/tournaments/')
-      .then(response => response.json())
-      .then(data => {
-        const tournaments = data;
+    try {
+      const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
+        method: 'GET',
+      });
+
+      if (response.ok) {
+        const tournaments = await response.json();
+
+        if (tournaments.message === 'No tournaments found.') {
+          const noResultsItem = document.createElement('li');
+          noResultsItem.textContent = 'Aucun tournoi trouvé';
+          tournamentResultsList.appendChild(noResultsItem);
+          return ;
+        }
+
         const filteredTournaments = tournaments.filter(tournament =>
           tournament.name.toLowerCase().includes(query.toLowerCase())
         );
         tournamentResultsList.innerHTML = '';
-        
+
         if (filteredTournaments.length > 0) {
           filteredTournaments.forEach(tournament => {
             const li = document.createElement('li');
@@ -100,8 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
           noResultsItem.textContent = 'Aucun tournoi trouvé';
           tournamentResultsList.appendChild(noResultsItem);
         }
-      })
+      } else {
+        console.log('Error: response is not ok in winBook');
+      }
+    } catch (error) {
+      console.log(error);
     }
+  }
 
 
   async function showAllTournaments() {
@@ -149,8 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
       playerListElement.appendChild(li);
     });
 
-    readyButton.style.display = 'block';
-    readyButton.addEventListener('click', () => {
+      readyButton.style.display = 'block';
+      readyButton.addEventListener('click', () => {
       raiseAlert(`Vous êtes maintenant prêt pour ${tournament.name}`);
       readyButton.disabled = true;
       readyButton.textContent = 'Vous êtes prêt';

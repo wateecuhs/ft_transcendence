@@ -180,6 +180,11 @@
   background-color: #c0c0c0;
 }
 
+#winBook .tournament-content-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
 #winBook #ready-button {
   display: block;
   margin: 10px auto 0;
@@ -194,6 +199,24 @@
 }
 
 #winBook #ready-button:hover {
+  background: linear-gradient(to bottom, #bdbdbd, #a3a3a3);
+  box-shadow: inset 1px 1px 0 #b0b0b0, inset -1px -1px 0 #202020;
+}
+
+#winBook #quit-button {
+  display: block;
+  margin: 10px auto 0;
+  padding: 5px 15px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+  background: linear-gradient(to bottom, #a9a9a9, #c0c0c0);
+  border: 2px solid #606060;
+  box-shadow: inset 1px 1px 0 #bfbfbf, inset -1px -1px 0 #303030;
+  cursor: pointer;
+}
+
+#winBook #quit-button:hover {
   background: linear-gradient(to bottom, #bdbdbd, #a3a3a3);
   box-shadow: inset 1px 1px 0 #b0b0b0, inset -1px -1px 0 #202020;
 }
