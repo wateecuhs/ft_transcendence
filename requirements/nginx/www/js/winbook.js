@@ -1,22 +1,24 @@
-const playersPool = [
-  'player1', 'player2', 'player3', 'player4', 'Jesniar', 'Shadow', 
-  'Ace', 'DragonSlayer', 'Nexus', 'Frost', 'Blaze', 'Viper'
-];
-
-function getRandomPlayers(maxPlayers) {
-  const shuffled = playersPool.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, maxPlayers);
-}
-
-function initWebSocket() {
+function initMMWebSocket() {
   var ws = new WebSocket('wss://localhost:8443/matchmaking/');
   ws.onmessage = function(event) {
     const message = JSON.parse(event.data);
-    if (message.type === "chat.public") {
-      displayChatMessage(message.data);
+    console.log("received message")
+    if (message.type === "tournament.join") {
+      console.log("Joined tournament", message.data);
+      showTournamentDetails(message.data);
+      console.log(message);
     }
-    else if (message.type === "chat.private") {
-      displayPrivateMessage(message.data);
+    else if (message.type === "tournament.create") {
+      showTournamentDetails(message.data);
+    }
+    else if (message.type === "tournament.leave") {
+      showTournamentDetails(message.data);
+    }
+    else if (message.type === "tournament.start") {
+      showTournamentDetails(message.data);
+    }
+    else if (message.type === "tournament.delete") {
+      showTournamentDetails(message.data);
     }
     else {
       console.log(message);
@@ -25,6 +27,32 @@ function initWebSocket() {
   return ws;
 }
 
+function showTournamentDetails(tournament) {
+  const winBookWindow = document.getElementById("winBook");
+  if (!winBookWindow) {
+    console.error("L'élément #winBook est introuvable !");
+    return;
+  }
+  const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
+  const playerListElement = winBookWindow.querySelector('#player-list');
+  const readyButton = winBookWindow.querySelector('#ready-button');
+
+  tournamentNameElement.textContent = tournament.name;
+  playerListElement.innerHTML = '';
+  tournament.players.forEach(player => {
+    const li = document.createElement('li');
+    li.textContent = player;
+    playerListElement.appendChild(li);
+  });
+
+  readyButton.style.display = 'block';
+  readyButton.addEventListener('click', () => {
+    mmWS.send(JSON.stringify({ type: 'tournament.join', data: tournament }));
+    raiseAlert(`Vous êtes maintenant prêt pour ${tournament.name}`);
+    readyButton.disabled = true;
+    readyButton.textContent = 'rejoint';
+  });
+}
 
 document.getElementById('winBook').querySelector('.close-button').addEventListener('click', function() {
   document.getElementById('winBook').style.display = 'none';
@@ -91,13 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const newTournament = {
-      name: tournamentName,
-      maxPlayers: 4,
+      name: tournamentName
     };
-    ws.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
-    tournaments.push(newTournament);
+    mmWS.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
     raiseAlert(`Le tournoi "${tournamentName}" a été créé avec succès.`, 'success');
-    showTournamentDetails(newTournament);
     createTournamentNameInput.value = '';
   });
 
@@ -157,23 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  function showTournamentDetails(tournament) {
-    tournamentNameElement.textContent = tournament.name;
-    playerListElement.innerHTML = '';
-
-    tournament.players.forEach(player => {
-      const li = document.createElement('li');
-      li.textContent = player;
-      playerListElement.appendChild(li);
-    });
-
-    readyButton.style.display = 'block';
-    readyButton.addEventListener('click', () => {
-      raiseAlert(`Vous êtes maintenant prêt pour ${tournament.name}`);
-      readyButton.disabled = true;
-      readyButton.textContent = 'Vous êtes prêt';
-    });
-  }
+  
 
   searchButton.addEventListener('click', () => {
     const query = winSearchInput.value.trim();
