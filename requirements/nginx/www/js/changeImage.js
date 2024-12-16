@@ -36,10 +36,11 @@ function openFileSelector() {
             });
 
             try {
+                if (response.ok) {
                     const data = await response.json();
-                    if (response.ok && data.message === 'Success') {
+                    if (data.message === 'Success') {
                         const updatedUserInfo = await getUserInfo(access_token);
-
+    
                         if (updatedUserInfo) {
                             localStorage.setItem(userNameText, JSON.stringify(updatedUserInfo));
                             updateUserInfo(userNameText);
@@ -47,6 +48,17 @@ function openFileSelector() {
                     } else {
                         raiseAlert(data.message);
                     }
+                } else {
+                    const errorData = await response.json();
+                    if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+                        const isRefreshed = await getRefreshToken();
+                        if (isRefreshed) {
+                          changeImage();
+                        }
+                      } else {
+                        raiseAlert('Getuser:' + errorData.message);
+                      }
+                }
             } catch (error) {
                 console.error('Failed to parse JSON response:', error);
                 const rawResponse = await response.text();

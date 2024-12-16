@@ -15,7 +15,7 @@ icons.forEach(icon => {
     }
 
     if (iconName === 'Pong') {
-      togglePongWindow();
+      toogleGameOptionWindow();
     }
   });
 
@@ -62,7 +62,7 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert');
+const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert, #game-option, #winBook');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');

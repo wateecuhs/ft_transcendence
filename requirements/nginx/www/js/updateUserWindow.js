@@ -76,7 +76,6 @@ async function updateUser() {
 					inputPassword.value = '';
 					inputConfirmPassword.value = '';
 			} else {
-					console.log("Token coucou: ", access_token);
 					raiseAlert(data.message);
 			}
 	} catch (error) {

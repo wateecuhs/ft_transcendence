@@ -6,6 +6,7 @@ function runGame() {
     let paddleWidth = 20;
     let paddleHeight = 100;
     let ballRadius = 10;
+    let previousBallPositions = [];
     const winWidth = 800;
     const winHeight = 600;
     
@@ -72,30 +73,80 @@ function runGame() {
     
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
+
+    function drawBackground() {
+        const background = new Image();
+        background.src = '../img/windows98bureau_plain_hill.png';
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    }
+
+    function drawPaddles(state) {
+        ctx.fillStyle = "grey";
+        ctx.fillRect(state.paddle_left.x / winWidth * canvas.width, state.paddle_left.y / winHeight * canvas.height, paddleWidth, paddleHeight);
+        ctx.fillRect(state.paddle_right.x / winWidth * canvas.width, state.paddle_right.y / winHeight * canvas.height, paddleWidth, paddleHeight);
+
+       
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(state.paddle_left.x / winWidth * canvas.width, 
+                       state.paddle_left.y / winHeight * canvas.height, 
+                       paddleWidth, paddleHeight);
+        ctx.strokeRect(state.paddle_right.x / winWidth * canvas.width, 
+                       state.paddle_right.y / winHeight * canvas.height, 
+                       paddleWidth, paddleHeight);
+    }
+
+    function drawBall(state) {
+        previousBallPositions.push({x: state.ball.x, y: state.ball.y});
+        if (previousBallPositions.length > 10) {
+            previousBallPositions.shift();
+        }
+
+        ctx.globalAlpha = 0.3;
+        previousBallPositions.forEach((pos) => {
+            ctx.beginPath();
+            ctx.arc(pos.x / winWidth * canvas.width, pos.y / winHeight * canvas.height, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "white";
+            ctx.fill();
+            ctx.closePath();
+        });
+
+        ctx.globalAlpha = 1.0;
+        ctx.beginPath();
+        ctx.arc(state.ball.x / winWidth * canvas.width, state.ball.y / winHeight * canvas.height, ballRadius, 0, Math.PI * 2);
+        ctx.fillStyle = "grey";
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+    function drawScore(state) {
+        ctx.font = `${canvas.width * 0.05}px Arial`;
+        ctx.fillStyle = "white";
+        ctx.fillText(state.score[0], canvas.width / 4, canvas.height * 0.1);
+        ctx.fillText(state.score[1], canvas.width * 3 / 4, canvas.height * 0.1);
+        ctx.strokeText(state.score[0], canvas.width / 4, canvas.height * 0.1);
+        ctx.strokeText(state.score[1], canvas.width * 3 / 4, canvas.height * 0.1);
+    }
     
     function drawGame(state) {
         if (!state || !state.paddle_left || !state.paddle_right || !state.ball || !state.score) {
             console.error('Invalid game state:', state);
             return;
         }
-    
+
+        ctx.fillStyle = "blue";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-        // Draw paddles
-        ctx.fillStyle = "white";
-        ctx.fillRect(state.paddle_left.x / winWidth * canvas.width, state.paddle_left.y / winHeight * canvas.height, paddleWidth, paddleHeight);
-        ctx.fillRect(state.paddle_right.x / winWidth * canvas.width, state.paddle_right.y / winHeight * canvas.height, paddleWidth, paddleHeight);
-    
-        // Draw ball
-        ctx.beginPath();
-        ctx.arc(state.ball.x / winWidth * canvas.width, state.ball.y / winHeight * canvas.height, ballRadius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.closePath();
-    
-        // Draw score
-        ctx.font = `${canvas.width * 0.05}px Arial`;
-        ctx.fillText(state.score[0], canvas.width / 4, canvas.height * 0.1);
-        ctx.fillText(state.score[1], canvas.width * 3 / 4, canvas.height * 0.1);
+
+        drawBackground();
+
+        drawPaddles(state);
+
+        drawBall(state);
+
+        drawScore(state);
+
+        requestAnimationFrame(drawGame);
     }
     
-    }
+}
