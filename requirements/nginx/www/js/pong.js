@@ -4,17 +4,15 @@ function togglePongWindow() {
 	if (pongWindow.style.display === 'none') {
 	  pongWindow.style.display = 'flex';
 	  history.pushState({ page: "pong" }, "", "#pong");
-	  runGame();
 	} else {
 	  pongWindow.style.display = 'none';
-	  stopGameInstance();
 	}
+}
 
-	pongWindow.querySelector('.close-button').addEventListener('click', function() {
-		pongWindow.style.display = 'none';
-		stopGameInstance();
-	  });
-  }
+pongWindow.querySelector('.close-button').addEventListener('click', function() {
+	pongWindow.style.display = 'none';
+	stopGameInstance();
+});
 
   window.addEventListener('popstate', function (event) {
 	const currentPage = window.location.hash;

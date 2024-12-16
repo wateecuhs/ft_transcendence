@@ -396,7 +396,7 @@
     <canvas id="gameCanvas" width="800" height="600"></canvas>
   </div>
 
-  <div class="window" id="game-option" style="display: none">
+  <div class="window" id="game-option" style="display: none;">
     <div class="window-header">
       <div class="header-title">Pong - Game Option</div>
       <button class="close-button">X</button>
@@ -435,8 +435,8 @@
   <script src="js/game_option.js"></script>
   <script>
     window.onload = function () {
-      loadMessageHistory();
-			ws = initWebSocket();
+      window.ws = null;
+      console.log(window.ws);
       updateTime();
       setInterval(updateTime, 1000);
     }

@@ -5,8 +5,8 @@
   margin: auto;
   display: flex;
   flex-direction: column;
-  z-index: 9999;
   width: auto;
+  z-index: 10;
   box-sizing: border-box;
   font-family: Tahoma, sans-serif;
   color: #000;

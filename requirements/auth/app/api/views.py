@@ -145,6 +145,8 @@ class UserInfo(APIView):
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			username = payload.get("username")
 			user = CustomUser.get_user_by_name(username)
+			if not user:
+				return JsonResponse({"message": "failed : user not found"}, status=404)
 			return JsonResponse({"message": "Success",
 								 "username": username,
 								 "alias": user.alias,

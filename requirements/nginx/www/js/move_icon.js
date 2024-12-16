@@ -15,7 +15,7 @@ icons.forEach(icon => {
     }
 
     if (iconName === 'Pong') {
-      togglePongWindow();
+      toogleGameOptionWindow();
     }
   });
 

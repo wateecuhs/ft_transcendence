@@ -16,9 +16,11 @@ function game_option_button() {
       const buttonId = button.id;
 
       if (buttonId === 'ai-button') {
-        raiseAlert('Vous avez selectionne ai button');
+        togglePongWindow();
+        aiGame();
       } else if (buttonId === 'multi-button') {
-        raiseAlert('Vous avez selectionne multi-button');
+        togglePongWindow();
+        runGame();
       }
     });
   });

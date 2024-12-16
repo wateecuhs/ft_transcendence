@@ -1,19 +1,31 @@
 let msnCurrentPage = 0;
-let ws;
 
-function loadMessageHistory() {
-  fetch(`/chat/messages`)
-    .then(response => response.json())
-    .then(data => {
-      data.forEach(message => {
-        displayChatMessage(message.data);
-      });
-    })
+async function loadMessageHistory() {
+  try {
+    const response = await fetch(`/chat/messages/`);
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data) {
+          data.forEach(message => {
+            displayChatMessage(message.data);
+          });
+        } else console.log('load message history: no data');
+      } else console.log('load message history: response is not ok');
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-async function initWebSocket() {
-  ws = new WebSocket('wss://localhost:8443/chat/');
-  ws.onmessage = function(event) {
+function initWebSocket() {
+  console.log('here');
+  if (!window.ws || window.ws.readyState === WebSocket.CLOSED) {
+    window.ws = new WebSocket('wss://localhost:8443/chat/');
+  }
+  console.log('after init');
+
+  console.log(window.ws);
+  window.ws.onmessage = function(event) {
     const message = JSON.parse(event.data);
     if (message.type === "chat.public") {
       displayChatMessage(message.data);
@@ -25,7 +37,7 @@ async function initWebSocket() {
       console.log(message);
     }
   }
-  return ws;
+  return window.ws;
 }
 
 function showMsnPage(pageIndex) {
@@ -64,7 +76,7 @@ async function updateUserFriend(username) {
 
       const friends = await response.json();
 
-      if (friends) {
+      if (friends && friends.length > 0) {
           updateClientsTab(friends);
       } else {
           raiseAlert('No friends data received.');
@@ -90,9 +102,12 @@ function setupSendMessage() {
   const chatInput = document.querySelector('#msnWindow .chat-input');
 
   sendButton.addEventListener('click', function() {
+    console.log('should send message');
     const message = chatInput.value.trim();
-    if (message) {
-      ws.send(JSON.stringify({
+    console.log(window.ws);
+
+    if (message && window.ws && window.ws.readyState === WebSocket.OPEN) {
+      window.ws.send(JSON.stringify({
 				'type': 'chat_message',
 				'data': {
 					'sender': document.getElementsByClassName('chat-input').innerHTML,

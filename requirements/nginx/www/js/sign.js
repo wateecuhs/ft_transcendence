@@ -56,6 +56,9 @@ function SignIn() {
 				updateUserStat();
 				updateUserFriend(textUsername);
 				
+				loadMessageHistory();
+				window.ws = initWebSocket();
+
 				slideUp();
 			}
 
@@ -201,6 +204,9 @@ async function SignIn42() {
 									updateUserStat();
 									updateUserFriend(userInfo.username);
 
+									loadMessageHistory();
+									window.ws = initWebSocket();
+
 									slideUp();
 							} else {
 									raiseAlert('Token was not valid');
@@ -214,8 +220,6 @@ async function SignIn42() {
 		} catch (error) {
 				console.error('Erreur réseau:', error);
 		}
-	} else {
-			console.error('Aucun code trouvé dans l\'URL');
 	}
 }
 
@@ -228,6 +232,9 @@ async function can_sign_in() {
 				updateUserInfo(userInfo.username);
 				updateUserStat();
 				updateUserFriend(userInfo.username);
+
+				loadMessageHistory();
+				window.ws = initWebSocket();
 				
 				const loginPage = document.getElementById('login-id-page');
 				loginPage.style.display = 'none';
