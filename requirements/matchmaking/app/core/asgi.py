@@ -9,7 +9,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from channels.sessions import SessionMiddlewareStack
 from core.middleware import TokenAuthMiddleware
-from rooms.consumers import RoomConsumer
+from rooms.consumers import TournamentConsumer
 from django.urls import path
 import logging
 
@@ -24,7 +24,7 @@ application = ProtocolTypeRouter(
             SessionMiddlewareStack(
                 URLRouter(
                     [
-                        path("", RoomConsumer.as_asgi()),
+                        path("", TournamentConsumer.as_asgi()),
                     ]
                 )
             )
