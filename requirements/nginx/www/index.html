@@ -382,10 +382,8 @@
             <button id="ready-button" class="button">Join</button>
             <button id="quit-button" class="button">Quit</button>
           </div>
-
         </div>
       </div>
-
     </div>
   </div>
 
@@ -441,7 +439,7 @@
   <script>
     window.onload = function () {
       window.ws = null;
-      console.log(window.ws);
+      window.mmws = null;
       updateTime();
       setInterval(updateTime, 1000);
     }
