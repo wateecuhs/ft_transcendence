@@ -10,7 +10,6 @@ class TokenAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         try:
             headers = dict(scope["headers"])
-            print(headers, flush=True)
             cookies = {}
             for cookie in headers[b"cookie"].decode().split("; "):
                 cookies[cookie.split("=")[0]] = cookie.split("=")[1]
