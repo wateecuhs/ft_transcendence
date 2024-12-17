@@ -62,8 +62,12 @@ function toggleMsnWindow() {
 
 async function updateUserFriend(username) {
   try {
-      const response = await fetch(`/chat/friends/${username}/`, {
+      const response = await fetch(`/chat/friends/`, {
           method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getTokenCookie()}`
+          }
       });
 
       if (!response.ok) {
