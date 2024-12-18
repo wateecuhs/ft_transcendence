@@ -147,10 +147,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
             match splitted_message[0]:
                 case self.ADD_FRIEND_CMD:
                     await database_sync_to_async(request_user)(self.user, target)
+                    await self.channel_layer.group_send(f"user.{target}", {"type": MessageType.Relationship.REQUEST, "data": {"author": self.user}})
                 case self.REMOVE_FRIEND_CMD:
                     await database_sync_to_async(remove_user)(self.user, target)
+                    await self.channel_layer.group_send(f"user.{target}", {"type": MessageType.Relationship.REMOVE, "data": {"author": self.user}})
+                    await self.channel_layer.group_send(f"user.{self.user}", {"type": MessageType.Relationship.REMOVE, "data": {"author": target}})
                 case self.ACCEPT_FRIEND_CMD:
                     await database_sync_to_async(accept_user)(self.user, target)
+                    await self.channel_layer.group_send(f"user.{target}", {"type": MessageType.Relationship.ACCEPT, "data": {"author": self.user}})
+                    await self.channel_layer.group_send(f"user.{self.user}", {"type": MessageType.Relationship.ACCEPT, "data": {"author": target}})
                 case self.DECLINE_FRIEND_CMD:
                     await database_sync_to_async(reject_user)(self.user, target)
         except Exception as e:
@@ -202,8 +207,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		from the group or a private message is received.
 	"""
 
+    async def relationship_request(self, event):
+        await self._json_send(MessageType.Relationship.REQUEST, event["data"])
+
+    async def relationship_accept(self, event):
+        await self._json_send(MessageType.Relationship.ACCEPT, event["data"])
+
+    async def relationship_reject(self, event):
+        await self._json_send(MessageType.Relationship.REJECT, event["data"])
+
+    async def relationship_remove(self, event):
+        await self._json_send(MessageType.Relationship.REMOVE, event["data"])
+
     async def status_request(self, event):
-        await self.channel_layer.group_send(event["data"]["author"], {"type": MessageType.Status.UPDATE, "data": {"author": self.user, "status": cmod.User.Status.ONLINE}})
+        await self.channel_layer.group_send(f"user.{event['data']['author']}", {"type": MessageType.Status.UPDATE, "data": {"author": self.user, "status": cmod.User.Status.ONLINE}})
 
     async def status_update(self, event):
         event["data"]["content"] = f"{event['data']['author']} is now {event['data']['status']}."

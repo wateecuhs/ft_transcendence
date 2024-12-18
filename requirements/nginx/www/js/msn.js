@@ -74,7 +74,15 @@ function initWebSocket() {
       handle_chat_private(private_message, mp_user, message);
     }
     else if (message.type === "relationship.request") {
-      raiseAlert("Invitation succesfully send");
+      raiseAlert("Received friend request from " + message.data.author);
+    }
+    else if (message.type === "relationship.accept") {
+      updateUserFriend();
+      // devrait juste ajouter le nouvel user au lieu de tout re-render et le mettre en online par defaut
+    }
+    else if (message.type === "relationship.remove") {
+      console.log("remove friend", message.data);
+      updateUserFriend();
     }
     else if (message.type === "status.update") {
       handle_status_update(message.data)
@@ -126,7 +134,7 @@ async function updateUserFriend(username) {
 
       const friends = await response.json();
 
-      if (friends && friends.length > 0) {
+      if (friends) {
           await updateClientsTab(friends);
       }
   } catch (error) {
