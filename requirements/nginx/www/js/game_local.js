@@ -1,4 +1,3 @@
-
 function runLocalGame() {
     let listenersAdded = false;
     let gameOver = false;
