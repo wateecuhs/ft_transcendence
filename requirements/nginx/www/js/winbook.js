@@ -5,11 +5,9 @@ function initMMWebSocket() {
 
   window.mmws.onmessage = function(event) {
     const message = JSON.parse(event.data);
-    console.log("received message")
+    console.log("new message", message);
     if (message.type === "tournament.join") {
-      console.log("Joined tournament", message.data);
       showTournamentDetails(message.data);
-      console.log(message);
     }
     else if (message.type === "tournament.create") {
       showTournamentDetails(message.data);
@@ -24,7 +22,6 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else {
-      console.log(message);
     }
   }
   return window.mmws;
@@ -56,19 +53,19 @@ function showTournamentDetails(tournament) {
   }
 
   readyButton.style.display = 'block';
-  readyButton.addEventListener('click', () => {
+  readyButton.onclick = () => {
     window.mmws.send(JSON.stringify({ type: 'tournament.join', data: tournament }));
     raiseAlert(`Vous êtes maintenant prêt pour ${tournament.name}`);
     readyButton.disabled = true;
     readyButton.textContent = 'Rejoint';
-  });
+  };
 
-  quitButton.addEventListener('click', () => {
-    window.mmws.send(JSON.stringify({ type: 'tournament.leave'}));
+  quitButton.onclick = () => {
+    window.mmws.send(JSON.stringify({ type: 'tournament.leave', data: tournament }));
     raiseAlert(`Vous avez quitte ${tournament.name}`);
     readyButton.disabled = false;
     readyButton.textContent = 'Join';
-  });
+  };
 }
 
 document.getElementById('winBook').querySelector('.close-button').addEventListener('click', function() {

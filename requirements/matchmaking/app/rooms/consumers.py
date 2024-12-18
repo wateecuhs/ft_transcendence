@@ -96,12 +96,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def _handle_tournament_join(self, event):
         try:
+            logger.info(f"[{self.username}] Joining tournament")
             data = event.get("data", {})
             tournament_name = data.get("name")
             if not tournament_name:
                 await self.error("Tournament name is required")
                 return
-        
+
             existing_tournament = await sync_to_async(
                 Tournament.objects.filter(
                     Q(players__contains=self.username) & 
@@ -113,7 +114,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 return
 
             tournament = await sync_to_async(
-                Tournament.objects.exclude(status=Tournament.Status.FINISHED).get
+                Tournament.objects.filter(status=Tournament.Status.PENDING).get
             )(name=tournament_name)
 
             if len(tournament.players) >= 4:
@@ -154,7 +155,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 return
 
             tournament = await sync_to_async(Tournament.objects.get)(name=tournament_name)
-
             if self.username not in tournament.players:
                 await self.error("Not in this tournament")
                 return
@@ -166,9 +166,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             
             await sync_to_async(tournament.save)()
 
-            await self.channel_layer.group_discard(f"tournament.{tournament_name}", self.channel_name)
-            self.room = None
-
             await self.channel_layer.group_send(
                 f"tournament.{tournament_name}",
                 {
@@ -179,6 +176,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     }
                 }
             )
+            await self.channel_layer.group_discard(f"tournament.{tournament_name}", self.channel_name)
+            self.room = None
+
         except Tournament.DoesNotExist:
             await self.error("Tournament not found")
         except Exception as e:
@@ -245,11 +245,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def _handle_tournament_delete(self, event):
-        """
-        Delete a tournament with comprehensive checks:
-        - Confirm tournament ownership
-        - Handle tournament state
-        """
         try:
             data = event.get("data", {})
             tournament_name = data.get("name")
@@ -295,6 +290,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def tournament_join(self, event):
         logger.info(f"[{self.username}] Tournament join: {event['data']}")
+        try:
+            tournament_name = event["data"]["name"]
+            tournament = await sync_to_async(Tournament.objects.filter(status=Tournament.Status.PENDING).get)(name=tournament_name)
+            print(tournament.owner, self.user_id, flush=True)
+            if self.user_id == tournament.owner:
+                self._handle_tournament_start(event)
+        except Tournament.DoesNotExist:
+            await self.error("Tournament not found")
         await self._json_send(MessageType.Tournament.JOIN, event["data"])
     
     async def tournament_leave(self, event):
