@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="css/sign_2fa.css">
     <link rel="stylesheet" href="css/alert_win98.css">
     <link rel="stylesheet" href="css/pong_game_option.css">
+    <link rel="stylesheet" href="css/clientWindow.css">
 </head>
 <body class="desktop">
 
@@ -249,6 +250,52 @@
     </div>
   </div>
 
+  <div class="window" id="clientWindow" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title">Friend ccount</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+
+      <div class="account-page" id="account-page-0" style="display: none;">
+        <div class="user-img">
+          <img src="img/png/game_spider-0.png">
+          <span>default pseudo</span>
+        </div>
+
+        <ul>
+          <li> name: default </li>
+          <li> 42 member: true</li>
+          <li> alias: default_alias</li>
+        </ul>
+      </div>
+
+      <div class="account-page" id="account-page-1" style="display: none;">
+        <div class="user-stat-title"> User statistic </div>
+
+        <ul>
+          <li>Number of matches: 8</li>
+          <li>Matches Won: 5</li>
+          <li>Matches lost: 3</li>
+          <li>Win rate: 60%</li>
+          <li>Goal Scored: </li>
+          <li>Goal Conceded: </li>
+        </ul>
+      </div>
+
+      <div class="number-pages">1/4</div>
+    </div>
+  </div>
+
   <div class="window" id="activate-2fa" style="display: none">
 
     <div class="window-header">
@@ -315,11 +362,16 @@
 
     <div class="chat-tab">
       <div class="general-tab">
-        <p>General</p>
+        <p class="general-text" onclick=openGeneralMessage()>General</p>
         <button class="general-button">Add Friends</button>
       </div>
+      <div class="add-friends-input"><input type="text" placeholder="Search friends"></div>
       <div class="client tab">
-        <ul></ul>
+        <ul class="ul-client-tab"></ul>
+        <ul class="ul-client-action" style="display: none;">
+          <li id="client-info">See more about this user</li>
+          <li id="client-msg">Open private message</li>
+        </ul>
       </div>
     </div>
 
@@ -411,6 +463,8 @@
         <ul class="list-option">
           <li><button id="ai-button">Ai Game</button></li>
           <li><button id="multi-button">Local multiplayer</button></li>
+          <li><button id="room-A">Room-A</button></li>
+          <li><button id="room-B">Room-B</button></li>
         </ul>
       </div>
     </div>
@@ -436,6 +490,8 @@
   <script src="js/ai_game.js"></script>
   <script src="js/game.js"></script> 
   <script src="js/game_option.js"></script>
+  <script src="js/clientWindow.js"></script>
+  <script src="js/handle_chat.js"></script>
   <script>
     window.onload = function () {
       window.ws = null;

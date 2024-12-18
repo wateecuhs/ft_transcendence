@@ -207,7 +207,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def status_update(self, event):
         event["data"]["content"] = f"{event['data']['author']} is now {event['data']['status']}."
-        await self._json_send("status_update", event["data"])
+        await self._json_send(MessageType.Status.UPDATE, event["data"])
 
     async def chat_public(self, event):
         await self._json_send(MessageType.Chat.PUBLIC, event["data"])
