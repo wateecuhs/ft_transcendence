@@ -2,6 +2,8 @@ let msnCurrentPage = 0;
 let private_message = false;
 let mp_user = null;
 
+const conversations = {};
+
 function toogleClientAction(event, friend) {
   const clientAction = document.querySelector('#msnWindow .client.tab .ul-client-action');
   const mouse = event.target;
@@ -31,6 +33,7 @@ function toogleClientAction(event, friend) {
         const chatMessages = document.querySelector('#msnWindow .chat-messages');
         const chatInput = document.querySelector('#msnWindow .chat-input');
         chatMessages.innerHTML = '';
+        loadPrivateHistory(friend);
         private_message = true;
         mp_user = friend;
         chatInput.placeholder = `Send a message to ${friend}`;
@@ -72,6 +75,9 @@ function initWebSocket() {
     }
     else if (message.type === "relationship.request") {
       raiseAlert("Invitation succesfully send");
+    }
+    else if (message.type === "status.update") {
+      handle_status_update(message.data)
     }
     else {
       console.log(message.type);
@@ -128,37 +134,6 @@ async function updateUserFriend(username) {
   }
 }
 
-/*function updateClientsTab(friends) {
-  const clientTab = document.querySelector('#msnWindow .client.tab .ul-client-tab');
-  clientTab.innerHTML = '';
-
-  friends.forEach(friend => {
-    const li = document.createElement('li');
-    li.classList.add("li-friend");
-
-    const spanText = document.createElement('span');
-    spanText.textContent = friend;
-
-    const spanDot = document.createElement('span');
-    spanDot.classList.add('.status-dot');
-
-    const span = document.createElement('span');
-    const img = document.createElement('img');
-
-    img.src = "img/png/notepad-1.png";
-    span.classList.add("span-friend-tab");
-    img.classList.add("info-friend");
-
-    span.appendChild(img);
-    li.appendChild(span);
-    clientTab.appendChild(li);
-
-    img.addEventListener('click', function(event) {
-      toogleClientAction(event, friend);
-    });
-  });
-}*/
-
 async function updateClientsTab(friends) {
   const clientTab = document.querySelector('#msnWindow .client.tab .ul-client-tab');
   clientTab.innerHTML = '';
@@ -172,7 +147,7 @@ async function updateClientsTab(friends) {
 
     const statusDot = document.createElement('span');
     statusDot.classList.add("status-dot");
-    statusDot.style.backgroundColor = client.status === 'online' ? 'green' : 'red';
+    console.log(client.status);
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = friend;
@@ -263,6 +238,14 @@ function displayPrivateMessage(data) {
   timestampSpan.textContent = data.created_at;
   messageDiv.appendChild(timestampSpan);
   chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  addMessageToConversation(data.target, {
+    author: data.author,
+    target: data.target,
+    content: data.content,
+    created_at: data.created_at,
+    is_author: data.is_author
+  });
 }
 
 function searchFriends() {
@@ -291,6 +274,35 @@ function openGeneralMessage() {
   private_message = false;
   mp_user = null;
   loadMessageHistory();
+}
+
+function addMessageToConversation(friend, message) {
+  if (!conversations[friend]) {
+    conversations[friend] = [];
+  }
+  console.log('push with ' + friend);
+  conversations[friend].push(message);
+}
+
+function loadPrivateHistory(friend) {
+  alert(friend);
+  if (!conversations || !conversations[friend]) return ;
+
+  for (const data of conversations[friend]) {
+    console.log(data);
+    const chatMessages = document.querySelector('#msnWindow .chat-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message');
+    const prefix = data.is_author ? '[To] ' : '[From] ';
+    const who = data.is_author ? data.target : data.author;
+    messageDiv.textContent = prefix + who + ': ' + data.content;
+    chatMessages.appendChild(messageDiv);
+    const timestampSpan = document.createElement('span');
+    timestampSpan.classList.add('timestamp');
+    timestampSpan.textContent = data.created_at;
+    messageDiv.appendChild(timestampSpan);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
