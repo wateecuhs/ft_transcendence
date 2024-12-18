@@ -8,10 +8,11 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 import datetime
 import random
+import websocket
 from uuid import UUID
-import traceback
 import logging
 import json
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +32,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
             logger.info(f"[{self.username}] Connected to WebSocket.")
             await self.channel_layer.group_add(f"user.{self.username}", self.channel_name)
+            try:
+                logger.info(f"Connecting to chat server")
+                ws = websocket.WebSocket()
+                ws.connect("ws://chat:8000/",
+                           header={"Authorization": f"Bearer {os.environ.get('SERVICE_KEYS')}"})
+                ws.send(json.dumps({"type": "tournament_start", "data": {"name": "SALUT"}}))
+                logger.info(f"ee server")
+            except Exception as e:
+                
+                logger.info(f"Error: {e}")
             await self.accept()
         except Exception as e:
             logger.error(f"Connection setup failed: {e}")
@@ -186,6 +197,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def _handle_tournament_start(self, event):
         try:
+            logger.info(f"[{self.username}] Starting tournament")
             data = event.get("data", {})
             tournament_name = data.get("name")
             
@@ -207,7 +219,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.error(f"Minimum {tournament.min_players} players required")
                 return
             tournament.round = Tournament.Round.FIRST
-            seed = random.shuffle([0, 1, 2, 3])
+            seed = [0, 1, 2, 3]
+            random.shuffle(seed)
             tournament.matches = [
                 {
                     "round": tournament.round,
@@ -238,11 +251,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     }
                 }
             )
+
+
         except Tournament.DoesNotExist:
             await self.error("Tournament not found")
         except Exception as e:
             await self.error(f"Tournament start failed: {str(e)}")
-
 
     async def _handle_tournament_delete(self, event):
         try:
@@ -294,8 +308,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             tournament_name = event["data"]["name"]
             tournament = await sync_to_async(Tournament.objects.filter(status=Tournament.Status.PENDING).get)(name=tournament_name)
             print(tournament.owner, self.user_id, flush=True)
-            if self.user_id == tournament.owner:
-                self._handle_tournament_start(event)
+            if UUID(self.user_id) == tournament.owner:
+                print("Owner", flush=True)
+                await self._handle_tournament_start(event)
         except Tournament.DoesNotExist:
             await self.error("Tournament not found")
         await self._json_send(MessageType.Tournament.JOIN, event["data"])

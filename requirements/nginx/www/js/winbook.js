@@ -16,6 +16,7 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.start") {
+      console.log("tournament.start", message.data);
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.delete") {
