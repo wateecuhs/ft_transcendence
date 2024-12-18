@@ -21,6 +21,10 @@ function game_option_button() {
       } else if (buttonId === 'multi-button') {
         togglePongWindow();
         runGame();
+      } else if (buttonId === 'room-A') {
+        // insert your function
+      } else if (buttonId === 'room-B') {
+        // insert your function
       }
     });
   });
