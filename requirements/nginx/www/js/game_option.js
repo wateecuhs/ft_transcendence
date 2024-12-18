@@ -16,11 +16,11 @@ function game_option_button() {
       const buttonId = button.id;
 
       if (buttonId === 'ai-button') {
-        togglePongWindow();
-        runAIGame();
-      } else if (buttonId === 'multi-button') {
-        togglePongWindow();
-        runGame();
+        let win = togglePongWindow('room_ai');
+        runAIGame(win);
+      } else if (buttonId === 'local-button') {
+        togglePongWindow('room_local');
+        runLocalGame();
       } else if (buttonId === 'room-A') {
         // insert your function
       } else if (buttonId === 'room-B') {
