@@ -58,7 +58,7 @@ class Ball:
 
 class Room:
     def __init__(self, room_name):
-        self.room_name = room_name
+        self.name = room_name
         self.lock = asyncio.Lock()
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
