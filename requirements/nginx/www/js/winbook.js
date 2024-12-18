@@ -1,6 +1,9 @@
 function initMMWebSocket() {
-  var ws = new WebSocket('wss://localhost:8443/matchmaking/');
-  ws.onmessage = function(event) {
+  if (!window.mmws || window.mmws.readyState === WebSocket.CLOSED) {
+    window.mmws = new WebSocket('wss://localhost:8443/matchmaking/');
+  }
+
+  window.mmws.onmessage = function(event) {
     const message = JSON.parse(event.data);
     console.log("received message")
     if (message.type === "tournament.join") {
@@ -24,7 +27,7 @@ function initMMWebSocket() {
       console.log(message);
     }
   }
-  return ws;
+  return window.mmws;
 }
 
 function showTournamentDetails(tournament) {
@@ -36,21 +39,35 @@ function showTournamentDetails(tournament) {
   const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
   const playerListElement = winBookWindow.querySelector('#player-list');
   const readyButton = winBookWindow.querySelector('#ready-button');
+  const quitButton = winBookWindow.querySelector('#quit-button');
 
   tournamentNameElement.textContent = tournament.name;
   playerListElement.innerHTML = '';
-  tournament.players.forEach(player => {
+  if (tournament.players) {
+    tournament.players.forEach(player => {
+      const li = document.createElement('li');
+      li.textContent = player;
+      playerListElement.appendChild(li);
+    });
+  } else {
     const li = document.createElement('li');
-    li.textContent = player;
+    li.textContent = 'No Player in tournament';
     playerListElement.appendChild(li);
-  });
+  }
 
   readyButton.style.display = 'block';
   readyButton.addEventListener('click', () => {
-    mmWS.send(JSON.stringify({ type: 'tournament.join', data: tournament }));
+    window.mmws.send(JSON.stringify({ type: 'tournament.join', data: tournament }));
     raiseAlert(`Vous êtes maintenant prêt pour ${tournament.name}`);
     readyButton.disabled = true;
-    readyButton.textContent = 'rejoint';
+    readyButton.textContent = 'Rejoint';
+  });
+
+  quitButton.addEventListener('click', () => {
+    window.mmws.send(JSON.stringify({ type: 'tournament.leave'}));
+    raiseAlert(`Vous avez quitte ${tournament.name}`);
+    readyButton.disabled = false;
+    readyButton.textContent = 'Join';
   });
 }
 
@@ -103,10 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const winSearchInput = winBookWindow.querySelector('#search-tournament');
   const searchButton = winBookWindow.querySelector('#search-button');
 
-  const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
-  const playerListElement = winBookWindow.querySelector('#player-list');
-  const readyButton = winBookWindow.querySelector('#ready-button');
-
   const createTournamentNameInput = document.querySelector('#create-tournament-name');
   const createTournamentButton = document.querySelector('#create-tournament-button');
 
@@ -121,13 +134,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const newTournament = {
       name: tournamentName
     };
-    mmWS.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
+
+    window.mmws.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
     raiseAlert(`Le tournoi "${tournamentName}" a été créé avec succès.`, 'success');
     createTournamentNameInput.value = '';
   });
 
   async function showTournamentResults(query) {
     tournamentResultsList.innerHTML = '';
+    const noResultsItem = document.createElement('li');
+    noResultsItem.textContent = 'Aucun tournoi trouvé';
+    tournamentResultsList.appendChild(noResultsItem);
+
     try {
       const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
         method: 'GET',
@@ -135,13 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         const tournaments = await response.json();
-
-        if (tournaments.message === 'No tournaments found.') {
-          const noResultsItem = document.createElement('li');
-          noResultsItem.textContent = 'Aucun tournoi trouvé';
-          tournamentResultsList.appendChild(noResultsItem);
-          return ;
-        }
+        tournamentResultsList.innerHTML = '';
 
         const filteredTournaments = tournaments.filter(tournament =>
           tournament.name.toLowerCase().includes(query.toLowerCase())
@@ -166,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
           tournamentResultsList.appendChild(noResultsItem);
         }
       } else {
+        
         console.log('Error: response is not ok in winBook');
       }
     } catch (error) {
@@ -176,6 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function showAllTournaments() {
     tournamentResultsList.innerHTML = '';
+    const noResultsItem = document.createElement('li');
+    noResultsItem.textContent = 'Aucun tournoi trouvé';
+    tournamentResultsList.appendChild(noResultsItem);
+
     try {
       const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
         method: 'GET',
@@ -184,9 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         const tournaments = await response.json();
         if (tournaments.message === 'No tournaments found.') {
-          const noResultsItem = document.createElement('li');
-          noResultsItem.textContent = 'Aucun tournoi trouvé';
-          tournamentResultsList.appendChild(noResultsItem);
+          console.log('test');
         } else if (tournaments) {
           tournaments.forEach(tournament => {
             const li = document.createElement('li');
@@ -207,8 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(error);
     }
   }
-
-
   
 
   searchButton.addEventListener('click', () => {

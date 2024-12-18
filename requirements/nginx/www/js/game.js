@@ -78,10 +78,13 @@ function runGame() {
         const background = new Image();
         background.src = '../img/windows98bureau_plain_hill.png';
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+        //ctx.fillStyle = "#008080";
+        //ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     function drawPaddles(state) {
-        ctx.fillStyle = "grey";
+        ctx.fillStyle = "white";
         ctx.fillRect(state.paddle_left.x / winWidth * canvas.width, state.paddle_left.y / winHeight * canvas.height, paddleWidth, paddleHeight);
         ctx.fillRect(state.paddle_right.x / winWidth * canvas.width, state.paddle_right.y / winHeight * canvas.height, paddleWidth, paddleHeight);
 
@@ -114,7 +117,7 @@ function runGame() {
         ctx.globalAlpha = 1.0;
         ctx.beginPath();
         ctx.arc(state.ball.x / winWidth * canvas.width, state.ball.y / winHeight * canvas.height, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "grey";
+        ctx.fillStyle = "white";
         ctx.fill();
         ctx.stroke();
         ctx.closePath();

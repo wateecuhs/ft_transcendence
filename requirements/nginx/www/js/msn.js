@@ -18,7 +18,6 @@ async function loadMessageHistory() {
 }
 
 function initWebSocket() {
-  console.log('here');
   if (!window.ws || window.ws.readyState === WebSocket.CLOSED) {
     window.ws = new WebSocket('wss://localhost:8443/chat/');
   }

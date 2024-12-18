@@ -57,6 +57,7 @@ function SignIn() {
 				updateUserFriend(textUsername);
 				
 				loadMessageHistory();
+				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
 
 				slideUp();
@@ -205,6 +206,7 @@ async function SignIn42() {
 									updateUserFriend(userInfo.username);
 
 									loadMessageHistory();
+									window.mmws = initMMWebSocket();
 									window.ws = initWebSocket();
 
 									slideUp();
@@ -234,6 +236,7 @@ async function can_sign_in() {
 				updateUserFriend(userInfo.username);
 
 				loadMessageHistory();
+				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
 				
 				const loginPage = document.getElementById('login-id-page');
