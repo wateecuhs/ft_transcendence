@@ -18,10 +18,19 @@ async function activate_2fa() {
 					raiseAlert('2FA has been succesfully desactivated');
 					return ;
 				} else {
-					console.log(data.message);
+					raiseAlert('activate_2fa: ' + data.message);
 				}
 			} else {
-				console.log('An error occured');
+				const errorData = await response.json();
+				if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+					const isRefreshed = await getRefreshToken();
+					if (isRefreshed) {
+						const new_token = getTokenCookie();
+						return await getUserInfo(new_token);
+					}
+				} else {
+					raiseAlert('Getuser:' + errorData.message);
+				}
 			}
 		} catch(error) {
 			console.log(error);
@@ -43,11 +52,20 @@ async function activate_2fa() {
 			if (data.message === 'Success') {
 				img_path = data.qrcode_path;
 			} else {
-				console.log("Error: ", data.message);
+				raiseAlert(data.message);
+			}
+		} else {
+			const errorData = await response.json();
+			if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+				const isRefreshed = await getRefreshToken();
+				if (isRefreshed) {
+					const new_token = getTokenCookie();
+					return await getUserInfo(new_token);
+				}
 			}
 		}
 	} catch (error) {
-		console.log("Error: ", error);
+		console.error(error);
 	}
 
 	const win_2fa = document.querySelector('#activate-2fa');
@@ -88,6 +106,15 @@ document.addEventListener("DOMContentLoaded", () => {
 					raiseAlert('2FA is activated.')
 				} else {
 					raiseAlert(data.message);
+				}
+			} else {
+				const errorData = await response.json();
+				if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+					const isRefreshed = await getRefreshToken();
+					if (isRefreshed) {
+						const new_token = getTokenCookie();
+						return await getUserInfo(new_token);
+					}
 				}
 			}
 		} catch (error) {

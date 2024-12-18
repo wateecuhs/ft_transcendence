@@ -49,7 +49,15 @@ async function getUserInfo(accessToken) {
       }
     } else {
       const errorData = await response.json();
-      raiseAlert(errorData.message);
+      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+        const isRefreshed = await getRefreshToken();
+        if (isRefreshed) {
+          const new_token = getTokenCookie();
+          return await getUserInfo(new_token);
+        }
+      } else {
+        console.log(errorData.message);
+      }
       return null;
     }
   } catch(error) {
@@ -83,7 +91,16 @@ async function getUserStatistic(accessToken) {
         raiseAlert(data.message);
       }
     } else {
-      console.log('Couldnt find user statistic');
+      const errorData = await response.json();
+      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+        const isRefreshed = await getRefreshToken();
+        if (isRefreshed) {
+          const new_token = getTokenCookie();
+          return await getUserStatistic(new_token);
+        }
+      } else {
+        raiseAlert('Getuser:' + errorData.message);
+      }
     }
   } catch (error) {
     console.error('Erreur lors de la récupération des informations utilisateur:', error);
@@ -117,23 +134,53 @@ function getTokenCookie() {
 
   let cookie = cookieString.split(';');
   let access_token_string = cookie.find(element => element.trim().startsWith('access_token'));
+  if (!access_token_string)
+    return ;
   let access_token_split = access_token_string.split('=');
   let access_token = access_token_split[1];
   return access_token;
 }
 
+async function getRefreshToken() {
+  try {
+    const response = await fetch('/auth/refresh/', {
+      method: 'GET',
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.message === 'Success') {
+        document.cookie = `access_token=${data.access_token}; path=/`;
+        console.log('Token has been successfully refresh');
+        return true;
+      } else {
+        raiseAlert('In getRefreshToken: ' + data.message);
+      }
+    } else {
+      raiseAlert('In getRefreshToken: ' + data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  return false;
+}
+
 async function updateUserStat() {
-  const access_token = getTokenCookie();
-  const userStatistic = await getUserStatistic(access_token);
+  try {
+    const access_token = getTokenCookie();
+    const userStatistic = await getUserStatistic(access_token);
 
-  if (userStatistic) {
-    const stat = userStatistic;
+    if (userStatistic) {
+      const stat = userStatistic;
 
-    document.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `Number of matches: ${stat.matches_number}`;
-    document.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `Matches won: ${stat.matches_win}`;
-    document.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `Matches lost: ${stat.matches_lose}`;
-    document.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `Winning Rate: ${stat.winrate}`;
-    document.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `Goal scored: ${stat.goal_scored}`;
-    document.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `Goal conceded: ${stat.goal_conceded}`;
+      document.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `Number of matches: ${stat.matches_number}`;
+      document.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `Matches won: ${stat.matches_win}`;
+      document.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `Matches lost: ${stat.matches_lose}`;
+      document.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `Winning Rate: ${stat.winrate}`;
+      document.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `Goal scored: ${stat.goal_scored}`;
+      document.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `Goal conceded: ${stat.goal_conceded}`;
+    }
+  } catch(error) {
+    console.error(error);
   }
 }

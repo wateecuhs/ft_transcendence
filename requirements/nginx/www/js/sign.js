@@ -54,17 +54,23 @@ function SignIn() {
 			} else {
 				updateUserInfo(textUsername);
 				updateUserStat();
+				updateUserFriend(textUsername);
+				
+				loadMessageHistory();
+				window.mmws = initMMWebSocket();
+				window.ws = initWebSocket();
+
 				slideUp();
 			}
 
 		  } else {
-			raiseAlert(data.message);
+			raiseAlert('SignIn: ' + data.message);
 		  }
 		} else {
-		  raiseAlert(errorData.message);
+		  raiseAlert('SignIn: ' + errorData.message);
 		}
 	  } catch (error) {
-		alert('Une erreur est survenue lors de la connexion au serveur.');
+		raiseAlert('Identifiants invalides.');
 		console.error('Error:', error);
 	  }
 	});
@@ -129,7 +135,7 @@ function SignIn() {
 				displayRegister();
 				document.cookie = `access_token=${data.access_token}; path=/`;
 			} else {
-				raiseAlert(data.message);
+				raiseAlert('Signup: ' + data.message);
 			}
 		} else {
 		  const errorData = await response.json();
@@ -155,66 +161,95 @@ async function SignIn42() {
 	const loginPage = document.getElementById('login-id-page');
 
 	if (!loginPage) {
-	  console.error('login-id-page introuvable.');
-	  return;
+			console.error('login-id-page introuvable.');
+			return;
 	}
 
 	const login42 = loginPage.querySelector('.button-login-42');
 
 	if (!login42) {
-	  console.error('login42 button introuvable');
-	  return ;
+			console.error('login42 button introuvable');
+			return;
 	}
 
 	login42.addEventListener('click', async function () {
-		location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443&response_type=code'
+			location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443&response_type=code';
 	});
 
 	const urlParams = new URLSearchParams(window.location.search);
-
 	const code = urlParams.get('code');
 
 	if (code) {
-        console.log('Code récupéré:', code);
+		urlParams.delete('code');
+		window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
+		
+		try {
+			const response = await fetch('/auth/token/', {
+					method: 'POST',
+					headers: {
+							'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ code: code }),
+			});
 
-        try {
-            const response = await fetch('/auth/token/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ code: code })
-            });
+			if (response.ok) {
+					const data = await response.json();
 
-            if (response.ok) {
-                const data = await response.json();
-                if (data.message === 'Success') {
-					const userInfo = await getUserInfo(data.access_token);
+					if (data.message === 'Success') {
+							const userInfo = await getUserInfo(data.access_token);
 
-					if (userInfo) {
-						document.cookie = `access_token=${data.access_token}; path=/`;
-						localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
-						updateUserInfo(userInfo.username);
-						updateUserStat();
-						slideUp();
+							if (userInfo) {
+									document.cookie = `access_token=${data.access_token}; path=/`;
+									localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
+									updateUserInfo(userInfo.username);
+									updateUserStat();
+									updateUserFriend(userInfo.username);
+
+									loadMessageHistory();
+									window.mmws = initMMWebSocket();
+									window.ws = initWebSocket();
+
+									slideUp();
+							} else {
+									raiseAlert('Token was not valid');
+							}
 					} else {
-						raiseAlert('Token was not valid');
+							raiseAlert('Sign42: ' + data.message);
 					}
-                } else {
-                    raiseAlert(data);
-                }
-            } else {
-				raiseAlert('Error: response 42 is not ok');
+			} else {
+					raiseAlert('Error: response 42 is not ok');
 			}
-        } catch (error) {
-            console.error('Erreur réseau:', error);
-        }
-    } else {
-        console.error('Aucun code trouvé dans l\'URL');
-    }
+		} catch (error) {
+				console.error('Erreur réseau:', error);
+		}
+	}
+}
+
+async function can_sign_in() {
+	try {
+		const access_token = getTokenCookie();
+		if (access_token) {
+			const userInfo = await getUserInfo(access_token);
+			if (userInfo) {
+				updateUserInfo(userInfo.username);
+				updateUserStat();
+				updateUserFriend(userInfo.username);
+
+				loadMessageHistory();
+				window.mmws = initMMWebSocket();
+				window.ws = initWebSocket();
+				
+				const loginPage = document.getElementById('login-id-page');
+				loginPage.style.display = 'none';
+			}
+		}
+	} catch (error) {
+		console.log(error);
+	}
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+	can_sign_in();
 	SignIn();
 	SignUp();
 	SignIn42();

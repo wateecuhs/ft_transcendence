@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    user = None
     GLOBAL_CHAT = "chat"
     PRIVATE_CHAT_CMD = "/w"
     BLOCK_CHAT_CMD = "/block"
@@ -47,10 +48,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user_id = None
 
     async def connect(self):
-        self.user = str(self.scope["user"])
-        if self.user is None:
+        if self.scope["user"] is None:
             await self.close()
             return
+        self.user = str(self.scope["user"])
 
         logger.info(f"[{self.user}] Connected.")
 
@@ -206,7 +207,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def status_update(self, event):
         event["data"]["content"] = f"{event['data']['author']} is now {event['data']['status']}."
-        await self._json_send("status_update", event["data"])
+        await self._json_send(MessageType.Status.UPDATE, event["data"])
 
     async def chat_public(self, event):
         await self._json_send(MessageType.Chat.PUBLIC, event["data"])

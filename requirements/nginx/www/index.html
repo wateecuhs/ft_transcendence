@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="css/activate_2fa.css">
     <link rel="stylesheet" href="css/sign_2fa.css">
     <link rel="stylesheet" href="css/alert_win98.css">
+    <link rel="stylesheet" href="css/pong_game_option.css">
+    <link rel="stylesheet" href="css/clientWindow.css">
 </head>
 <body class="desktop">
 
@@ -248,6 +250,52 @@
     </div>
   </div>
 
+  <div class="window" id="clientWindow" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title">Friend ccount</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+
+      <div class="account-page" id="account-page-0" style="display: none;">
+        <div class="user-img">
+          <img src="img/png/game_spider-0.png">
+          <span>default pseudo</span>
+        </div>
+
+        <ul>
+          <li> name: default </li>
+          <li> 42 member: true</li>
+          <li> alias: default_alias</li>
+        </ul>
+      </div>
+
+      <div class="account-page" id="account-page-1" style="display: none;">
+        <div class="user-stat-title"> User statistic </div>
+
+        <ul>
+          <li>Number of matches: 8</li>
+          <li>Matches Won: 5</li>
+          <li>Matches lost: 3</li>
+          <li>Win rate: 60%</li>
+          <li>Goal Scored: </li>
+          <li>Goal Conceded: </li>
+        </ul>
+      </div>
+
+      <div class="number-pages">1/4</div>
+    </div>
+  </div>
+
   <div class="window" id="activate-2fa" style="display: none">
 
     <div class="window-header">
@@ -268,7 +316,6 @@
       <button id="valide-qr-code-id">Validate</button>
     </div>
   </div>
-
 
 
    <!-- Icone du Bureau -->
@@ -313,6 +360,21 @@
 
     <div class="window-content">
 
+    <div class="chat-tab">
+      <div class="general-tab">
+        <p class="general-text" onclick=openGeneralMessage()>General</p>
+        <button class="general-button">Add Friends</button>
+      </div>
+      <div class="add-friends-input"><input type="text" placeholder="Search friends"></div>
+      <div class="client tab">
+        <ul class="ul-client-tab"></ul>
+        <ul class="ul-client-action" style="display: none;">
+          <li id="client-info">See more about this user</li>
+          <li id="client-msg">Open private message</li>
+        </ul>
+      </div>
+    </div>
+
     <div class="msn-page" id="msn-page-0" style="display: none">
       <div class="chat-area">
         <div class="chat-messages"></div>
@@ -322,68 +384,59 @@
         </div>
       </div>
     </div>
-
-    <div class="msn-page" id="msn-page-1" style="display: none">
-      <div class="contact-list">
-        <div class="contact">
-          Contact 1
-          <button>Action</button>
-        </div>
-        <div class="contact">
-          Contact 2
-          <button>Action</button>
-        </div>
-        <div class="contact">
-          Contact 3
-          <button>Action</button>
-        </div>
-      </div>
-    </div>
-
-    </div>
+  </div>
 
   </div>
 
-  <div class="window fullscreen" id="winBook" style="display: none">
+  <div class="window" id="winBook" style="display: none">
     <div class="window-header">
       <div class="arrow-buttons">
-        <button class="left-arrow">&lt;</button>
-        <button class="right-arrow">&gt;</button>
+        <button class="left-arrow">&lt</button>
+        <button class="right-arrow">&gt</button>
       </div>
       <div class="header-title">Winbook - Inscription Tournoi Pong</div>
       <button class="close-button">X</button>
     </div>
 
-    <!-- Page 1 - Formulaire d'inscription -->
-    <div class="winBook-page" id="page1">
-
-      <div class="left-panel">
-
-        <div class="search-section">
-          <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
-          <button id="search-button" class="button-98">Rechercher</button>
-        </div>
-        <ul class="result-list" id="tournament-results"></ul>
-
-        <div class="create-section">
-          <input type="text" id="new-tournament-name" class="input-field" placeholder="Nom du nouveau tournoi">
-          <button id="create-tournament-button" class="button-98">Créer un tournoi</button>
+    <div class="window-content">
+      <div class="search-content">
+        <div class="tabs">
+          <div class="tab active" data-tab="tab-search">Search</div>
+          <div class="tab" data-tab="tab-create">Create</div>
         </div>
 
+        <div class="tab-content">
+
+          <div class="tab-pane" id="tab-search" style="display: flex;">
+            <div class="search-section">
+              <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
+              <button id="search-button" class="button-98">Rechercher</button>
+            </div>
+            <ul class="result-list" id="tournament-results"></ul>
+          </div>
+
+          <div class="tab-pane" id="tab-create" style="display: none;">
+            <div class="create-section">
+              <input type="text" id="create-tournament-name" class="input-field" placeholder="Nom du tournoi">
+              <button id="create-tournament-button" class="button-98">Créer</button>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="right-panel">
-        <div class="tournament-info">
-          <h3 class="tournament-name">Nom du tournoi</h3>
-          <p id="players-count">Nombre de joueurs : 0</p>
-
-          <ul id="players-list">
-
-          </ul>
+      
+      <div class="tournament-content">
+        <div class="tournament-pane">
+          <h2 id="tournament-name">No Tournament Selected</h2> 
+        <ul id="player-list">
+          <li>Empty</li>
+        </ul>
+          <div class="tournament-content-buttons">
+            <button id="ready-button" class="button">Join</button>
+            <button id="quit-button" class="button">Quit</button>
+          </div>
         </div>
       </div>
     </div>
-    <div class="vertical-bar"></div>
   </div>
 
   <div class="window fullscreen" id="PongGame" style="display: none">
@@ -396,6 +449,25 @@
       <button class="close-button">X</button>
     </div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
+  </div>
+
+  <div class="window" id="game-option" style="display: none;">
+    <div class="window-header">
+      <div class="header-title">Pong - Game Option</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <div class="window-content">
+      <div class="option-content">
+        <h2 class="option-text">Choose your Game Option</h2>
+        <ul class="list-option">
+          <li><button id="ai-button">Ai Game</button></li>
+          <li><button id="multi-button">Local multiplayer</button></li>
+          <li><button id="room-A">Room-A</button></li>
+          <li><button id="room-B">Room-B</button></li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <script src="/js/explorerWindow.js"></script>
@@ -417,10 +489,13 @@
   <script src="js/alertWin98.js"></script>
   <script src="js/ai_game.js"></script>
   <script src="js/game.js"></script> 
+  <script src="js/game_option.js"></script>
+  <script src="js/clientWindow.js"></script>
+  <script src="js/handle_chat.js"></script>
   <script>
     window.onload = function () {
-      loadMessageHistory();
-      ws = initWebSocket();
+      window.ws = null;
+      window.mmws = null;
       updateTime();
       setInterval(updateTime, 1000);
     }

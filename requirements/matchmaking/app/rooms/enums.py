@@ -1,11 +1,12 @@
 from django.db.models import TextChoices
 
 class MessageType:
-    class Room(TextChoices):
-        JOIN = "room.join"
-        LEAVE = "room.leave"
-        CREATE = "room.create"
-        DELETE = "room.delete"
-        KICK = "room.kick"
+    
+    class Tournament(TextChoices):
+        CREATE = "tournament.create"
+        JOIN = "tournament.join"
+        LEAVE = "tournament.leave"
+        START = "tournament.start"
+        DELETE = "tournament.delete"
 
     
