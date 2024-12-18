@@ -62,7 +62,7 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert, #game-option, #winBook');
+const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert, #game-option, #clientWindow, #winBook');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');

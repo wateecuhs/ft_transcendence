@@ -70,7 +70,7 @@ function SignIn() {
 		  raiseAlert('SignIn: ' + errorData.message);
 		}
 	  } catch (error) {
-		alert('Une erreur est survenue lors de la connexion au serveur.');
+		raiseAlert('Identifiants invalides.');
 		console.error('Error:', error);
 	  }
 	});

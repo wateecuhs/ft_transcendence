@@ -186,20 +186,22 @@ class UserInfo(APIView):
 
 
 class	UserInfoId(APIView):
-	def put(self, request, id):
+	def put(self, request, **kwargs):
+		id = kwargs.get('id')
 		serializer = ChangeRoomSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user = CustomUser.get_user_by_id(id=id)
+		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"}, status=404)
 		user.room_id = serializer.validated_data['room_id']
 		return JsonResponse({"message": "Success",
 							"room_id": user.room_id})
 
-	def get(self, id):
-		user = CustomUser.get_user_by_id(id=id)
+	def get(self, request, **kwargs):
+		id = kwargs.get('id')
+		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"}, status=404)
 		return JsonResponse({"message": "Success",
@@ -215,7 +217,8 @@ class	UserInfoId(APIView):
 
 
 class	UserInfoUsername(APIView):
-	def put(self, request, username):
+	def put(self, request, **kwargs):
+		username =  kwargs.get('username')
 		serializer = ChangeRoomSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
@@ -227,8 +230,9 @@ class	UserInfoUsername(APIView):
 		return JsonResponse({"message": "Success",
 							"room_id": user.room_id})
 
-	def get(self, username):
-		user = CustomUser.get_user_by_name(username=username)
+	def get(self, request, **kwargs):
+		username = kwargs.get('username')
+		user = CustomUser.get_user_by_name(username)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"}, status=404)
 		return JsonResponse({"message": "Success",
@@ -376,7 +380,8 @@ class MatchHistory(APIView):
 
 
 class MatchHistoryId(APIView):
-	def get(self, request, id):
+	def get(self, request, **kwargs):
+		id = kwargs.get('id')
 		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
@@ -389,7 +394,8 @@ class MatchHistoryId(APIView):
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
 
-	def put(self, request, id):
+	def put(self, request, **kwargs):
+		id = kwargs.get('id')
 		serializer = AddMatchSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
@@ -403,7 +409,8 @@ class MatchHistoryId(APIView):
 		return JsonResponse({"message": "Success"})
 
 class MatchHistoryUsername(APIView):
-	def get(self, username):
+	def get(self, request, **kwargs):
+		username = kwargs.get('username')
 		user = CustomUser.get_user_by_name(username)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
@@ -416,7 +423,8 @@ class MatchHistoryUsername(APIView):
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
 
-	def put(self, request, username):
+	def put(self, request, **kwargs):
+		username = kwargs.get('username')
 		serializer = AddMatchSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
@@ -462,7 +470,8 @@ class	UserStat(APIView):
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
 class	UserStatId(APIView):
-	def get(self, id):
+	def get(self, request, **kwargs):
+		id = kwargs.get('id')
 		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
@@ -475,7 +484,8 @@ class	UserStatId(APIView):
 							"goal_conceded": user.goal_conceded})
 
 class	UserStatUsername(APIView):
-	def get(self, username):
+	def get(self, request, **kwargs):
+		username = kwargs.get('username')
 		user = CustomUser.get_user_by_name(username)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
