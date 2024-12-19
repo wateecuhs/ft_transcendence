@@ -248,6 +248,43 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.error(f"Tournament start failed: {str(e)}")
 
+    async def _handle_tournament_update(self, event):
+        try:
+            data = event.get("data", {})
+            tournament_name = data.get("name")
+            if not tournament_name:
+                await self.error("Tournament name is required")
+                return
+
+            tournament = await sync_to_async(Tournament.objects.get)(name=tournament_name)
+
+            if tournament.status != Tournament.Status.PLAYING:
+                await self.error("Tournament is not in playing status")
+                return
+
+            if tournament.round != Tournament.Round.FIRST:
+                await self.error("Tournament is not in the first round")
+                return
+
+            await sync_to_async(tournament.save)()
+
+            await self.channel_layer.group_send(
+                f"tournament.{tournament_name}",
+                {
+                    "type": MessageType.Tournament.UPDATE,
+                    "data": {
+                        "name": tournament_name,
+                        "round": tournament.round,
+                        "matches": tournament.matches
+                    }
+                }
+            )
+
+        except Tournament.DoesNotExist:
+            await self.error("Tournament not found")
+        except Exception as e:
+            await self.error(f"Tournament update failed: {str(e)}")
+
     async def _handle_tournament_delete(self, event):
         try:
             data = event.get("data", {})
