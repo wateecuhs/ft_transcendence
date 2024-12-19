@@ -1,4 +1,4 @@
-function togglePongWindow() {
+function togglePongWindow(roomId) {
 	const pongWindow = document.getElementById('PongGame');
 
 	if (pongWindow.style.display === 'none') {
@@ -6,29 +6,38 @@ function togglePongWindow() {
 	  history.pushState({ page: "pong" }, "", "#pong");
 	} else {
 	  pongWindow.style.display = 'none';
+	  stopGameInstance(roomId);
 	}
 	pongWindow.querySelector('.close-button').addEventListener('click', function() {
 		pongWindow.style.display = 'none';
-		stopGameInstance();
+		stopGameInstance(roomId);
 	});
 }
 
+// ------------------ Need to find a way to pass room id to event listener ------------------
+//   window.addEventListener('popstate', function (event) {
+// 	const currentPage = window.location.hash;
 
-  window.addEventListener('popstate', function (event) {
-	const currentPage = window.location.hash;
+// 	if (currentPage === "#pong") {
+// 		togglePongWindow('room_ai');
+// 	}
+//   });
 
-	if (currentPage === "#pong") {
-		togglePongWindow();
+  function stopGameInstance(roomId) {
+	// const roomName = "room1"; // Replace with dynamic room name
+	// console.log('stopGameInstance called, roomId:', roomId);
+	let socket;
+	if (roomId === 'room_ai'){
+		socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + roomId + '/');
 	}
-  });
-
-  function stopGameInstance() {
-	const roomName = "room1"; // Replace with dynamic room name
-	const socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + roomName + '/');
+	else {
+		socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + roomId + '/');
+	}
 	socket.onopen = function() {
 		socket.send(JSON.stringify({ type: 'disconnect' }));
-		document.removeEventListener('keydown', handleKeyDown);
-		document.removeEventListener('keyup', handleKeyUp);
+		// document.removeEventListener('keydown', handleKeyDown);
+		// document.removeEventListener('keyup', handleKeyUp);
 		socket.close();
 	};
  }
+
