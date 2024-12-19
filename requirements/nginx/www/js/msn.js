@@ -48,7 +48,7 @@ function initWebSocket() {
       updateUserFriend();
     }
     else if (message.type === "status.update") {
-      handle_status_update(message.data)
+      handle_status_update(message.data);
     }
     else {
       console.log(message.type);
@@ -118,7 +118,7 @@ async function updateClientsTab(friends) {
 
     const statusDot = document.createElement('span');
     statusDot.classList.add("status-dot");
-    console.log(client.status);
+    statusDot.style.backgroundColor = 'green';
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = friend;

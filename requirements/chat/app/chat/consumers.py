@@ -115,16 +115,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self._handle_public_message(message)
 
     async def _handle_block_command(self, message: str):
-        logger
+        logger.info(f"[{self.user}] Handling block command. ({message})")
         splitted_message = message.split(" ")
         if len(splitted_message) != 2:
             self.error(f"Invalid block command format. ({message})")
             return
 
         target = splitted_message[1]
-        if target == self.user_id:
+        if target == self.user:
+            print("Handling block command: You can't block yourself.", flush=True)
             self.error(f"You can't block yourself.")
             return
+        else:
+            print(f"Handling block command: {type(target)} and {type(self.user)}", flush=True)
+            print(f"Handling block command: {target} and {self.user}", flush=True)
 
         if splitted_message[0] == self.BLOCK_CHAT_CMD:
             await database_sync_to_async(block_user)(self.user, target)
