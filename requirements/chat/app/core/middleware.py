@@ -11,12 +11,6 @@ class TokenAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         try:
             headers = dict(scope["headers"])
-            print(headers, flush=True)
-            if headers.get(b"Authorization") and headers[b"Authorization"].startswith(b"Bearer "):
-                token = headers[b"Authorization"].decode().split(" ")[1]
-                if token == os.environ.get("SERVICE_KEYS"):
-                    scope["user"] = "SYSTEM"
-                    return await super().__call__(scope, receive, send)
             cookies = {}
             for cookie in headers[b"cookie"].decode().split("; "):
                 cookies[cookie.split("=")[0]] = cookie.split("=")[1]

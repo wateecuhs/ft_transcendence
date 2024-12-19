@@ -32,16 +32,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
             logger.info(f"[{self.username}] Connected to WebSocket.")
             await self.channel_layer.group_add(f"user.{self.username}", self.channel_name)
-            try:
-                logger.info(f"Connecting to chat server")
-                ws = websocket.WebSocket()
-                ws.connect("ws://chat:8000/",
-                           header={"Authorization": f"Bearer {os.environ.get('SERVICE_KEYS')}"})
-                ws.send(json.dumps({"type": "tournament_start", "data": {"name": "SALUT"}}))
-                logger.info(f"ee server")
-            except Exception as e:
-                
-                logger.info(f"Error: {e}")
             await self.accept()
         except Exception as e:
             logger.error(f"Connection setup failed: {e}")
