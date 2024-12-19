@@ -74,6 +74,14 @@ function SignIn() {
 		console.error('Error:', error);
 	  }
 	});
+
+	usernameInput.addEventListener('keypress', function(event) {
+		signInButton.click();
+	});
+
+	passwordInput.addEventListener('click', function(event) {
+		signInButton.click();
+	});
   }
 
   function SignUp() {
