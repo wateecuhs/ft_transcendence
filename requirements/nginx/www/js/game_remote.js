@@ -8,7 +8,7 @@ function createRoom() {
 function joinRoom() {
     const roomNumber = prompt('Enter room number:');
     if (!roomNumber) return;
-    togglePongWindow('room_' + roomNumber);
+    // togglePongWindow('room_' + roomNumber);
     runRemoteGame(roomNumber);
 }
 
@@ -28,6 +28,8 @@ function runRemoteGame(roomNumber) {
 
     const roomName = "room_" + roomNumber; // Replace with dynamic room name
     const socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + roomName + '/');
+
+    let win = togglePongWindow(roomName);
 
     socket.onopen = function() {
         console.log('WebSocket connection established');
@@ -105,12 +107,12 @@ function runRemoteGame(roomNumber) {
     resizeCanvas();
 
     function drawBackground() {
-        const background = new Image();
-        background.src = '../img/windows98bureau_plain_hill.png';
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+        // const background = new Image();
+        // background.src = '../img/windows98bureau_plain_hill.png';
+        // ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-        //ctx.fillStyle = "#008080";
-        //ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#008080";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     function drawPaddles(state) {

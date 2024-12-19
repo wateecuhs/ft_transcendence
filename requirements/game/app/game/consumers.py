@@ -75,9 +75,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def update_game_state(self):
         while True:
-            if self.room.name != "room_local" and self.room.name != "room_ai":
+            if "room_local" not in self.room.name and self.room.name != "room_ai":
                 if len(self.room.players) < 2:
                     await asyncio.sleep(1 / FPS)
+                    self.room.reset()
                     continue
 
             game_state = await self.room.update_game_state()
