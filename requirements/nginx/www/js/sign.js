@@ -76,11 +76,15 @@ function SignIn() {
 	});
 
 	usernameInput.addEventListener('keypress', function(event) {
-		signInButton.click();
+		if (event.key === 'Enter') {
+			signInButton.click();
+		}
 	});
 
-	passwordInput.addEventListener('click', function(event) {
-		signInButton.click();
+	passwordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signInButton.click();
+		}
 	});
   }
 
@@ -163,6 +167,31 @@ function SignIn() {
 		console.error('Error:', error);
 	  }
 	});
+
+	usernameInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
+	emailInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
+	passwordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+	
+	confirmPasswordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
   }
 
 async function SignIn42() {

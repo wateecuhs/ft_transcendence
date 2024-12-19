@@ -255,20 +255,3 @@
 #msnWindow .info-friend:hover {
   cursor: pointer;
 }
-
-#msnWindow .chat-tab .client.tab .ul-client-action {
-  flex-direction: column;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-#msnWindow .chat-tab .client.tab .ul-client-action li {
-  background-color: #dcdcdc;
-  border: 1px solid #808080;
-  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
-}
-
-#msnWindow .chat-tab .client.tab .ul-client-action li:hover {
-  background-color: #b8b8b8;
-}
