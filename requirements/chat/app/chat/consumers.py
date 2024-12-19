@@ -158,6 +158,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     await self.channel_layer.group_send(f"user.{self.user}", {"type": MessageType.Relationship.ACCEPT, "data": {"author": target}})
                 case self.DECLINE_FRIEND_CMD:
                     await database_sync_to_async(reject_user)(self.user, target)
+                case _:
+                    self.error(f"Invalid friend command. ({message})")
         except Exception as e:
             logger.info(f"[{self.user}] Error: {e}")
             self.error(e)
@@ -227,6 +229,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self._json_send(MessageType.Status.UPDATE, event["data"])
 
     async def chat_public(self, event):
+        try:
+            author = event["data"]["author"]
+            if await database_sync_to_async(get_relationship_status)(self.user, author) == cmod.Relationship.Status.BLOCKED or \
+                await database_sync_to_async(get_relationship_status)(author, self.user) == cmod.Relationship.Status.BLOCKED:
+                return
+        except KeyError:
+            return
         await self._json_send(MessageType.Chat.PUBLIC, event["data"])
 
     async def chat_private(self, event):
@@ -262,15 +271,11 @@ def unblock_user(sender, target):
     relationship.unblock()
 
 def request_user(sender, target):
-    logger.info(f"[{sender}] Sending friend request to {target}.")
     rel_status = get_relationship_status(sender, target)
-    logger.info(f"[{sender}] Relationship status: {rel_status}")
     if rel_status != cmod.Relationship.Status.NEUTRAL and rel_status != None:
         raise Exception(f"You can't add {target}.")
-    logger.info(f"[{sender}] Creating relationship with {target}.")
     relationship, created = cmod.Relationship.objects.get_or_create(sender=sender, receiver=target)
     relationship.request()
-    logger.info(f"[{sender}] Sending status request to {target}.")
 
 def accept_user(sender, target):
     if get_relationship_status(target, sender) != cmod.Relationship.Status.PENDING:

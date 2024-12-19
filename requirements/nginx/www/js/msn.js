@@ -40,7 +40,7 @@ function initWebSocket() {
     }
     else if (message.type === "relationship.accept") {
       updateUserFriend();
-      showPopUp("You have accepted: " + message.data.target);
+      showPopUp(message.data.author + " is now your friend!");
       // devrait juste ajouter le nouvel user au lieu de tout re-render et le mettre en online par defaut
     }
     else if (message.type === "relationship.remove") {
