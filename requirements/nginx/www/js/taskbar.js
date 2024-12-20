@@ -47,6 +47,8 @@ function toogleLanguageChoices() {
         raiseAlert('Change to English');
       } else if (divFlag.id === 'portugal-flag') {
         raiseAlert('Change to Portuguese');
+      } else if (divFlag.id === 'russia-flag') {
+        raiseAlert('Change to Russian');
       }
     });
   });

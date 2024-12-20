@@ -1,76 +1,167 @@
-.game-over {
-  width: 300px;
-  height: 100px;
-  border: 2px solid #000;
-	box-shadow: 3px 3px 6px #aaa;
-	background-color: #f9f6f6;
-	flex-direction: column;
-	z-index: 9999;
-}
-
-.game-over .header-title {
-	margin: auto;
-}
-
-.game-over .window-content {
-	padding: 20px;
-	background-color: #dcdcdc;
-	border: 2px solid #808080;
-	box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-}
-
-.game-over .close-button-alert {
-	padding: 5px 20px;
-	font-size: 12px;
-	align-self: center;
-	background-color: #dcdcdc;
-	border: 1px solid #252525;
-	box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
-	cursor: pointer;
+@keyframes game-over-slide {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .all-game-over {
   position: fixed;
-  top: 40%;
-  left: 40%;
-	display: none;
-}
-
-@keyframes game-over-slide {
-  from {
-    transform: translateY();
-  }
-  to {
-
-  }
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
 }
 
 .all-game-over li {
-  transform: translateX(-100px), translateY(-100px);
-  animation: game-over-slide 1s ease-in-out forwards;
+  position: absolute;
+  list-style: none;
 }
 
 .all-game-over li:nth-child(1) {
   animation-delay: 0.1s;
 }
 
-.all-game-over li:nth-child(1) {
+.all-game-over li:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.all-game-over li:nth-child(1) {
+.all-game-over li:nth-child(3) {
   animation-delay: 0.3s;
 }
 
-.all-game-over li:nth-child(1) {
+.all-game-over li:nth-child(4) {
   animation-delay: 0.4s;
 }
 
-.all-game-over li:nth-child(1) {
+.all-game-over li:nth-child(5) {
   animation-delay: 0.5s;
 }
 
+.all-game-over #game-over-1,
+#game-over-2,
+#game-over-3,
+#game-over-4,
+#game-over-5 {
+  width: 300px;
+  min-height: 100px;
+  border: 2px solid #000;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  background-color: #ececec;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+#game-over-1 {
+  top: 20px;
+  left: 20px;
+}
+
+#game-over-2 {
+  top: 40px;
+  left: 40px;
+}
+
+#game-over-3 {
+  top: 60px;
+  left: 60px;
+}
+
+#game-over-4 {
+  top: 80px;
+  left: 80px;
+}
+
+#game-over-5 {
+  top: 100px;
+  left: 100px;
+}
+
+.all-game-over .window-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  background-color: #d4d0c8;
+  border-bottom: 1px solid #808080;
+}
+
+.all-game-over .header-title {
+  font-family: 'MS Sans Serif', Arial, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  background-color: #000080;
+  color: #fff;
+  padding: 2px;
+  margin-left: 15px;
+}
+
+.all-game-over .close-button {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  color: #000;
+  background-color: #d4d0c8;
+  border: 1px solid #808080;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #404040;
+  cursor: pointer;
+  text-align: center;
+  line-height: 18px;
+}
+
+.all-game-over .close-button:hover {
+  background-color: #808080;
+  color: #fff;
+}
+
+.all-game-over .window-content {
+  height: 100px;
+  padding: 20px;
+  background-color: #dcdcdc;
+  border: 2px solid #808080;
+  box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.all-game-over .window-content div {
+  font-family: 'MS Sans Serif', 'Tahoma', Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #000;
+  margin-bottom: 10px;
+  padding: 5px;
+  background-color: #dcdcdc;
+  border: 2px solid #808080;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #404040;
+  text-align: left;
+}
+
+.game-over-button {
+	width: 80;
+	padding: 2px 10px;
+  font-family: 'MS Sans Serif', 'Tahoma', Arial, sans-serif;
+  font-size: 12px;
+  color: #000;
+  background-color: #dcdcdc;
+  border: 2px solid #808080;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #404040;
+  cursor: pointer;
+  text-align: center;
+}
+
+.game-over-button:hover {
+  background-color: #808080;
+  color: #fff;
+  border-color: #404040;
+}
 

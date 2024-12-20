@@ -153,6 +153,9 @@
         <li>
           <div class="flag-icon" id="portugal-flag" alt="Portugal Flag"></div>
         </li>
+        <li>
+          <div class="flag-icon" id="russia-flag" alt="Russia Flag"></div>
+        </li>
       </ul>
     </div>
   </div>
@@ -512,61 +515,53 @@
     </div>
   </div>
 
-  <div class="all-game-over">
+  <div class="all-game-over" style="display: none;">
     <ul>
       <li>
-        <div class="window .game-over" id="game-over-1">
+        <div class="window" id="game-over-1">
           <div class="window-header">
             <div class="header-title">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
-      
           <div class="window-content"></div>
         </div>
       </li>
-
       <li>
-        <div class="window .game-over" id="game-over-2">
+        <div class="window" id="game-over-2">
           <div class="window-header">
             <div class="header-title">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
-      
           <div class="window-content"></div>
         </div>
       </li>
-
       <li>
-        <div class="window .game-over" id="game-over-3">
+        <div class="window" id="game-over-3">
           <div class="window-header">
             <div class="header-title">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
-      
           <div class="window-content"></div>
         </div>
       </li>
-
       <li>
-        <div class="window .game-over" id="game-over-4">
+        <div class="window" id="game-over-4">
           <div class="window-header">
             <div class="header-title">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
-      
           <div class="window-content"></div>
         </div>
       </li>
-
       <li>
-        <div class="window .game-over" id="game-over-5">
+        <div class="window" id="game-over-5">
           <div class="window-header">
             <div class="header-title">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
-      
           <div class="window-content">
-            <div>Game is over ! Player One has won !</div>
+            <div>Game is over! Player One has won!</div>
+            <button class="game-over-button">Quit</button>
           </div>
         </div>
       </li>
@@ -598,6 +593,7 @@
   <script src="js/handle_chat.js"></script>
   <script src="js/pop_up_message.js"></script>
   <script src="js/clientAction.js"></script>
+  <script src="js/game_option.js"></script>
   <script>
     window.onload = function () {
       window.ws = null;
