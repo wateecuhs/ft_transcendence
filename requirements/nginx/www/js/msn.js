@@ -30,6 +30,7 @@ function initWebSocket() {
 
     const message = JSON.parse(event.data);
     if (message.type === "chat.public") {
+      showPopUp('A message was send by: ' + message.data.author);
       handle_chat_public(private_message, mp_user, message);
     }
     else if (message.type === "chat.private") {

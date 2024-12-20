@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="css/clientWindow.css">
     <link rel="stylesheet" href="css/pop_up_message.css">
     <link rel=stylesheet href="css/clientAction.css">
+    <link rel=stylesheet href="css/game-over.css">
 </head>
 <body class="desktop">
 
@@ -126,16 +127,33 @@
           <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()">Compte</button>
         </li>
         <li>Parametres</li>
-        <li>Executer...</li>
+        <li>
+          <button class="menu-btn work-desk-btn" onclick="quitDesk()">Quitter</button></li>
       </ul>
     </div>
 
-    <!-- L'heure est affichee et mise a jour -->
     <div class="taskbar-items">
-        <span class="time">
+      <div class="icon-container">
+        <div class="flag-icon" id="language-flag" alt="Language Flag" onclick="toogleLanguageChoices()"></div>
+        <div class="time">
           <img src="img/png/time_and_date-0.png" alt="Time Icon" class="time-icon">
           <span class="time-text">12:00 PM</span>
-        </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="language-choices">
+      <ul>
+        <li>
+          <div class="flag-icon" id="france-flag" alt="France Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="england-flag" alt="England Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="portugal-flag" alt="Portugal Flag"></div>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -494,11 +512,72 @@
     </div>
   </div>
 
+  <div class="all-game-over">
+    <ul>
+      <li>
+        <div class="window .game-over" id="game-over-1">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+      
+          <div class="window-content"></div>
+        </div>
+      </li>
+
+      <li>
+        <div class="window .game-over" id="game-over-2">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+      
+          <div class="window-content"></div>
+        </div>
+      </li>
+
+      <li>
+        <div class="window .game-over" id="game-over-3">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+      
+          <div class="window-content"></div>
+        </div>
+      </li>
+
+      <li>
+        <div class="window .game-over" id="game-over-4">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+      
+          <div class="window-content"></div>
+        </div>
+      </li>
+
+      <li>
+        <div class="window .game-over" id="game-over-5">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+      
+          <div class="window-content">
+            <div>Game is over ! Player One has won !</div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
   <script src="/js/explorerWindow.js"></script>
   <script src="js/accountWindow.js"></script>
   <script src="/js/start_menu.js"></script>
   <script src="/js/move_icon.js"></script>
-  <script src="/js/update_time.js"></script>
+  <script src="/js/taskbar.js"></script>
   <script src="js/msn.js"></script>
   <script src="js/winbook.js"></script>
   <script src="js/userInfo.js"></script>

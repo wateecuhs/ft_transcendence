@@ -157,7 +157,7 @@ function SignIn() {
 			for (const [field, messages] of Object.entries(errorData.errors)) {
 			  errorMessage += `${field}: ${messages.join(', ')}\n`;
 			}
-			alert(errorMessage);
+			raiseAlert(errorMessage);
 		  } else {
 			alert('Erreur : ' + (errorData.message || 'Problème de connexion au serveur.'));
 		  }
@@ -283,6 +283,12 @@ async function can_sign_in() {
 	} catch (error) {
 		console.log(error);
 	}
+}
+
+function quitDesk() {
+	document.cookie = "access_token=; path=/";
+	document.cookie = "refresh_token=; path=/";
+	slideBack();
 }
 
 document.addEventListener('DOMContentLoaded', function() {

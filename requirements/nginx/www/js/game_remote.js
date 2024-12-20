@@ -49,7 +49,7 @@ function runRemoteGame(roomNumber) {
         }
         if (gameState.score[0] >= 10 || gameState.score[1] >= 10) {
             gameOver = true;
-            alert('Game Over! Player ' + gameState.winner + ' wins!');
+            raiseAlert('Game Over! Player ' + gameState.winner + ' wins!');
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
             listenersAdded = false;
