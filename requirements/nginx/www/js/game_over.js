@@ -1,20 +1,21 @@
-function triggerGameOverWindows() {
-  const game_over = document.querySelector('.all-game-over');
-  if (game_over.style.display === 'none') {
-    game_over.style.display = 'flex';
-    const windows = game_over.querySelectorAll('.all-game-over li');
-    windows.forEach((error_win, index) => {
-      error_win.classList.remove('game-over-slide');
-      error_win.classList.add('game-over-slide');
+function triggerGameOverWindows(message) {
+  const gameOver = document.querySelector('.all-game-over');
+  if (gameOver.style.display === 'none' || gameOver.style.display === '') {
+    gameOver.style.display = 'flex';
+    const textGameOver = gameOver.querySelector('#game-over-5 .game-over-text');
+    textGameOver.textContent = message;
+
+    const windows = gameOver.querySelectorAll('li');
+    windows.forEach((window, index) => {
+      setTimeout(() => {
+        window.classList.add('show');
+      }, index * 100);
     });
   } else {
-    game_over.style.display = 'none';
-    return ;
+    gameOver.style.display = 'none';
   }
-
-  windows.forEach((error_win, index) => {
-    setTimeout(() => {
-      error_win.style.display = 'flex';
-    }, index * 100);
-  });
 }
+
+document.querySelector('.game-over-button').addEventListener('click', function() {
+  document.querySelector('.all-game-over').style.display = 'none';
+});

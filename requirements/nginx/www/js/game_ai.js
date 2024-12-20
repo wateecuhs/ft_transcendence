@@ -34,7 +34,7 @@ function runAIGame() {
         }
         if (gameState.score[0] >= 10 || gameState.score[1] >= 10) {
             gameOver = true;
-            raiseAlert('Game Over! Player ' + gameState.winner + ' wins!');
+            triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
             listenersAdded = false;
