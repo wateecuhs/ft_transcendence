@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const access_token = getTokenCookie();
 	const winActivate2FA = document.querySelector('#activate-2fa');
 	const content = winActivate2FA.querySelector('.window-content');
-	const buttonValidate2FA = content.querySelector('#valide-qr-code-id');
+	const buttonValidate2FA = content.querySelector('#validate-qr-code-id');
 
 	buttonValidate2FA.addEventListener('click', async function () {
 		const inputCode = content.querySelector('input');

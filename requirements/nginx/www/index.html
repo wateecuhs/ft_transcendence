@@ -30,18 +30,18 @@
 
   <div class="login-page" id="login-id-page">
 
-    <div class="login-page-header">Demarrage Win98</div>
+    <div class="login-page-header" id="login-title">Start Windows 98</div>
 
     <div class="sign-in">
 
       <input type="text" id="sign-in-username" class="input-login-page" placeholder="username">
       <input type="password" id="sign-in-password" class="input-login-page" placeholder="password">
-      <button id="sign-in-button" class="button-login-page">sign-in</button>
+      <button id="sign-in-button" class="button-login-page">sign in</button>
 
     </div>
 
     <div class="sign-up">
-      <button id="button-sign-up-page" class="button-login-page">sign-up</button>
+      <button id="button-sign-up-page" class="button-login-page">sign up</button>
 
       <div class="register" style="display: none;">
 
@@ -56,7 +56,7 @@
     </div>
 
     <div class="login-42">
-      <button class="button-login-42">Login 42</button>
+      <button class="button-login-42" id="button-login-42">Login 42</button>
     </div>
 
   <div class="window" id="window-2fa-sign" style="display: none;">
@@ -67,13 +67,13 @@
         <button class="left-arrow"> &lt </button>
         <button class="right-arrow"> &gt </button>
       </div>
-      <div class="header-title">Sign 2FA</div>
+      <div class="header-title" id="2fa-sign">Sign 2FA</div>
       <button class="close-button">X</button>
 
     </div>
 
     <div class="window-content">
-      <p>Enter your 2fa code</p>
+      <p id="2fa-text">Enter your 2fa code</p>
       <input type="text" id="2fa-input" class="input-login-page" placeholder="Code">
       <button class="button-login-page" id="2fa-button">Validate</button>
     </div>
@@ -121,14 +121,14 @@
       <ul>
         <li>
           <!-- Creer le fenetre poste de travail-->
-          <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()">Poste de travail</button>
+          <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()" id="desktop">Desktop</button>
         </li>
         <li>
-          <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()">Compte</button>
+          <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()" id="account">Account</button>
         </li>
-        <li>Parametres</li>
+        <li id="settings">Settings</li>
         <li>
-          <button class="menu-btn work-desk-btn" onclick="quitDesk()">Quitter</button></li>
+          <button class="menu-btn work-desk-btn" onclick="quitDesk()" id="quit">Quit</button></li>
       </ul>
     </div>
 
@@ -171,7 +171,7 @@
         <button class="left-arrow"> &lt </button>
         <button class="right-arrow"> &gt </button>
       </div>
-      <div class="header-title">Windows Explorer</div>
+      <div class="header-title" id="application-explorer">Application Explorer</div>
       <button class="close-button">X</button>
 
     </div>
@@ -193,7 +193,7 @@
         <button class="right-arrow"> &gt </button>
       </div>
 
-      <div class="header-title">Account</div>
+      <div class="header-title" id="account-window">Account</div>
       <button class="close-button">X</button>
 
     </div>
@@ -218,11 +218,11 @@
           <li> alias: default_alias</li>
         </ul>
 
-        <button class="change-user-info" onclick="displayUserUpdateWindow()">Update Profile</button>
+        <button class="change-user-info" onclick="displayUserUpdateWindow()" id="update-profile">Update Profile</button>
       </div>
 
       <div class="account-page" id="account-page-1" style="display: none">
-        <div class="user-stat-title"> User statistic </div>
+        <div class="user-stat-title" id="user-stats"> User Statistics </div>
 
         <ul>
           <li>Number of matches: 8</li>
@@ -235,7 +235,7 @@
       </div>
 
       <div class="account-page" id="account-page-2" style="display: none">
-        <div class="user-friends-title"> User friends </div>
+        <div class="user-friends-title" id="user-friends"> User friends </div>
 
         <ul class="friends-list">
           <li class="friend-item">
@@ -267,19 +267,19 @@
         <button class="right-arrow"> &gt </button>
       </div>
 
-      <div class="header-title">Account</div>
+      <div class="header-title" id="profile-account">Account</div>
       <button class="close-button">X</button>
 
     </div>
 
     <div class="window-content">
-      <input type="text" placeholder="alias">
-      <input type="text" placeholder="email">
-      <input type="password" placeholder="old_password">
-      <input type="password" placeholder="password">
-      <input type="password" placeholder="confirm password">
+      <input type="text" id="profile-alias" placeholder="alias">
+      <input type="text" id="profile-email" placeholder="email">
+      <input type="password" id="profile-old-password" placeholder="old_password">
+      <input type="password" id="profile-password" placeholder="password">
+      <input type="password" id="profile-confirm-password" placeholder="confirm password">
 
-      <button id="updateButton">Update Info</button>
+      <button id="update-button">Update Info</button>
     </div>
   </div>
 
@@ -292,7 +292,7 @@
         <button class="right-arrow"> &gt </button>
       </div>
 
-      <div class="header-title">Friend Account</div>
+      <div class="header-title" id="friend-account">Friend Account</div>
       <button class="close-button">X</button>
 
     </div>
@@ -313,7 +313,7 @@
       </div>
 
       <div class="account-page" id="account-page-1" style="display: none;">
-        <div class="user-stat-title"> User statistic </div>
+        <div class="user-stat-title" id="friend"> User statistic </div>
 
         <ul>
           <li>Number of matches: 8</li>
@@ -338,15 +338,15 @@
         <button class="right-arrow"> &gt </button>
       </div>
 
-      <div class="header-title">Activate 2FA</div>
+      <div class="header-title" id="activate-2fa-text">Activate 2FA</div>
       <button class="close-button">X</button>
 
     </div>
 
     <div class="window-content">
       <img id="img-qr-code">
-      <input type="text" placeholder="Enter Code">
-      <button id="valide-qr-code-id">Validate</button>
+      <input type="text" id="enter-code" placeholder="Enter Code">
+      <button id="validate-qr-code-id">Validate</button>
     </div>
   </div>
 
@@ -356,7 +356,7 @@
 
       <div class="icon" draggable="true" id="Poste de travail">
           <img src="img/png/computer-0.png" alt="My Computer">
-          <p class="icon-text">Poste de travail</p>
+          <p class="icon-text" id="desktop-image">Desktop</p>
       </div>
 
 
@@ -377,7 +377,7 @@
 
       <div class="icon" draggable="true" id="Corbeille">
         <img src="img/png/recycle_bin_directory.png" alt="Recycle Bin">
-        <p class="icon-text">Corbeille</p>
+        <p class="icon-text" id="trash">Trash</p>
     </div>
   </div>
 
@@ -395,13 +395,13 @@
 
       <div class="chat-tab">
         <div class="general-tab">
-          <p class="general-text" onclick=openGeneralMessage()>General</p>
-          <button class="general-button">Add Friends</button>
+          <p class="general-text" onclick=openGeneralMessage() id="general">General</p>
+          <button class="general-button" id="add-friends">Add Friends</button>
         </div>
-        <div class="add-friends-input"><input type="text" placeholder="Search friends"></div>
+        <div class="add-friends-input"><input type="text" id="search-friends" placeholder="Search friends"></div>
         <div class="client tab">
           <ul class="ul-client-tab"></ul>
-          
+
         </div>
       </div>
 
@@ -409,8 +409,8 @@
         <div class="chat-area">
           <div class="chat-messages"></div>
           <div class="input-container">
-            <input type="text" class="chat-input" placeholder="Type a message" />
-            <button class="send-button">Send</button>
+            <input type="text" class="chat-input" id="type-message" placeholder="Type a message" />
+            <button class="send-button" id="send">Send</button>
           </div>
         </div>
       </div>
@@ -420,7 +420,7 @@
   <div class="window" id="client-action" style="display: none;">
     <div class="window-header">
 
-      <div class="header-title">Client Action</div>
+      <div class="header-title"></div>
       <button class="close-button">X</button>
 
     </div>
@@ -439,41 +439,41 @@
         <button class="left-arrow">&lt</button>
         <button class="right-arrow">&gt</button>
       </div>
-      <div class="header-title">Winbook - Inscription Tournoi Pong</div>
+      <div class="header-title" id="winbook-title">Winbook - Pong Tournament Registration</div>
       <button class="close-button">X</button>
     </div>
 
     <div class="window-content">
       <div class="search-content">
         <div class="tabs">
-          <div class="tab active" data-tab="tab-search">Search</div>
-          <div class="tab" data-tab="tab-create">Create</div>
+          <div class="tab active" data-tab="tab-search" id="search">Search</div>
+          <div class="tab" data-tab="tab-create" id="create">Create</div>
         </div>
 
         <div class="tab-content">
 
           <div class="tab-pane" id="tab-search" style="display: flex;">
             <div class="search-section">
-              <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
-              <button id="search-button" class="button-98">Rechercher</button>
+              <input type="text" id="search-tournament" class="input-field" placeholder="Search a tournament">
+              <button id="search-button" class="button-98">Search</button>
             </div>
             <ul class="result-list" id="tournament-results"></ul>
           </div>
 
           <div class="tab-pane" id="tab-create" style="display: none;">
             <div class="create-section">
-              <input type="text" id="create-tournament-name" class="input-field" placeholder="Nom du tournoi">
-              <button id="create-tournament-button" class="button-98">Créer</button>
+              <input type="text" id="create-tournament-name" class="input-field" placeholder="Tournament name">
+              <button id="create-tournament-button" class="button-98">Create</button>
             </div>
           </div>
         </div>
       </div>
-      
+
       <div class="tournament-content">
         <div class="tournament-pane">
-          <h2 id="tournament-name">No Tournament Selected</h2> 
+          <h2 id="tournament-name">No Tournament Selected</h2>
         <ul id="player-list">
-          <li>Empty</li>
+          <li id="empty">Empty</li>
         </ul>
           <div class="tournament-content-buttons">
             <button id="ready-button" class="button">Join</button>
@@ -490,7 +490,7 @@
         <button class="left-arrow">&lt;</button>
         <button class="right-arrow">&gt;</button>
       </div>
-      <div class="header-title">Game</div>
+      <div class="header-title" id="game">Game</div>
       <button class="close-button">X</button>
     </div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
@@ -498,13 +498,13 @@
 
   <div class="window" id="game-option" style="display: none;">
     <div class="window-header">
-      <div class="header-title">Pong - Game Option</div>
+      <div class="header-title" id="game-options">Pong - Game Option</div>
       <button class="close-button">X</button>
     </div>
 
     <div class="window-content">
       <div class="option-content">
-        <h2 class="option-text">Choose your Game Option</h2>
+        <h2 class="option-text" id="choose-option">Choose your Game Option</h2>
         <ul class="list-option">
           <li><button id="ai-button">Ai Game</button></li>
           <li><button id="local-button">Local multiplayer</button></li>
@@ -520,7 +520,7 @@
       <li>
         <div class="window" id="game-over-1">
           <div class="window-header">
-            <div class="header-title">GAME OVER</div>
+            <div class="header-title" id="game-over">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
           <div class="window-content"></div>
@@ -529,7 +529,7 @@
       <li>
         <div class="window" id="game-over-2">
           <div class="window-header">
-            <div class="header-title">GAME OVER</div>
+            <div class="header-title" id="game-over2">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
           <div class="window-content"></div>
@@ -538,7 +538,7 @@
       <li>
         <div class="window" id="game-over-3">
           <div class="window-header">
-            <div class="header-title">GAME OVER</div>
+            <div class="header-title" id="game-over3">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
           <div class="window-content"></div>
@@ -547,7 +547,7 @@
       <li>
         <div class="window" id="game-over-4">
           <div class="window-header">
-            <div class="header-title">GAME OVER</div>
+            <div class="header-title" id="game-over4">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
           <div class="window-content"></div>
@@ -556,12 +556,12 @@
       <li>
         <div class="window" id="game-over-5">
           <div class="window-header">
-            <div class="header-title">GAME OVER</div>
+            <div class="header-title" id="game-over5">GAME OVER</div>
             <button class="close-button">X</button>
           </div>
           <div class="window-content">
-            <div>Game is over! Player One has won!</div>
-            <button class="game-over-button">Quit</button>
+            <div id="game-over-txt">Game is over! Player One has won!</div>
+            <button class="game-over-button" id="game-over-quit">Quit</button>
           </div>
         </div>
       </li>
@@ -585,8 +585,10 @@
   <script src="js/pong.js"></script>
   <script src="js/2fa.js"></script>
   <script src="js/alertWin98.js"></script>
+  <script src="js/ai_game.js"></script>
+  <script src="js/game.js"></script>
   <script src="js/game_ai.js"></script>
-  <script src="js/game_local.js"></script> 
+  <script src="js/game_local.js"></script>
   <script src="js/game_remote.js"></script>
   <script src="js/game_option.js"></script>
   <script src="js/clientWindow.js"></script>
@@ -598,8 +600,85 @@
     window.onload = function () {
       window.ws = null;
       window.mmws = null;
-      updateTime();
-      setInterval(updateTime, 1000);
+      console.log('salut');
+      window.dict = 'pt-dict.txt';
+      fetch(window.dict)
+        .then(response => response.text())
+        .then(content => {
+          let file = content.split('\n');
+          window.dataMap = new Map();
+          for (let line of file) {
+            let lineSplit = line.split('=');
+            window.dataMap.set(lineSplit[0], lineSplit[1]);
+          }
+          console.log(window.dataMap.get('button-login-42'));
+          document.getElementById('login-title').textContent = window.dataMap.get('login-title');
+          document.getElementById('sign-in-button').textContent = window.dataMap.get('sign-in-button');
+          document.getElementById('button-sign-up-page').textContent = window.dataMap.get('button-sign-up-page');
+          document.getElementById('button-register-page').textContent = window.dataMap.get('button-register-page');
+          document.getElementById('button-login-42').textContent = window.dataMap.get('button-login-42');
+          document.getElementById('sign-in-username').placeholder = window.dataMap.get('sign-in-username');
+          document.getElementById('sign-in-password').placeholder = window.dataMap.get('sign-in-password');
+          document.getElementById('sign-up-username').placeholder = window.dataMap.get('sign-up-username');
+          document.getElementById('sign-up-email').placeholder = window.dataMap.get('sign-up-email');
+          document.getElementById('sign-up-password').placeholder = window.dataMap.get('sign-up-password');
+          document.getElementById('sign-up-confirm-password').placeholder = window.dataMap.get('sign-up-confirm-password');
+          document.getElementById('2fa-sign').textContent = window.dataMap.get('2fa-sign');
+          document.getElementById('2fa-text').textContent = window.dataMap.get('2fa-text');
+          document.getElementById('2fa-button').textContent = window.dataMap.get('2fa-button');
+          document.getElementById('desktop').textContent = window.dataMap.get('desktop');
+          document.getElementById('account').textContent = window.dataMap.get('account');
+          document.getElementById('settings').textContent = window.dataMap.get('settings');
+          document.getElementById('quit').textContent = window.dataMap.get('quit');
+          document.getElementById('application-explorer').textContent = window.dataMap.get('application-explorer');
+          document.getElementById('account-window').textContent = window.dataMap.get('account-window');
+          document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
+          document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
+          document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+          document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
+          document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
+          document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
+          document.getElementById('profile-old-password').placeholder = window.dataMap.get('profile-old-password');
+          document.getElementById('profile-password').placeholder = window.dataMap.get('profile-password');
+          document.getElementById('profile-confirm-password').placeholder = window.dataMap.get('profile-confirm-password');
+          document.getElementById('update-button').textContent = window.dataMap.get('update-button');
+          document.getElementById('friend-account').textContent = window.dataMap.get('friend-account');
+          document.getElementById('activate-2fa-text').textContent = window.dataMap.get('activate-2fa-text');
+          document.getElementById('enter-code').placeholder = window.dataMap.get('enter-code');
+          document.getElementById('validate-qr-code-id').textContent = window.dataMap.get('validate-qr-code-id');
+          document.getElementById('desktop-image').textContent = window.dataMap.get('desktop-image');
+          document.getElementById('trash').textContent = window.dataMap.get('trash');
+          document.getElementById('general').textContent = window.dataMap.get('general');
+          document.getElementById('add-friends').textContent = window.dataMap.get('add-friends');
+          document.getElementById('search-friends').placeholder = window.dataMap.get('search-friends');
+          document.getElementById('type-message').placeholder = window.dataMap.get('type-message');
+          document.getElementById('send').textContent = window.dataMap.get('send');
+          document.getElementById('client-info').textContent = window.dataMap.get('client-info');
+          document.getElementById('client-msg').textContent = window.dataMap.get('client-msg');
+          document.getElementById('winbook-title').textContent = window.dataMap.get('winbook-title');
+          document.getElementById('search').textContent = window.dataMap.get('search');
+          document.getElementById('create').textContent = window.dataMap.get('create');
+          document.getElementById('search-button').textContent = window.dataMap.get('search-button');
+          document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
+          document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
+          document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
+          document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+          document.getElementById('empty').textContent = window.dataMap.get('empty');
+          document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
+          document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
+          document.getElementById('game').textContent = window.dataMap.get('game');
+          document.getElementById('game-options').textContent = window.dataMap.get('game-options');
+          document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
+          document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
+          document.getElementById('local-button').textContent = window.dataMap.get('local-button');
+          document.getElementById('create-room').textContent = window.dataMap.get('create-room');
+          document.getElementById('join-room').textContent = window.dataMap.get('join-room');
+          document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
+          document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
+          updateTime();
+          setInterval(updateTime, 1000);
+        })
+        .catch(error => console.error("error :", error));
     }
   </script>
 </body>
