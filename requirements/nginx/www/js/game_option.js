@@ -16,15 +16,17 @@ function game_option_button() {
       const buttonId = button.id;
 
       if (buttonId === 'ai-button') {
-        togglePongWindow();
-        aiGame();
-      } else if (buttonId === 'multi-button') {
-        togglePongWindow();
-        runGame();
-      } else if (buttonId === 'room-A') {
-        // insert your function
-      } else if (buttonId === 'room-B') {
-        // insert your function
+        let win = togglePongWindow('room_ai');
+        runAIGame(win);
+      } else if (buttonId === 'local-button') {
+        togglePongWindow('room_local');
+        runLocalGame();
+      } else if (buttonId === 'create-room') {
+        let roomNumber = createRoom();
+        togglePongWindow('room_' + roomNumber);
+        runRemoteGame(roomNumber);
+      } else if (buttonId === 'join-room') {
+        joinRoom();
       }
     });
   });

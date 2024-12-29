@@ -18,4 +18,5 @@ class MessageType:
         ACCEPT = "relationship.accept"
         REJECT = "relationship.reject"
         REQUEST = "relationship.request"
+        REMOVE = "relationship.remove"
 

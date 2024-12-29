@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="css/alert_win98.css">
     <link rel="stylesheet" href="css/pong_game_option.css">
     <link rel="stylesheet" href="css/clientWindow.css">
+    <link rel="stylesheet" href="css/pop_up_message.css">
+    <link rel=stylesheet href="css/clientAction.css">
+    <link rel=stylesheet href="css/game-over.css">
 </head>
 <body class="desktop">
 
@@ -96,6 +99,16 @@
     </div>
   </div>
 
+  <div class="window pop-up" id="pop-up-message">
+    <div class="window-header">
+      <div class="header-title">MiniSoft Pop Up</div>
+    </div>
+
+    <div class="window-content">
+      <div class="pop-up-text">This is a message</div>
+    </div>
+  </div>
+
   <!-- La barre de taches -->
   <div class="taskbar">
 
@@ -114,16 +127,36 @@
           <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()">Compte</button>
         </li>
         <li>Parametres</li>
-        <li>Executer...</li>
+        <li>
+          <button class="menu-btn work-desk-btn" onclick="quitDesk()">Quitter</button></li>
       </ul>
     </div>
 
-    <!-- L'heure est affichee et mise a jour -->
     <div class="taskbar-items">
-        <span class="time">
+      <div class="icon-container">
+        <div class="flag-icon" id="language-flag" alt="Language Flag" onclick="toogleLanguageChoices()"></div>
+        <div class="time">
           <img src="img/png/time_and_date-0.png" alt="Time Icon" class="time-icon">
           <span class="time-text">12:00 PM</span>
-        </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="language-choices">
+      <ul>
+        <li>
+          <div class="flag-icon" id="france-flag" alt="France Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="england-flag" alt="England Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="portugal-flag" alt="Portugal Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="russia-flag" alt="Russia Flag"></div>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -259,7 +292,7 @@
         <button class="right-arrow"> &gt </button>
       </div>
 
-      <div class="header-title">Friend ccount</div>
+      <div class="header-title">Friend Account</div>
       <button class="close-button">X</button>
 
     </div>
@@ -360,32 +393,44 @@
 
     <div class="window-content">
 
-    <div class="chat-tab">
-      <div class="general-tab">
-        <p class="general-text" onclick=openGeneralMessage()>General</p>
-        <button class="general-button">Add Friends</button>
+      <div class="chat-tab">
+        <div class="general-tab">
+          <p class="general-text" onclick=openGeneralMessage()>General</p>
+          <button class="general-button">Add Friends</button>
+        </div>
+        <div class="add-friends-input"><input type="text" placeholder="Search friends"></div>
+        <div class="client tab">
+          <ul class="ul-client-tab"></ul>
+          
+        </div>
       </div>
-      <div class="add-friends-input"><input type="text" placeholder="Search friends"></div>
-      <div class="client tab">
-        <ul class="ul-client-tab"></ul>
-        <ul class="ul-client-action" style="display: none;">
-          <li id="client-info">See more about this user</li>
-          <li id="client-msg">Open private message</li>
-        </ul>
-      </div>
-    </div>
 
-    <div class="msn-page" id="msn-page-0" style="display: none">
-      <div class="chat-area">
-        <div class="chat-messages"></div>
-        <div class="input-container">
-          <input type="text" class="chat-input" placeholder="Type a message" />
-          <button class="send-button">Send</button>
+      <div class="msn-page" id="msn-page-0" style="display: none">
+        <div class="chat-area">
+          <div class="chat-messages"></div>
+          <div class="input-container">
+            <input type="text" class="chat-input" placeholder="Type a message" />
+            <button class="send-button">Send</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="window" id="client-action" style="display: none;">
+    <div class="window-header">
+
+      <div class="header-title">Client Action</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <ul class="ul-client-action">
+        <li id="client-info">See more about this user</li>
+        <li id="client-msg">Open private message</li>
+      </ul>
+    </div>
   </div>
 
   <div class="window" id="winBook" style="display: none">
@@ -462,19 +507,72 @@
         <h2 class="option-text">Choose your Game Option</h2>
         <ul class="list-option">
           <li><button id="ai-button">Ai Game</button></li>
-          <li><button id="multi-button">Local multiplayer</button></li>
-          <li><button id="room-A">Room-A</button></li>
-          <li><button id="room-B">Room-B</button></li>
+          <li><button id="local-button">Local multiplayer</button></li>
+          <li><button id="create-room">Create room</button></li>
+          <li><button id="join-room">Join room</button></li>
         </ul>
       </div>
     </div>
+  </div>
+
+  <div class="all-game-over" style="display: none;">
+    <ul>
+      <li>
+        <div class="window" id="game-over-1">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-2">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-3">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-4">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-5">
+          <div class="window-header">
+            <div class="header-title">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content">
+            <div class="game-over-text">Game is over! Player One has won!</div>
+            <button class="game-over-button">Quit</button>
+          </div>
+        </div>
+      </li>
+    </ul>
   </div>
 
   <script src="/js/explorerWindow.js"></script>
   <script src="js/accountWindow.js"></script>
   <script src="/js/start_menu.js"></script>
   <script src="/js/move_icon.js"></script>
-  <script src="/js/update_time.js"></script>
+  <script src="/js/taskbar.js"></script>
   <script src="js/msn.js"></script>
   <script src="js/winbook.js"></script>
   <script src="js/userInfo.js"></script>
@@ -487,11 +585,16 @@
   <script src="js/pong.js"></script>
   <script src="js/2fa.js"></script>
   <script src="js/alertWin98.js"></script>
-  <script src="js/ai_game.js"></script>
-  <script src="js/game.js"></script> 
+  <script src="js/game_ai.js"></script>
+  <script src="js/game_local.js"></script> 
+  <script src="js/game_remote.js"></script>
   <script src="js/game_option.js"></script>
   <script src="js/clientWindow.js"></script>
   <script src="js/handle_chat.js"></script>
+  <script src="js/pop_up_message.js"></script>
+  <script src="js/clientAction.js"></script>
+  <script src="js/game_option.js"></script>
+  <script src="js/game_over.js"></script>
   <script>
     window.onload = function () {
       window.ws = null;

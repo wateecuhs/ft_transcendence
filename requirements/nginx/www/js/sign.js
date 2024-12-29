@@ -74,6 +74,18 @@ function SignIn() {
 		console.error('Error:', error);
 	  }
 	});
+
+	usernameInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signInButton.click();
+		}
+	});
+
+	passwordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signInButton.click();
+		}
+	});
   }
 
   function SignUp() {
@@ -145,7 +157,7 @@ function SignIn() {
 			for (const [field, messages] of Object.entries(errorData.errors)) {
 			  errorMessage += `${field}: ${messages.join(', ')}\n`;
 			}
-			alert(errorMessage);
+			raiseAlert(errorMessage);
 		  } else {
 			alert('Erreur : ' + (errorData.message || 'Problème de connexion au serveur.'));
 		  }
@@ -155,6 +167,31 @@ function SignIn() {
 		console.error('Error:', error);
 	  }
 	});
+
+	usernameInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
+	emailInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
+	passwordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+	
+	confirmPasswordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
   }
 
 async function SignIn42() {
@@ -246,6 +283,12 @@ async function can_sign_in() {
 	} catch (error) {
 		console.log(error);
 	}
+}
+
+function quitDesk() {
+	document.cookie = "access_token=; path=/";
+	document.cookie = "refresh_token=; path=/";
+	slideBack();
 }
 
 document.addEventListener('DOMContentLoaded', function() {

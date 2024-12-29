@@ -4,44 +4,6 @@ let mp_user = null;
 
 const conversations = {};
 
-function toogleClientAction(event, friend) {
-  const clientAction = document.querySelector('#msnWindow .client.tab .ul-client-action');
-  const mouse = event.target;
-  const rect = mouse.getBoundingClientRect();
-  const x = rect.x;
-  const y = rect.y;
-
-
-  if (clientAction.style.display === 'none') {
-    clientAction.style.display = 'flex';
-  } else {
-    clientAction.style.display = 'none';
-  }
-
-  clientAction.style.position = 'absolute';
-  clientAction.style.left = `${x} - 180px`;
-  clientAction.style.top = `${y} - 180px`;
-
-  const clientLi = clientAction.querySelectorAll('li');
-  clientLi.forEach((li) => {
-    li.addEventListener('click', function() {
-      if (li.id === "client-info") {
-        toogleClientWindow(friend);
-      }
-
-      if (li.id === "client-msg") {
-        const chatMessages = document.querySelector('#msnWindow .chat-messages');
-        const chatInput = document.querySelector('#msnWindow .chat-input');
-        chatMessages.innerHTML = '';
-        loadPrivateHistory(friend);
-        private_message = true;
-        mp_user = friend;
-        chatInput.placeholder = `Send a message to ${friend}`;
-      }
-    });
-  });
-}
-
 async function loadMessageHistory() {
   try {
     const response = await fetch(`/chat/messages/`);
@@ -68,13 +30,23 @@ function initWebSocket() {
 
     const message = JSON.parse(event.data);
     if (message.type === "chat.public") {
+      showPopUp('A message was send by: ' + message.data.author);
       handle_chat_public(private_message, mp_user, message);
     }
     else if (message.type === "chat.private") {
       handle_chat_private(private_message, mp_user, message);
     }
     else if (message.type === "relationship.request") {
-      raiseAlert("Invitation succesfully send");
+      showPopUp("Received friend request from " + message.data.author);
+    }
+    else if (message.type === "relationship.accept") {
+      updateUserFriend();
+      showPopUp("You have accepted: " + message.data.target);
+      // devrait juste ajouter le nouvel user au lieu de tout re-render et le mettre en online par defaut
+    }
+    else if (message.type === "relationship.remove") {
+      console.log("remove friend", message.data);
+      updateUserFriend();
     }
     else if (message.type === "status.update") {
       handle_status_update(message.data)
@@ -126,7 +98,7 @@ async function updateUserFriend(username) {
 
       const friends = await response.json();
 
-      if (friends && friends.length > 0) {
+      if (friends) {
           await updateClientsTab(friends);
       }
   } catch (error) {
@@ -263,6 +235,11 @@ function searchFriends() {
         }
       }));
       searchInput.value = '';
+    }
+  });
+  searchInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      sendButton.click();
     }
   });
 }

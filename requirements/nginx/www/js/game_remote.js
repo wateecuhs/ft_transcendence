@@ -1,39 +1,66 @@
-function runGame() {
-    
+function createRoom() {
+    const roomNumber = Math.floor(Math.random() * 10000);
+    alert('Room created! Your room number is: ' + roomNumber);
+    // runRemoteGame(roomNumber);
+    return roomNumber;
+}
+
+function joinRoom() {
+    const roomNumber = prompt('Enter room number:');
+    if (!roomNumber) return;
+    togglePongWindow('room_' + roomNumber);
+    runRemoteGame(roomNumber);
+}
+
+function runRemoteGame(roomNumber) {
+    let listenersAdded = false;
+    let gameOver = false;
+
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
-    
+
     let paddleWidth = 20;
     let paddleHeight = 100;
     let ballRadius = 10;
     let previousBallPositions = [];
     const winWidth = 800;
     const winHeight = 600;
-    
-    const roomName = "room1"; // Replace with dynamic room name if needed
+
+    const roomName = "room_" + roomNumber; // Replace with dynamic room name
     const socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + roomName + '/');
-    
+
     socket.onopen = function() {
         console.log('WebSocket connection established');
         console.log('socket', socket);
     };
-    
+
     socket.onerror = function(error) {
         console.error('WebSocket error:', error);
         console.error('window.location.host:', window.location.host);
     };
-    
+
     socket.onmessage = function(event) {
+        if (gameOver) return;
+
         // console.log('Received message:', event.data);
         const gameState = JSON.parse(event.data);
         if (gameState.type === 'handler') {
             return;
         }
+        if (gameState.score[0] >= 10 || gameState.score[1] >= 10) {
+            gameOver = true;
+            triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            listenersAdded = false;
+            stopGameInstance(roomName);
+            return;
+        }
         drawGame(gameState);
     };
-    
+
     let commandBuffer = {};
-    
+
     function handleKeyDown(event) {
         commandBuffer.type = 'handler';
         if (event.key === 'w') commandBuffer.move_left_up = true;
@@ -41,7 +68,7 @@ function runGame() {
         if (event.key === 'ArrowUp') commandBuffer.move_right_up = true;
         if (event.key === 'ArrowDown') commandBuffer.move_right_down = true;
     }
-    
+
     function handleKeyUp(event) {
         commandBuffer.type = 'handler';
         if (event.key === 'w') commandBuffer.move_left_up = false;
@@ -49,28 +76,31 @@ function runGame() {
         if (event.key === 'ArrowUp') commandBuffer.move_right_up = false;
         if (event.key === 'ArrowDown') commandBuffer.move_right_down = false;
     }
-    
+
+    if (!listenersAdded) {
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
-    
+    listenersAdded = true;
+    }
+
     setInterval(() => {
         if (Object.keys(commandBuffer).length > 0) {
             socket.send(JSON.stringify(commandBuffer));
             commandBuffer = {};
         }
     }, 16); // Send commands every 16ms (60fps)
-    
+
     function resizeCanvas() {
         const width = window.innerWidth * 0.8;
         const height = window.innerHeight * 0.8;
         canvas.width = width;
         canvas.height = height;
-    
+
         paddleWidth = width * 0.025;
         paddleHeight = height * 0.15;
         ballRadius = width * 0.0125;
     }
-    
+
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
@@ -149,7 +179,7 @@ function runGame() {
 
         drawScore(state);
 
-        requestAnimationFrame(drawGame);
+        // requestAnimationFrame(drawGame);
     }
-    
+
 }

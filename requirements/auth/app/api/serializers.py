@@ -146,3 +146,6 @@ class CodeSerializer(serializers.Serializer):
 
 class Serializer2FA(serializers.Serializer):
 	otp_code = serializers.CharField(required=True)
+
+class LanguageSerializer(serializers.Serializer):
+	language = serializers.CharField(required=True, max_length=2)

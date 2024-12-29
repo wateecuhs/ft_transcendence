@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.views import APIView
-from .views import LoginAPI, Register, UserInfo, ConfirmToken, refresh, UserInfoId, UserInfoUsername, MatchHistory, MatchHistoryId, MatchHistoryUsername, UserStat, UserStatId, UserStatUsername, Api42, Activate2FA, Desactivate2FA, Verify2FA
+from .views import LoginAPI, Register, UserInfo, ConfirmToken, refresh, UserInfoId, UserInfoUsername, MatchHistory, MatchHistoryId, MatchHistoryUsername, UserStat, UserStatId, UserStatUsername, Api42, Activate2FA, Desactivate2FA, Verify2FA, ChangeLanguage
 
 urlpatterns = [
     path("register/", Register.as_view(), name="register"),
@@ -19,5 +19,6 @@ urlpatterns = [
     path("access/", Api42.as_view(), name="Api 42"),
     path("2FA/activate/", Activate2FA.as_view(), name="Activate 2FA"),
     path("2FA/verify/", Verify2FA.as_view(), name="Verify 2FA"),
-    path("2FA/desactivate/", Desactivate2FA.as_view(), name="Desactivate 2FA")
+    path("2FA/desactivate/", Desactivate2FA.as_view(), name="Desactivate 2FA"),
+    path("language/", ChangeLanguage.as_view(), name="Change Language")
 ]

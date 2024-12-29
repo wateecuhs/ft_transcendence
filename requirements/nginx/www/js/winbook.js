@@ -5,7 +5,7 @@ function initMMWebSocket() {
 
   window.mmws.onmessage = function(event) {
     const message = JSON.parse(event.data);
-    console.log("new message", message);
+
     if (message.type === "tournament.join") {
       showTournamentDetails(message.data);
     }
@@ -16,7 +16,13 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.start") {
-      console.log("tournament.start", message.data);
+      const data = {
+        author: 'WinBook Corporation',
+        content: 'A Tournament is now starting !',
+        created_at: new Date().toISOString()
+      };
+      displayChatMessage(data);
+      showPopUp('Tournament is now starting !');
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.delete") {
@@ -231,8 +237,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  winSearchInput.addEventListener('keydown', (event) => {
-    if (event.key === "Enter") {
+  winSearchInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
       searchButton.click();
     }
   });

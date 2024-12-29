@@ -51,6 +51,7 @@ class CustomUser(AbstractUser):
     totp = models.CharField(default=pyotp.random_base32)
     qrcode_path = models.CharField(null=True)
     is_2FA = models.BooleanField(default=False)
+    language = models.CharField(default='en', max_length=2)
 
     class Meta:
         db_table = 'users'
