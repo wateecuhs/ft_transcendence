@@ -218,10 +218,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                         {
                             "player1": tournament.players[seed[0]],
                             "player2": tournament.players[seed[1]],
+                            "room_code": "t_" + os.urandom(4).hex()
                         },
                         {
                             "player1": tournament.players[seed[2]],
                             "player2": tournament.players[seed[3]],
+                            "room_code": "t_" + os.urandom(4).hex()
                         }
                     ]
                 }
@@ -249,6 +251,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.error(f"Tournament start failed: {str(e)}")
 
     async def _handle_tournament_update(self, event):
+        # THIS IS SHIT AND DOESNT WORK YET
         try:
             data = event.get("data", {})
             tournament_name = data.get("name")
