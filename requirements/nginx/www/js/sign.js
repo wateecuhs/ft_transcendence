@@ -56,9 +56,9 @@ function SignIn() {
 				updateUserStat();
 				updateUserFriend(textUsername);
 				
-				loadMessageHistory();
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
+				loadMessageHistory();
 
 				slideUp();
 			}
@@ -242,9 +242,9 @@ async function SignIn42() {
 									updateUserStat();
 									updateUserFriend(userInfo.username);
 
-									loadMessageHistory();
 									window.mmws = initMMWebSocket();
 									window.ws = initWebSocket();
+									loadMessageHistory();
 
 									slideUp();
 							} else {
@@ -272,9 +272,9 @@ async function can_sign_in() {
 				updateUserStat();
 				updateUserFriend(userInfo.username);
 
-				loadMessageHistory();
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
+				loadMessageHistory();
 				
 				const loginPage = document.getElementById('login-id-page');
 				loginPage.style.display = 'none';

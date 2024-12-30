@@ -25,6 +25,8 @@
     <link rel="stylesheet" href="css/pop_up_message.css">
     <link rel=stylesheet href="css/clientAction.css">
     <link rel=stylesheet href="css/game-over.css">
+    <link rel="stylesheet" href="css/tree_matchmaking.css">
+    <link rel="stylesheet" href="css/trash_bin.css">
 </head>
 <body class="desktop">
 
@@ -377,7 +379,7 @@
 
       <div class="icon" draggable="true" id="Corbeille">
         <img src="img/png/recycle_bin_directory.png" alt="Recycle Bin">
-        <p class="icon-text">Corbeille</p>
+        <p class="icon-text">Trash bin</p>
     </div>
   </div>
 
@@ -484,6 +486,18 @@
     </div>
   </div>
 
+  <div class="window" id="tree-matchmaking" style="display: none;">
+    <div class="window-header">
+      <div class="header-title">Tree matchmaking</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      
+    </div>
+  </div>
+
   <div class="window fullscreen" id="PongGame" style="display: none">
     <div class="window-header">
       <div class="arrow-buttons">
@@ -568,6 +582,17 @@
     </ul>
   </div>
 
+  <div class="window" id="trash-bin" style="display: none;">
+    <div class="window-header">
+      <div class="header-title">Trash Bin</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <div class="window-content">
+      
+    </div>
+  </div>
+
   <script src="/js/explorerWindow.js"></script>
   <script src="js/accountWindow.js"></script>
   <script src="/js/start_menu.js"></script>
@@ -595,6 +620,10 @@
   <script src="js/clientAction.js"></script>
   <script src="js/game_option.js"></script>
   <script src="js/game_over.js"></script>
+  <script src="js/tree_matchmaking.js"></script>
+  <script src="js/winbook_show_tournaments.js"></script>
+  <script src="js/winbook_tournament_details.js"></script>
+  <script src="js/trash_bin.js"></script>
   <script>
     window.onload = function () {
       window.ws = null;

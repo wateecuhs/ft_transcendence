@@ -52,6 +52,14 @@ function displayDeskInconsInWindow() {
       if (textSpan.textContent.trim() === 'Winbook') {
         toggleWinbookWindow();
       }
+
+      if (textSpan.textContent.trim() === 'Pong') {
+        toogleGameOptionWindow();
+      }
+
+      if (textSpan.textContent.trim() === 'Trash bin') {
+        toogleTrashBin();
+      }
     });
   });
 }
