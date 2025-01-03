@@ -19,7 +19,7 @@ function SignIn() {
 	  const textPassword = passwordInput.value.trim();
 
 	  if (!textUsername || !textPassword) {
-		raiseAlert('Veuillez remplir tous les champs.');
+		raiseAlert(window.dataMap.get('fill-fields'));
 		return;
 	  }
 
@@ -55,7 +55,8 @@ function SignIn() {
 				updateUserInfo(textUsername);
 				updateUserStat();
 				updateUserFriend(textUsername);
-				
+
+				loadMessageHistory();
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
 				loadMessageHistory();
@@ -67,11 +68,10 @@ function SignIn() {
 			raiseAlert('SignIn: ' + data.message);
 		  }
 		} else {
-		  raiseAlert('SignIn: ' + errorData.message);
+		  raiseAlert('SignIn: ' + data.error);
 		}
 	  } catch (error) {
-		raiseAlert('Identifiants invalides.');
-		console.error('Error:', error);
+		raiseAlert(window.dataMap.get('credentials-error'));
 	  }
 	});
 
@@ -113,24 +113,23 @@ function SignIn() {
 	const textPassword = passwordInput.value.trim();
 	const textConfirmPassword = confirmPasswordInput.value.trim();
 
-	  if (!usernameInput || !emailInput || !passwordInput || !signUpButton) {
-		raiseAlert('Veuillez remplir tous les champs.');
+	if (usernameInput == '' || emailInput == '' || passwordInput == '' || confirmPasswordInput == '') {
+		raiseAlert(window.dataMap.get('fill-fields'));
 		return ;
-	  }
-
-	  if (!(textPassword === textConfirmPassword)) {
-		raiseAlert('Les mots de passe envoyes ne sont pas les memes.');
+	}
+	if (!(textPassword === textConfirmPassword)) {
+		raiseAlert(window.dataMap.get('not-same-pwd'));
 		return ;
-	  }
+	}
 
-	  const requestData = {
+	const requestData = {
 		username: textUsername,
 		email: textEmail,
 		password: textPassword,
 		confirmation_password: textConfirmPassword,
-	  }
+	}
 
-	  try {
+	try {
 		const response = await fetch('/auth/register/', {
 		  method: 'POST',
 		  headers: {
@@ -143,7 +142,7 @@ function SignIn() {
 		  const data = await response.json();
 
 		  if (data.message === 'success') {
-				raiseAlert('Inscription reussie');
+				raiseAlert(window.dataMap.get('register-success'));
 				displayRegister();
 				document.cookie = `access_token=${data.access_token}; path=/`;
 			} else {
@@ -153,20 +152,62 @@ function SignIn() {
 		  const errorData = await response.json();
 
 		  if (errorData.errors) {
-			let errorMessage = 'Erreur de validation :\n';
+			let errorMessage = '';
+			let field_txt = '';
+			let messages_txt = '';
 			for (const [field, messages] of Object.entries(errorData.errors)) {
-			  errorMessage += `${field}: ${messages.join(', ')}\n`;
+				if (field === 'username') {
+					field_txt = window.dataMap.get('sign-up-username');
+				}
+				if (field === 'email') {
+					field_txt = window.dataMap.get('sign-up-email');
+				}
+				if (field === 'password') {
+					field_txt = window.dataMap.get('sign-up-password');
+				}
+			  if (field === 'confirmation_password') {
+					field_txt = window.dataMap.get('sign-up-confirm-password');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
+					messages_txt = window.dataMap.get('min-characters-error');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
+					messages_txt = window.dataMap.get('max-characters-username-error');
+				}
+			  if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
+					messages_txt = window.dataMap.get('username-taken');
+				}
+				if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
+					messages_txt = window.dataMap.get('email-taken');
+			  }
+				if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
+					messages_txt = window.dataMap.get('valid-email');
+				}
+				console.log(messages);
+				errorMessage += `${field_txt}: ${messages_txt}\n`;
+				if (Array.isArray(messages) && messages.includes("Password too short")) {
+					errorMessage = window.dataMap.get('too-short-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No uppercase in password")) {
+					errorMessage = window.dataMap.get('no-uppercase-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No digit in password")) {
+					errorMessage = window.dataMap.get('no-digit-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("This field may not be blank.")) {
+					errorMessage = window.dataMap.get('fill-fields');
+				}
 			}
 			raiseAlert(errorMessage);
 		  } else {
 			alert('Erreur : ' + (errorData.message || 'Problème de connexion au serveur.'));
 		  }
 		}
-	  } catch (error) {
+	} catch (error) {
 		alert('Une erreur est survenue lors de la connexion au serveur.');
 		console.error('Error:', error);
-	  }
-	});
+	}
+});
 
 	usernameInput.addEventListener('keypress', function(event) {
 		if (event.key === 'Enter') {
@@ -185,7 +226,7 @@ function SignIn() {
 			signUpButton.click();
 		}
 	});
-	
+
 	confirmPasswordInput.addEventListener('keypress', function(event) {
 		if (event.key === 'Enter') {
 			signUpButton.click();
@@ -219,7 +260,7 @@ async function SignIn42() {
 	if (code) {
 		urlParams.delete('code');
 		window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
-		
+
 		try {
 			const response = await fetch('/auth/token/', {
 					method: 'POST',
@@ -274,8 +315,7 @@ async function can_sign_in() {
 
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
-				loadMessageHistory();
-				
+
 				const loginPage = document.getElementById('login-id-page');
 				loginPage.style.display = 'none';
 			}

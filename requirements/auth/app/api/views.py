@@ -685,12 +685,12 @@ class ChangeLanguage(APIView):
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
-				
+
 			serializer = LanguageSerializer(data=request)
 			if not serializer.is_valid():
 				return JsonResponse({'message': 'failed : serializer is not valid'}, status=400)
 			language = serializer.validated_data['language']
-			if language != 'pt' and language != 'en' and language != 'fr':
+			if language != 'pt' and language != 'en' and language != 'fr' and language != 'ru':
 				return JsonResponse({'message': 'failed : not a language'}, status=400)
 			user.language = language
 			user.save()
