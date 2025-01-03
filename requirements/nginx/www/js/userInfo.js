@@ -42,6 +42,7 @@ async function getUserInfo(accessToken) {
           is_42_account: data.is_42_account,
           is_2FA: data.is_2FA,
           room_id: data.room_id,
+          language: data.language,
         };
       } else {
         raiseAlert('Erreur lors de la récupération des informations utilisateur');
@@ -109,8 +110,9 @@ async function getUserStatistic(accessToken) {
   return null;
 }
 
-async function updateUserInfo(accesUsername) {
-	const userInfo = localStorage.getItem(accesUsername);
+async function updateUserInfo() {
+	const tmp = await getUserInfo(getTokenCookie());
+  const userInfo = JSON.stringify(tmp);
 
 	if (userInfo) {
 		const user = JSON.parse(userInfo);

@@ -619,7 +619,7 @@ class Verify2FA(APIView):
 			serializer = Serializer2FA(data=request.data)
 			if not serializer.is_valid():
 				error = serializer.errors
-				return JsonResponse({'message': 'failed : serializer is not valid', 'errors': error})
+				return JsonResponse({'message': 'failed : serializer is not valid', 'errors': error}, status=400)
 			otp_code = serializer.validated_data['otp_code']
 			totp = pyotp.TOTP(user.totp)
 
@@ -686,9 +686,10 @@ class ChangeLanguage(APIView):
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
 
-			serializer = LanguageSerializer(data=request)
+			serializer = LanguageSerializer(data=request.data)
 			if not serializer.is_valid():
-				return JsonResponse({'message': 'failed : serializer is not valid'}, status=400)
+				error = serializer.errors
+				return JsonResponse({'message': 'failed : serializer is not valid', 'errors': error}, status=400)
 			language = serializer.validated_data['language']
 			if language != 'pt' and language != 'en' and language != 'fr' and language != 'ru':
 				return JsonResponse({'message': 'failed : not a language'}, status=400)

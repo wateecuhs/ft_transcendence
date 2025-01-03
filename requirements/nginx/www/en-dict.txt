@@ -86,3 +86,4 @@ register-success=Registration successful.
 2fa-activation-failed=Wrong code.
 2fa-activated=2FA activated.
 2fa-desactivated=2FA desactivated.
+start-button=Start
