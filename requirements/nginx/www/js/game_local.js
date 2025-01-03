@@ -1,3 +1,5 @@
+// let rooms = {};
+
 function runLocalGame() {
     let listenersAdded = false;
     let gameOver = false;
@@ -12,8 +14,16 @@ function runLocalGame() {
     const winWidth = 800;
     const winHeight = 600;
 
-    const roomName = "room_local"; // Replace with dynamic room name if needed
+    let roomNumber = Math.floor(Math.random() * 10000);
+    // while (rooms[roomNumber]) {
+    //     roomNumber = Math.floor(Math.random() * 10000);
+    // }
+    const roomName = "room_local_" + roomNumber;
+    // rooms[roomNumber] = roomName;
+    // const roomName = "room_local"; // Replace with dynamic room name
     const socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + roomName + '/');
+
+    let win = togglePongWindow(roomName);
 
     socket.onopen = function() {
         console.log('WebSocket connection established');
@@ -40,6 +50,7 @@ function runLocalGame() {
             document.removeEventListener('keyup', handleKeyUp);
             listenersAdded = false;
             stopGameInstance(roomName);
+            // rooms[roomNumber] = null;
             return;
         }
         drawGame(gameState);
@@ -91,12 +102,8 @@ function runLocalGame() {
     resizeCanvas();
 
     function drawBackground() {
-        const background = new Image();
-        background.src = '../img/windows98bureau_plain_hill.png';
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-        //ctx.fillStyle = "#008080";
-        //ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#008080";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
     function drawPaddles(state) {

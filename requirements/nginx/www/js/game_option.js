@@ -16,14 +16,14 @@ function game_option_button() {
       const buttonId = button.id;
 
       if (buttonId === 'ai-button') {
-        let win = togglePongWindow('room_ai');
-        runAIGame(win);
+        // let win = togglePongWindow('room_ai');
+        runAIGame();
       } else if (buttonId === 'local-button') {
-        togglePongWindow('room_local');
+        // togglePongWindow('room_local');
         runLocalGame();
       } else if (buttonId === 'create-room') {
         let roomNumber = createRoom();
-        togglePongWindow('room_' + roomNumber);
+        // togglePongWindow('room_' + roomNumber);
         runRemoteGame(roomNumber);
       } else if (buttonId === 'join-room') {
         joinRoom();

@@ -14,6 +14,8 @@ function runAIGame() {
     const roomName = "room_ai"; // Replace with dynamic room name if needed
     const socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + roomName + '/');
 
+    let win = togglePongWindow('room_ai');
+
     socket.onopen = function() {
         console.log('WebSocket connection established');
         console.log('socket', socket);

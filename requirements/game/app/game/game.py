@@ -77,6 +77,7 @@ class Room:
     async def add_player(self, player):
         if len(self.players) < 2:
             self.players.append(player)
+            self.reset()
             return True
         return False
 
@@ -170,5 +171,11 @@ class Room:
         }
 
         return game_state
+    
+    def reset(self):
+        self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.ball.reset()
+        self.score = [0, 0]
 
 
