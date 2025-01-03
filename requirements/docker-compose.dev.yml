@@ -52,6 +52,9 @@ services:
     depends_on:
       chat-db-dev:
         condition: service_healthy
+    environment:
+      - REDIS_HOST=chat-redis
+      - REDIS_PORT=6379
 
   chat-redis:
     container_name: chat-redis
