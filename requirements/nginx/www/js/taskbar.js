@@ -42,13 +42,97 @@ function toogleLanguageChoices() {
 
     divFlag.addEventListener('click', function() {
       if (divFlag.id === 'france-flag') {
-        raiseAlert('Change to French');
+        window.dict = 'fr-dict.txt';
+        fetch(window.dict)
+          .then(response => response.text())
+          .then(text => {
+            let file = text.split('\n');
+            window.dataMap = new Map();
+            for (let line of file) {
+              let lineSplit = line.split('=');
+              window.dataMap.set(lineSplit[0], lineSplit[1]);
+            }
+          });
+        const requestData = {
+            language: 'fr',
+          };
+          const response = fetch('/auth/language/', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${access_token}`,
+            },
+            body: JSON.stringify(requestData),
+          });
       } else if (divFlag.id === 'england-flag') {
-        raiseAlert('Change to English');
+        window.dict = 'en-dict.txt';
+        fetch(window.dict)
+          .then(response => response.text())
+          .then(text => {
+            let file = text.split('\n');
+            window.dataMap = new Map();
+            for (let line of file) {
+              let lineSplit = line.split('=');
+              window.dataMap.set(lineSplit[0], lineSplit[1]);
+            }
+          });
+        const requestData = {
+            language: 'en',
+          };
+          const response = fetch('/auth/language/', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${access_token}`,
+            },
+            body: JSON.stringify(requestData),
+          });
       } else if (divFlag.id === 'portugal-flag') {
-        raiseAlert('Change to Portuguese');
+        window.dict = 'pt-dict.txt';
+        fetch(window.dict)
+          .then(response => response.text())
+          .then(text => {
+            let file = text.split('\n');
+            window.dataMap = new Map();
+            for (let line of file) {
+              let lineSplit = line.split('=');
+              window.dataMap.set(lineSplit[0], lineSplit[1]);
+            }
+          });
+        const requestData = {
+            language: 'pt',
+          };
+          const response = fetch('/auth/language/', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${access_token}`,
+            },
+            body: JSON.stringify(requestData),
+          });
       } else if (divFlag.id === 'russia-flag') {
-        raiseAlert('Change to Russian');
+        window.dict = 'rs-dict.txt';
+        fetch(window.dict)
+          .then(response => response.text())
+          .then(text => {
+            let file = text.split('\n');
+            window.dataMap = new Map();
+            for (let line of file) {
+              let lineSplit = line.split('=');
+              window.dataMap.set(lineSplit[0], lineSplit[1]);
+            }
+          });
+        const requestData = {
+          language: 'ru',
+        };
+        const response = fetch('/auth/language/', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${access_token}`,
+          },
+          body: JSON.stringify(requestData),
+        });
       }
     });
   });

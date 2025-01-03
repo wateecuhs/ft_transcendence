@@ -15,7 +15,7 @@ async function activate_2fa() {
 			if (response.ok) {
 				const data = await response.json();
 				if (data.message === 'Success') {
-					raiseAlert('2FA has been succesfully desactivated');
+					raiseAlert(window.dataMap.get('2fa-desactivated'));
 					return ;
 				} else {
 					raiseAlert('activate_2fa: ' + data.message);
@@ -103,9 +103,9 @@ document.addEventListener("DOMContentLoaded", () => {
 				const data = await response.json();
 				if (data.message === 'Success') {
 					inputCode.innerHTML = '';
-					raiseAlert('2FA is activated.')
+					raiseAlert(window.dataMap.get('2fa-activated'));
 				} else {
-					raiseAlert(data.message);
+					raiseAlert(window.dataMap.get('2fa-activation-failed'));
 				}
 			} else {
 				const errorData = await response.json();

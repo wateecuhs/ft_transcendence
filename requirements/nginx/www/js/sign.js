@@ -67,11 +67,10 @@ function SignIn() {
 			raiseAlert('SignIn: ' + data.message);
 		  }
 		} else {
-		  raiseAlert('SignIn: ' + errorData.message);
+		  raiseAlert('SignIn: ' + data.error);
 		}
 	  } catch (error) {
 		raiseAlert(window.dataMap.get('credentials-error'));
-		console.error('Error:', error);
 	  }
 	});
 
@@ -118,7 +117,7 @@ function SignIn() {
 		return ;
 	}
 	if (!(textPassword === textConfirmPassword)) {
-		raiseAlert('Les mots de passe envoyes ne sont pas les memes.');
+		raiseAlert(window.dataMap.get('not-same-pwd'));
 		return ;
 	}
 
@@ -142,7 +141,7 @@ function SignIn() {
 		  const data = await response.json();
 
 		  if (data.message === 'success') {
-				raiseAlert('Inscription reussie');
+				raiseAlert(window.dataMap.get('register-success'));
 				displayRegister();
 				document.cookie = `access_token=${data.access_token}; path=/`;
 			} else {
@@ -156,35 +155,47 @@ function SignIn() {
 			let field_txt = '';
 			let messages_txt = '';
 			for (const [field, messages] of Object.entries(errorData.errors)) {
-			  if (field === 'username') {
-				field_txt = window.dataMap.get('sign-up-username');
-			  }
-			  if (field === 'email') {
-				field_txt = window.dataMap.get('sign-up-email');
-			  }
-			  if (field === 'password') {
-				field_txt = window.dataMap.get('sign-up-password');
-			  }
+				if (field === 'username') {
+					field_txt = window.dataMap.get('sign-up-username');
+				}
+				if (field === 'email') {
+					field_txt = window.dataMap.get('sign-up-email');
+				}
+				if (field === 'password') {
+					field_txt = window.dataMap.get('sign-up-password');
+				}
 			  if (field === 'confirmation_password') {
-				field_txt = window.dataMap.get('sign-up-confirm-password');
-			  }
-			  if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
-				messages_txt = window.dataMap.get('min-characters-error');
-			  }
-			  if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
-				messages_txt = window.dataMap.get('max-characters-username-error');
-			  }
+					field_txt = window.dataMap.get('sign-up-confirm-password');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
+					messages_txt = window.dataMap.get('min-characters-error');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
+					messages_txt = window.dataMap.get('max-characters-username-error');
+				}
 			  if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
-				messages_txt = window.dataMap.get('username-taken');
+					messages_txt = window.dataMap.get('username-taken');
+				}
+				if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
+					messages_txt = window.dataMap.get('email-taken');
 			  }
-			  if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
-				messages_txt = window.dataMap.get('email-taken');
-			  }
-			  console.log(messages);
-			  errorMessage += `${field_txt}: ${messages_txt}\n`;
-			  if (Array.isArray(messages) && messages.includes("This field may not be blank.")) {
-				errorMessage = window.dataMap.get('fill-fields');
-			  }
+				if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
+					messages_txt = window.dataMap.get('valid-email');
+				}
+				console.log(messages);
+				errorMessage += `${field_txt}: ${messages_txt}\n`;
+				if (Array.isArray(messages) && messages.includes("Password too short")) {
+					errorMessage = window.dataMap.get('too-short-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No uppercase in password")) {
+					errorMessage = window.dataMap.get('no-uppercase-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No digit in password")) {
+					errorMessage = window.dataMap.get('no-digit-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("This field may not be blank.")) {
+					errorMessage = window.dataMap.get('fill-fields');
+				}
 			}
 			raiseAlert(errorMessage);
 		  } else {
