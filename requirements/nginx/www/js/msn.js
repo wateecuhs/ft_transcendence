@@ -30,7 +30,6 @@ function initWebSocket() {
 
     const message = JSON.parse(event.data);
     if (message.type === "chat.public") {
-      showPopUp('A message was send by: ' + message.data.author);
       handle_chat_public(private_message, mp_user, message);
     }
     else if (message.type === "chat.private") {
@@ -41,11 +40,9 @@ function initWebSocket() {
     }
     else if (message.type === "relationship.accept") {
       updateUserFriend();
-      showPopUp("You have accepted: " + message.data.target);
-      // devrait juste ajouter le nouvel user au lieu de tout re-render et le mettre en online par defaut
+      showPopUp("You have accepted: " + message.data.author);
     }
     else if (message.type === "relationship.remove") {
-      console.log("remove friend", message.data);
       updateUserFriend();
     }
     else if (message.type === "status.update") {
@@ -118,8 +115,10 @@ async function updateClientsTab(friends) {
     client = await getClientInfo(friend);
 
     const statusDot = document.createElement('span');
+    if (statusDot.style.backgroundColor === 'grey') {
+      statusDot.style.backgroundColor = 'green';
+    }
     statusDot.classList.add("status-dot");
-    console.log(client.status);
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = friend;
@@ -137,7 +136,10 @@ async function updateClientsTab(friends) {
     li.appendChild(span);
     clientTab.appendChild(li);
 
-    img.addEventListener('click', function(event) {
+    const newImg = img.cloneNode(true);
+    img.replaceWith(newImg);
+
+    newImg.addEventListener('click', function(event) {
       toogleClientAction(event, friend);
     });
   }
@@ -262,11 +264,9 @@ function addMessageToConversation(friend, message) {
 }
 
 function loadPrivateHistory(friend) {
-  alert(friend);
   if (!conversations || !conversations[friend]) return ;
 
   for (const data of conversations[friend]) {
-    console.log(data);
     const chatMessages = document.querySelector('#msnWindow .chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');

@@ -1,0 +1,19 @@
+function toogleTrashBin() {
+  const trashBin = document.querySelector('#trash-bin');
+
+  if (trashBin.style.display === 'none') {
+    trashBin.style.display = 'flex';
+  } else {
+    trashBin.style.display = 'none';
+  }
+
+  trashBin.style.position = 'absolute';
+  trashBin.style.top = `${window.innerHeight / 2 - trashBin.offsetHeight / 2}px`;
+  trashBin.style.left = `${window.innerWidth / 2 - trashBin.offsetWidth / 2}px`;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+  const trashBin = document.querySelector('#trash-bin');
+  const trashBinButton = trashBin.querySelector('.close-button');
+  trashBinButton.addEventListener('click', toogleTrashBin);
+});
