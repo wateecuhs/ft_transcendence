@@ -40,13 +40,14 @@ function initWebSocket() {
     }
     else if (message.type === "relationship.accept") {
       updateUserFriend();
-      showPopUp("You have accepted: " + message.data.author);
+      showPopUp(message.data.author + " is now your friend!");
+      // devrait juste ajouter le nouvel user au lieu de tout re-render et le mettre en online par defaut
     }
     else if (message.type === "relationship.remove") {
       updateUserFriend();
     }
     else if (message.type === "status.update") {
-      handle_status_update(message.data)
+      handle_status_update(message.data);
     }
     else {
       console.log(message.type);
@@ -119,6 +120,7 @@ async function updateClientsTab(friends) {
       statusDot.style.backgroundColor = 'green';
     }
     statusDot.classList.add("status-dot");
+    statusDot.style.backgroundColor = 'green';
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = friend;
