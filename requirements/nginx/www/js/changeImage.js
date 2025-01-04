@@ -39,12 +39,7 @@ function openFileSelector() {
                 if (response.ok) {
                     const data = await response.json();
                     if (data.message === 'Success') {
-                        const updatedUserInfo = await getUserInfo(access_token);
-    
-                        if (updatedUserInfo) {
-                            localStorage.setItem(userNameText, JSON.stringify(updatedUserInfo));
-                            updateUserInfo(userNameText);
-                        }
+                        updatedUserInfo();
                     } else {
                         raiseAlert(data.message);
                     }

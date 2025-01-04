@@ -19,7 +19,7 @@ function SignIn() {
 	  const textPassword = passwordInput.value.trim();
 
 	  if (!textUsername || !textPassword) {
-		raiseAlert('Veuillez remplir tous les champs.');
+		raiseAlert(window.dataMap.get('fill-fields'));
 		return;
 	  }
 
@@ -52,7 +52,85 @@ function SignIn() {
 				const win_2fa = loginPage.querySelector('#window-2fa-sign');
 				win_2fa.style.display = 'flex';
 			} else {
-				updateUserInfo(textUsername);
+				window.dict = `${userInfo.language}-dict.txt`;
+				fetch(window.dict)
+				.then(response => response.text())
+				.then(text => {
+					let file = text.split('\n');
+					window.dataMap = null;
+					window.dataMap = new Map();
+					for (let line of file) {
+					let lineSplit = line.split('=');
+					window.dataMap.set(lineSplit[0], lineSplit[1]);
+					}
+					document.getElementById('login-title').textContent = window.dataMap.get('login-title');
+					document.getElementById('sign-in-button').textContent = window.dataMap.get('sign-in-button');
+					document.getElementById('button-sign-up-page').textContent = window.dataMap.get('button-sign-up-page');
+					document.getElementById('button-register-page').textContent = window.dataMap.get('button-register-page');
+					document.getElementById('button-login-42').textContent = window.dataMap.get('button-login-42');
+					document.getElementById('sign-in-username').placeholder = window.dataMap.get('sign-in-username');
+					document.getElementById('sign-in-password').placeholder = window.dataMap.get('sign-in-password');
+					document.getElementById('sign-up-username').placeholder = window.dataMap.get('sign-up-username');
+					document.getElementById('sign-up-email').placeholder = window.dataMap.get('sign-up-email');
+					document.getElementById('sign-up-password').placeholder = window.dataMap.get('sign-up-password');
+					document.getElementById('sign-up-confirm-password').placeholder = window.dataMap.get('sign-up-confirm-password');
+					document.getElementById('2fa-sign').textContent = window.dataMap.get('2fa-sign');
+					document.getElementById('2fa-text').textContent = window.dataMap.get('2fa-text');
+					document.getElementById('2fa-button').textContent = window.dataMap.get('2fa-button');
+					document.getElementById('desktop').textContent = window.dataMap.get('desktop');
+					document.getElementById('account').textContent = window.dataMap.get('account');
+					document.getElementById('settings').textContent = window.dataMap.get('settings');
+					document.getElementById('quit').textContent = window.dataMap.get('quit');
+					document.getElementById('application-explorer').textContent = window.dataMap.get('application-explorer');
+					document.getElementById('account-window').textContent = window.dataMap.get('account-window');
+					document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
+					document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
+					document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+					document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
+					document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
+					document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
+					document.getElementById('profile-old-password').placeholder = window.dataMap.get('profile-old-password');
+					document.getElementById('profile-password').placeholder = window.dataMap.get('profile-password');
+					document.getElementById('profile-confirm-password').placeholder = window.dataMap.get('profile-confirm-password');
+					document.getElementById('update-button').textContent = window.dataMap.get('update-button');
+					document.getElementById('friend-account').textContent = window.dataMap.get('friend-account');
+					document.getElementById('activate-2fa-text').textContent = window.dataMap.get('activate-2fa-text');
+					document.getElementById('enter-code').placeholder = window.dataMap.get('enter-code');
+					document.getElementById('validate-qr-code-id').textContent = window.dataMap.get('validate-qr-code-id');
+					document.getElementById('desktop-image').textContent = window.dataMap.get('desktop-image');
+					document.getElementById('trash').textContent = window.dataMap.get('trash');
+					document.getElementById('general').textContent = window.dataMap.get('general');
+					document.getElementById('add-friends').textContent = window.dataMap.get('add-friends');
+					document.getElementById('search-friends').placeholder = window.dataMap.get('search-friends');
+					document.getElementById('type-message').placeholder = window.dataMap.get('type-message');
+					document.getElementById('send').textContent = window.dataMap.get('send');
+					document.getElementById('client-info').textContent = window.dataMap.get('client-info');
+					document.getElementById('client-msg').textContent = window.dataMap.get('client-msg');
+					document.getElementById('winbook-title').textContent = window.dataMap.get('winbook-title');
+					document.getElementById('search').textContent = window.dataMap.get('search');
+					document.getElementById('create').textContent = window.dataMap.get('create');
+					document.getElementById('search-button').textContent = window.dataMap.get('search-button');
+					document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
+					document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
+					document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
+					document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+					document.getElementById('empty').textContent = window.dataMap.get('empty');
+					document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
+					document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
+					document.getElementById('game').textContent = window.dataMap.get('game');
+					document.getElementById('game-options').textContent = window.dataMap.get('game-options');
+					document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
+					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
+					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
+					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
+					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
+					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
+					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
+					document.getElementById('start-button').textContent = window.dataMap.get('start-button');
+					document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
+				});
+
+				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(textUsername);
 				
@@ -67,11 +145,10 @@ function SignIn() {
 			raiseAlert('SignIn: ' + data.message);
 		  }
 		} else {
-		  raiseAlert('SignIn: ' + errorData.message);
+		  raiseAlert('SignIn: ' + data.error);
 		}
 	  } catch (error) {
-		raiseAlert('Identifiants invalides.');
-		console.error('Error:', error);
+		raiseAlert(window.dataMap.get('credentials-error'));
 	  }
 	});
 
@@ -113,24 +190,23 @@ function SignIn() {
 	const textPassword = passwordInput.value.trim();
 	const textConfirmPassword = confirmPasswordInput.value.trim();
 
-	  if (!usernameInput || !emailInput || !passwordInput || !signUpButton) {
-		raiseAlert('Veuillez remplir tous les champs.');
+	if (usernameInput == '' || emailInput == '' || passwordInput == '' || confirmPasswordInput == '') {
+		raiseAlert(window.dataMap.get('fill-fields'));
 		return ;
-	  }
-
-	  if (!(textPassword === textConfirmPassword)) {
-		raiseAlert('Les mots de passe envoyes ne sont pas les memes.');
+	}
+	if (!(textPassword === textConfirmPassword)) {
+		raiseAlert(window.dataMap.get('not-same-pwd'));
 		return ;
-	  }
+	}
 
-	  const requestData = {
+	const requestData = {
 		username: textUsername,
 		email: textEmail,
 		password: textPassword,
 		confirmation_password: textConfirmPassword,
-	  }
+	}
 
-	  try {
+	try {
 		const response = await fetch('/auth/register/', {
 		  method: 'POST',
 		  headers: {
@@ -143,7 +219,7 @@ function SignIn() {
 		  const data = await response.json();
 
 		  if (data.message === 'success') {
-				raiseAlert('Inscription reussie');
+				raiseAlert(window.dataMap.get('register-success'));
 				displayRegister();
 				document.cookie = `access_token=${data.access_token}; path=/`;
 			} else {
@@ -153,20 +229,62 @@ function SignIn() {
 		  const errorData = await response.json();
 
 		  if (errorData.errors) {
-			let errorMessage = 'Erreur de validation :\n';
+			let errorMessage = '';
+			let field_txt = '';
+			let messages_txt = '';
 			for (const [field, messages] of Object.entries(errorData.errors)) {
-			  errorMessage += `${field}: ${messages.join(', ')}\n`;
+				if (field === 'username') {
+					field_txt = window.dataMap.get('sign-up-username');
+				}
+				if (field === 'email') {
+					field_txt = window.dataMap.get('sign-up-email');
+				}
+				if (field === 'password') {
+					field_txt = window.dataMap.get('sign-up-password');
+				}
+			  if (field === 'confirmation_password') {
+					field_txt = window.dataMap.get('sign-up-confirm-password');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
+					messages_txt = window.dataMap.get('min-characters-error');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
+					messages_txt = window.dataMap.get('max-characters-username-error');
+				}
+			  if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
+					messages_txt = window.dataMap.get('username-taken');
+				}
+				if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
+					messages_txt = window.dataMap.get('email-taken');
+			  }
+				if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
+					messages_txt = window.dataMap.get('valid-email');
+				}
+				console.log(messages);
+				errorMessage += `${field_txt}: ${messages_txt}\n`;
+				if (Array.isArray(messages) && messages.includes("Password too short")) {
+					errorMessage = window.dataMap.get('too-short-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No uppercase in password")) {
+					errorMessage = window.dataMap.get('no-uppercase-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No digit in password")) {
+					errorMessage = window.dataMap.get('no-digit-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("This field may not be blank.")) {
+					errorMessage = window.dataMap.get('fill-fields');
+				}
 			}
 			raiseAlert(errorMessage);
 		  } else {
 			alert('Erreur : ' + (errorData.message || 'Problème de connexion au serveur.'));
 		  }
 		}
-	  } catch (error) {
+	} catch (error) {
 		alert('Une erreur est survenue lors de la connexion au serveur.');
 		console.error('Error:', error);
-	  }
-	});
+	}
+});
 
 	usernameInput.addEventListener('keypress', function(event) {
 		if (event.key === 'Enter') {
@@ -185,7 +303,7 @@ function SignIn() {
 			signUpButton.click();
 		}
 	});
-	
+
 	confirmPasswordInput.addEventListener('keypress', function(event) {
 		if (event.key === 'Enter') {
 			signUpButton.click();
@@ -219,7 +337,7 @@ async function SignIn42() {
 	if (code) {
 		urlParams.delete('code');
 		window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
-		
+
 		try {
 			const response = await fetch('/auth/token/', {
 					method: 'POST',
@@ -238,7 +356,86 @@ async function SignIn42() {
 							if (userInfo) {
 									document.cookie = `access_token=${data.access_token}; path=/`;
 									localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
-									updateUserInfo(userInfo.username);
+
+									window.dict = `${userInfo.language}-dict.txt`;
+									fetch(window.dict)
+									.then(response => response.text())
+									.then(text => {
+										let file = text.split('\n');
+										window.dataMap = null;
+										window.dataMap = new Map();
+										for (let line of file) {
+										let lineSplit = line.split('=');
+										window.dataMap.set(lineSplit[0], lineSplit[1]);
+										}
+										document.getElementById('login-title').textContent = window.dataMap.get('login-title');
+										document.getElementById('sign-in-button').textContent = window.dataMap.get('sign-in-button');
+										document.getElementById('button-sign-up-page').textContent = window.dataMap.get('button-sign-up-page');
+										document.getElementById('button-register-page').textContent = window.dataMap.get('button-register-page');
+										document.getElementById('button-login-42').textContent = window.dataMap.get('button-login-42');
+										document.getElementById('sign-in-username').placeholder = window.dataMap.get('sign-in-username');
+										document.getElementById('sign-in-password').placeholder = window.dataMap.get('sign-in-password');
+										document.getElementById('sign-up-username').placeholder = window.dataMap.get('sign-up-username');
+										document.getElementById('sign-up-email').placeholder = window.dataMap.get('sign-up-email');
+										document.getElementById('sign-up-password').placeholder = window.dataMap.get('sign-up-password');
+										document.getElementById('sign-up-confirm-password').placeholder = window.dataMap.get('sign-up-confirm-password');
+										document.getElementById('2fa-sign').textContent = window.dataMap.get('2fa-sign');
+										document.getElementById('2fa-text').textContent = window.dataMap.get('2fa-text');
+										document.getElementById('2fa-button').textContent = window.dataMap.get('2fa-button');
+										document.getElementById('desktop').textContent = window.dataMap.get('desktop');
+										document.getElementById('account').textContent = window.dataMap.get('account');
+										document.getElementById('settings').textContent = window.dataMap.get('settings');
+										document.getElementById('quit').textContent = window.dataMap.get('quit');
+										document.getElementById('application-explorer').textContent = window.dataMap.get('application-explorer');
+										document.getElementById('account-window').textContent = window.dataMap.get('account-window');
+										document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
+										document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
+										document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+										document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
+										document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
+										document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
+										document.getElementById('profile-old-password').placeholder = window.dataMap.get('profile-old-password');
+										document.getElementById('profile-password').placeholder = window.dataMap.get('profile-password');
+										document.getElementById('profile-confirm-password').placeholder = window.dataMap.get('profile-confirm-password');
+										document.getElementById('update-button').textContent = window.dataMap.get('update-button');
+										document.getElementById('friend-account').textContent = window.dataMap.get('friend-account');
+										document.getElementById('activate-2fa-text').textContent = window.dataMap.get('activate-2fa-text');
+										document.getElementById('enter-code').placeholder = window.dataMap.get('enter-code');
+										document.getElementById('validate-qr-code-id').textContent = window.dataMap.get('validate-qr-code-id');
+										document.getElementById('desktop-image').textContent = window.dataMap.get('desktop-image');
+										document.getElementById('trash').textContent = window.dataMap.get('trash');
+										document.getElementById('general').textContent = window.dataMap.get('general');
+										document.getElementById('add-friends').textContent = window.dataMap.get('add-friends');
+										document.getElementById('search-friends').placeholder = window.dataMap.get('search-friends');
+										document.getElementById('type-message').placeholder = window.dataMap.get('type-message');
+										document.getElementById('send').textContent = window.dataMap.get('send');
+										document.getElementById('client-info').textContent = window.dataMap.get('client-info');
+										document.getElementById('client-msg').textContent = window.dataMap.get('client-msg');
+										document.getElementById('winbook-title').textContent = window.dataMap.get('winbook-title');
+										document.getElementById('search').textContent = window.dataMap.get('search');
+										document.getElementById('create').textContent = window.dataMap.get('create');
+										document.getElementById('search-button').textContent = window.dataMap.get('search-button');
+										document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
+										document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
+										document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
+										document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+										document.getElementById('empty').textContent = window.dataMap.get('empty');
+										document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
+										document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
+										document.getElementById('game').textContent = window.dataMap.get('game');
+										document.getElementById('game-options').textContent = window.dataMap.get('game-options');
+										document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
+										document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
+										document.getElementById('local-button').textContent = window.dataMap.get('local-button');
+										document.getElementById('create-room').textContent = window.dataMap.get('create-room');
+										document.getElementById('join-room').textContent = window.dataMap.get('join-room');
+										document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
+										document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
+										document.getElementById('start-button').textContent = window.dataMap.get('start-button');
+										document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
+									});
+
+									updateUserInfo();
 									updateUserStat();
 									updateUserFriend(userInfo.username);
 
@@ -267,14 +464,93 @@ async function can_sign_in() {
 		const access_token = getTokenCookie();
 		if (access_token) {
 			const userInfo = await getUserInfo(access_token);
+
 			if (userInfo) {
-				updateUserInfo(userInfo.username);
+				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(userInfo.username);
 
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
 				loadMessageHistory();
+
+				window.dict = `${userInfo.language}-dict.txt`;
+				fetch(window.dict)
+				.then(response => response.text())
+				.then(text => {
+					let file = text.split('\n');
+					window.dataMap = null;
+					window.dataMap = new Map();
+					for (let line of file) {
+					let lineSplit = line.split('=');
+					window.dataMap.set(lineSplit[0], lineSplit[1]);
+					}
+					document.getElementById('login-title').textContent = window.dataMap.get('login-title');
+					document.getElementById('sign-in-button').textContent = window.dataMap.get('sign-in-button');
+					document.getElementById('button-sign-up-page').textContent = window.dataMap.get('button-sign-up-page');
+					document.getElementById('button-register-page').textContent = window.dataMap.get('button-register-page');
+					document.getElementById('button-login-42').textContent = window.dataMap.get('button-login-42');
+					document.getElementById('sign-in-username').placeholder = window.dataMap.get('sign-in-username');
+					document.getElementById('sign-in-password').placeholder = window.dataMap.get('sign-in-password');
+					document.getElementById('sign-up-username').placeholder = window.dataMap.get('sign-up-username');
+					document.getElementById('sign-up-email').placeholder = window.dataMap.get('sign-up-email');
+					document.getElementById('sign-up-password').placeholder = window.dataMap.get('sign-up-password');
+					document.getElementById('sign-up-confirm-password').placeholder = window.dataMap.get('sign-up-confirm-password');
+					document.getElementById('2fa-sign').textContent = window.dataMap.get('2fa-sign');
+					document.getElementById('2fa-text').textContent = window.dataMap.get('2fa-text');
+					document.getElementById('2fa-button').textContent = window.dataMap.get('2fa-button');
+					document.getElementById('desktop').textContent = window.dataMap.get('desktop');
+					document.getElementById('account').textContent = window.dataMap.get('account');
+					document.getElementById('settings').textContent = window.dataMap.get('settings');
+					document.getElementById('quit').textContent = window.dataMap.get('quit');
+					document.getElementById('application-explorer').textContent = window.dataMap.get('application-explorer');
+					document.getElementById('account-window').textContent = window.dataMap.get('account-window');
+					document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
+					document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
+					document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+					document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
+					document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
+					document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
+					document.getElementById('profile-old-password').placeholder = window.dataMap.get('profile-old-password');
+					document.getElementById('profile-password').placeholder = window.dataMap.get('profile-password');
+					document.getElementById('profile-confirm-password').placeholder = window.dataMap.get('profile-confirm-password');
+					document.getElementById('update-button').textContent = window.dataMap.get('update-button');
+					document.getElementById('friend-account').textContent = window.dataMap.get('friend-account');
+					document.getElementById('activate-2fa-text').textContent = window.dataMap.get('activate-2fa-text');
+					document.getElementById('enter-code').placeholder = window.dataMap.get('enter-code');
+					document.getElementById('validate-qr-code-id').textContent = window.dataMap.get('validate-qr-code-id');
+					document.getElementById('desktop-image').textContent = window.dataMap.get('desktop-image');
+					document.getElementById('trash').textContent = window.dataMap.get('trash');
+					document.getElementById('general').textContent = window.dataMap.get('general');
+					document.getElementById('add-friends').textContent = window.dataMap.get('add-friends');
+					document.getElementById('search-friends').placeholder = window.dataMap.get('search-friends');
+					document.getElementById('type-message').placeholder = window.dataMap.get('type-message');
+					document.getElementById('send').textContent = window.dataMap.get('send');
+					document.getElementById('client-info').textContent = window.dataMap.get('client-info');
+					document.getElementById('client-msg').textContent = window.dataMap.get('client-msg');
+					document.getElementById('winbook-title').textContent = window.dataMap.get('winbook-title');
+					document.getElementById('search').textContent = window.dataMap.get('search');
+					document.getElementById('create').textContent = window.dataMap.get('create');
+					document.getElementById('search-button').textContent = window.dataMap.get('search-button');
+					document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
+					document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
+					document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
+					document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+					document.getElementById('empty').textContent = window.dataMap.get('empty');
+					document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
+					document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
+					document.getElementById('game').textContent = window.dataMap.get('game');
+					document.getElementById('game-options').textContent = window.dataMap.get('game-options');
+					document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
+					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
+					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
+					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
+					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
+					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
+					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
+					document.getElementById('start-button').textContent = window.dataMap.get('start-button');
+					document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
+				});
 				
 				const loginPage = document.getElementById('login-id-page');
 				loginPage.style.display = 'none';
@@ -325,8 +601,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			if (response.ok) {
 				const data = await response.json();
 				if (data.message === 'Success') {
-					const user = await getUserInfo(access_token);
-					updateUserInfo(user.username);
+					updateUserInfo();
 					slideUp();
 				} else {
 					raiseAlert(data.message);

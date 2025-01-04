@@ -64,11 +64,12 @@ async function updateUser() {
 			if (response.ok && data.message === 'Success') {
 					raiseAlert('Les informations ont été changées avec succès.');
 
-					const updatedUserInfo = await getUserInfo(access_token);
+					/*const updatedUserInfo = await getUserInfo(access_token);
 					if (updatedUserInfo) {
-							localStorage.setItem(userNameText, JSON.stringify(updatedUserInfo));
-							updateUserInfo(userNameText);
-					}
+						localStorage.setItem(userNameText, JSON.stringify(updatedUserInfo));
+						updateUserInfo(userNameText);
+					}*/
+					updateUserInfo();
 
 					inputAlias.value = '';
 					inputEmail.value = '';
@@ -85,7 +86,7 @@ async function updateUser() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-	const updateButton = document.getElementById('updateButton');
+	const updateButton = document.getElementById('update-profile');
 	if (updateButton) {
 		updateButton.addEventListener('click', updateUser);
 	} else {

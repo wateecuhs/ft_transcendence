@@ -43,7 +43,7 @@ async function showTournamentResults(query) {
         });
       } else {
         const noResultsItem = document.createElement('li');
-        noResultsItem.textContent = 'Aucun tournoi trouvé';
+        noResultsItem.textContent = window.dataMap.get('no-tournament');
         tournamentResultsList.appendChild(noResultsItem);
       }
     } else {
@@ -80,7 +80,8 @@ async function showAllTournaments() {
         });
       } else {
         const noResultsItem = document.createElement('li');
-        noResultsItem.textContent = 'Aucun tournoi trouvé';
+        noResultsItem.id = 'no-tournament';
+        // noResultsItem.textContent = window.dataMap.get('no-tournament');
         tournamentResultsList.appendChild(noResultsItem);
       }
     } else {
