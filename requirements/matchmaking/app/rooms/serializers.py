@@ -19,6 +19,6 @@ class TournamentSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        if Tournament.objects.filter(name=attrs['name']).exclude(status=Tournament.Status.FINISHED).exists():
+        if Tournament.objects.filter(name=attrs['name']).exclude(status=Tournament.Status.FINISHED).exclude(status=Tournament.Status.CANCELLED).exists():
             raise serializers.ValidationError("Tournament with this name already exists")
         return super().validate(attrs)

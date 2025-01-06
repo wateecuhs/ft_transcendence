@@ -9,6 +9,10 @@ function showTournamentDetails(tournament) {
 
   tournamentNameElement.textContent = tournament.name;
   playerListElement.innerHTML = '';
+  if (tournament.players.length === 0) {
+    resetWinBook();
+    return ;
+  }
   if (tournament.players) {
     tournament.players.forEach(player => {
       const li = document.createElement('li');

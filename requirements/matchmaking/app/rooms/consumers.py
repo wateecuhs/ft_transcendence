@@ -155,7 +155,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.error("Tournament name is required")
                 return
 
-            tournament = await sync_to_async(Tournament.objects.get)(name=tournament_name)
+            tournament = await sync_to_async(Tournament.objects.exclude(status=Tournament.Status.CANCELLED).exclude(status=Tournament.Status.FINISHED).get)(name=tournament_name)
             if self.username not in tournament.players:
                 await self.error("Not in this tournament")
                 return
@@ -195,7 +195,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.error("Tournament name is required")
                 return
 
-            tournament = await sync_to_async(Tournament.objects.get)(name=tournament_name)
+            tournament = await sync_to_async(Tournament.objects.exclude(status=Tournament.Status.CANCELLED).exclude(status=Tournament.Status.FINISHED).get)(name=tournament_name)
 
             if tournament.owner != UUID(self.user_id):
                 await self.error("Only the tournament owner can start the tournament")
@@ -206,7 +206,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 return
 
             if len(tournament.players) < 4:
-                await self.error(f"Minimum {tournament.min_players} players required")
+                await self.error(f"Minimum 4 players required")
                 return
             tournament.round = Tournament.Round.FIRST
             seed = [0, 1, 2, 3]
@@ -338,7 +338,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             tournament_name = event["data"]["name"]
             tournament = await sync_to_async(Tournament.objects.filter(status=Tournament.Status.PENDING).get)(name=tournament_name)
             print(tournament.owner, self.user_id, flush=True)
-            if UUID(self.user_id) == tournament.owner:
+            if UUID(self.user_id) == tournament.owner and len(tournament.players) >= 4:
                 print("Owner", flush=True)
                 await self._handle_tournament_start(event)
         except Tournament.DoesNotExist:

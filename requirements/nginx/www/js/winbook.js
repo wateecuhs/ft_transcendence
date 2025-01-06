@@ -42,7 +42,6 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else {
-      console.log(message);
       if (message.message === 'You already have an active tournament.') {
         raiseAlert('You already have an active tournament.');
       }
