@@ -16,7 +16,7 @@ async function showTournamentResults(query) {
   tournamentResultsList.innerHTML = '';
 
   try {
-    const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
+    const response = await fetch(`https://${window.location.host}/matchmaking/tournaments/`, {
       method: 'GET',
     });
 
@@ -60,13 +60,14 @@ async function showAllTournaments() {
   tournamentResultsList.innerHTML = '';
 
   try {
-    const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
+    const response = await fetch(`https://${window.location.host}/matchmaking/tournaments/`, {
       method: 'GET',
     });
 
     if (response.ok) {
       const tournaments = await response.json();
       if (tournaments.length > 0) {
+        console.log("tournaments", tournaments);
         tournaments.forEach(tournament => {
           const li = document.createElement('li');
           li.textContent = `${tournament.name} (Max: 4 joueurs)`;
@@ -91,3 +92,4 @@ async function showAllTournaments() {
     console.log(error);
   }
 }
+

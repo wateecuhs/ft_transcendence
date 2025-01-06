@@ -52,7 +52,7 @@ async function joinTournament() {
   const readyButton = winBookWindow.querySelector('#ready-button');
 
   try {
-    const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
+    const response = await fetch(`https://${window.location.host}/matchmaking/tournaments/`, {
       method: 'GET',
     });
 
@@ -82,7 +82,7 @@ async function quitTournament() {
   const tournament_name = tournamentNameElement.textContent;
 
   try {
-    const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
+    const response = await fetch(`https://${window.location.host}/matchmaking/tournaments/`, {
       method: 'GET',
     });
 
@@ -118,4 +118,41 @@ function resetWinBook() {
   playerListElement.appendChild(li);
   readyButton.disabled = false;
   readyButton.textContent = window.dataMap.get('ready-button');
+}
+
+
+function sendPlayersToRooms(tournament) {
+  const winBookWindow = document.getElementById("winBook");
+  const tournamentContent = winBookWindow.querySelector('#tournament-pane-id');
+  const readyButton = winBookWindow.querySelector('#ready-button');
+  const quitButton = document.querySelector('#quit-button');
+
+  readyButton.style.display = 'none';
+  quitButton.style.display = 'none';
+
+  const rounds = tournament.rounds;
+  rounds.forEach(round => {
+    if (round.round === "FIRST") {
+      const matches = round.matches;
+      let i = 1;
+      matches.forEach(match => {
+        
+        const newData = document.createElement('div');
+          const dataMatch = {
+            room_code: match.room_code,
+            player1: match.player1,
+            player2: match.player2
+          };
+          newData.textContent = `Match ${i} : ${dataMatch.player1} vs ${dataMatch.player2}`;
+          tournamentContent.appendChild(newData);
+          i += 1;
+      });
+      matches.forEach(match => {
+        if (tournament.author === match.player1 || tournament.author === match.player2) {
+          runRemoteGame(match.room_code);
+          return ;
+        }
+      });
+    }
+  });
 }

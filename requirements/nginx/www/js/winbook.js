@@ -10,7 +10,7 @@ function toggleWinbookWindow() {
 
 function initMMWebSocket() {
   if (!window.mmws || window.mmws.readyState === WebSocket.CLOSED) {
-    window.mmws = new WebSocket('wss://localhost:8443/matchmaking/');
+    window.mmws = new WebSocket(`wss://${window.location.host}/matchmaking/`);
   }
 
   window.mmws.onmessage = function(event) {
@@ -37,6 +37,7 @@ function initMMWebSocket() {
       displayChatMessage(data);
       showPopUp('Tournament is now starting !');
       showTournamentDetails(message.data);
+      sendPlayersToRooms(message.data);
     }
     else if (message.type === "tournament.delete") {
       showTournamentDetails(message.data);

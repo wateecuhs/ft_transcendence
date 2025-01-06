@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .serializers import MessageSerializer, RelationshipSerializer
+from rest_framework.exceptions import ValidationError
 from asgiref.sync import sync_to_async
 from .enums import MessageType
 from channels.db import database_sync_to_async
@@ -198,15 +199,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.chat_private({"data": message_data})
 
     async def _handle_public_message(self, message: str):
-        logger.info(f"[{self.user}] Sending public message : {message}")
-        serializer = MessageSerializer(data={"type": cmod.Message.Type.PUBLIC, "author": self.user, "content": message})
-        serializer.is_valid(raise_exception=True)
-        message_data = {"content": message, "author": self.user}
-        await self.channel_layer.group_send(
-            self.GLOBAL_CHAT, {"type": MessageType.Chat.PUBLIC, "data": message_data}
-        )
-
-        await sync_to_async(serializer.save)()
+        try:
+            logger.info(f"[{self.user}] Sending public message : {message}")
+            serializer = MessageSerializer(data={"type": cmod.Message.Type.PUBLIC, "author": self.user, "content": message})
+            serializer.is_valid(raise_exception=True)
+            message_data = {"content": message, "author": self.user}
+            await self.channel_layer.group_send(
+                self.GLOBAL_CHAT, {"type": MessageType.Chat.PUBLIC, "data": message_data}
+            )
+            await sync_to_async(serializer.save)()
+        except ValidationError as e:
+            await self.error(f"Invalid message format. ({e})")
 
     """
 		These methods are called by the channel layer when a message is received /

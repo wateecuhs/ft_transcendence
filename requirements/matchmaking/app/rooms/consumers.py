@@ -228,7 +228,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     ]
                 }
             ]
-
             tournament.status = Tournament.Status.PLAYING
             await sync_to_async(tournament.save)()
 
@@ -239,7 +238,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     "data": {
                         "name": tournament_name,
                         "players": tournament.players,
-                        "matches": tournament.matches
+                        "rounds": tournament.matches
                     }
                 }
             )
@@ -351,6 +350,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     
     async def tournament_start(self, event):
         logger.info(f"[{self.username}] Tournament start: {event['data']}")
+        event["data"]["author"] = self.username
         await self._json_send(MessageType.Tournament.START, event["data"])
 
     async def tournament_delete(self, event):
