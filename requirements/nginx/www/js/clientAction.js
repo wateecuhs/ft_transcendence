@@ -32,6 +32,10 @@ function toogleClientAction(event, friend) {
         chatInput.placeholder = `Send a message to ${friend}`;
         client.style.display = 'none';
       }
+
+      if (li.id === "client-invite") {
+        
+      }
     });
   });
 

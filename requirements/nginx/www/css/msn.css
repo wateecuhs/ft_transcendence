@@ -164,18 +164,20 @@
 }
 
 #msnWindow .msn-page {
+  min-width: 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 #msnWindow .chat-area {
+  min-width: 0;
   flex-grow: 1;
   background-color: #dcdcdc;
   border: 1px solid #808080;
+  max-width: 100%;
   margin: 8px;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: scroll;
   box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
   display: flex;
   flex-direction: column;
@@ -190,6 +192,8 @@
   border: 1px solid #808080;
   padding: 8px;
   margin-bottom: 8px;
+  word-wrap: break-word;
+  overflow-x: scroll;
   font-size: 14px;
 }
 

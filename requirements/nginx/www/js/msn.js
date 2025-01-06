@@ -115,9 +115,6 @@ async function updateClientsTab(friends) {
     client = await getClientInfo(friend);
 
     const statusDot = document.createElement('span');
-    if (statusDot.style.backgroundColor === 'grey') {
-      statusDot.style.backgroundColor = 'green';
-    }
     statusDot.classList.add("status-dot");
     statusDot.style.backgroundColor = 'green';
 
