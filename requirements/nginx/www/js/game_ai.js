@@ -89,7 +89,7 @@ function runAIGame() {
     }
 
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    // resizeCanvas();
 
     function drawGame(state) {
         if (!state || !state.paddle_left || !state.paddle_right || !state.ball || !state.score) {

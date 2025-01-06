@@ -26,6 +26,9 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(self.room_name, self.channel_name)
 
+        if len(self.room.players) == 2:
+            self.room.reset()
+
         if not hasattr(self.room, "game_loop"):
             self.room.game_loop = asyncio.create_task(self.update_game_state())
         await self.accept()
