@@ -57,7 +57,7 @@ function displayDeskInconsInWindow() {
         toogleGameOptionWindow();
       }
 
-      if (textSpan.textContent.trim() === 'Trash bin') {
+      if (textSpan.textContent.trim() === window.dataMap.get('trash')) {
         toogleTrashBin();
       }
     });

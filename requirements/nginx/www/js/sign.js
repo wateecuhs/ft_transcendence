@@ -113,7 +113,9 @@ function SignIn() {
 					document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
 					document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
 					document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
-					document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+					const tournamentName = document.getElementById('tournament-name').textContent;
+					if (tournamentName != 'Aucun Tournoi Sélectionné' && tournamentName != 'Nenhum torneio selecionado' && tournamentName != 'No Tournament Selected')
+						document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
 					document.getElementById('empty').textContent = window.dataMap.get('empty');
 					document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
 					document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
@@ -418,8 +420,12 @@ async function SignIn42() {
 										document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
 										document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
 										document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
-										document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
-										document.getElementById('empty').textContent = window.dataMap.get('empty');
+										const tournamentName = document.getElementById('tournament-name').textContent;
+										if (tournamentName == 'Aucun Tournoi Sélectionné' || tournamentName == 'Nenhum torneio selecionado' || tournamentName == 'No Tournament Selected')
+											document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+										const emptyData = document.getElementById('empty');
+										if (emptyData != null)
+											emptyData.textContent = window.dataMap.get('empty');
 										document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
 										document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
 										document.getElementById('game').textContent = window.dataMap.get('game');
@@ -432,7 +438,9 @@ async function SignIn42() {
 										document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
 										document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
 										document.getElementById('start-button').textContent = window.dataMap.get('start-button');
-										document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
+										const noTournament = document.getElementById('no-tournament');
+										if (noTournament != null)
+											noTournament.textContent = window.dataMap.get('no-tournament');
 									});
 
 									updateUserInfo();
@@ -535,8 +543,12 @@ async function can_sign_in() {
 					document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
 					document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
 					document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
-					document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
-					document.getElementById('empty').textContent = window.dataMap.get('empty');
+					const tournamentName = document.getElementById('tournament-name').textContent;
+					if (tournamentName == 'Aucun Tournoi Sélectionné' || tournamentName == 'Nenhum torneio selecionado' || tournamentName == 'No Tournament Selected')
+						document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+					const emptyData = document.getElementById('empty');
+					if (emptyData != null)
+						emptyData.textContent = window.dataMap.get('empty');
 					document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
 					document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
 					document.getElementById('game').textContent = window.dataMap.get('game');
@@ -545,11 +557,15 @@ async function can_sign_in() {
 					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
 					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
 					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
+					
 					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
+
 					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
 					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
 					document.getElementById('start-button').textContent = window.dataMap.get('start-button');
-					document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
+					const noTournament = document.getElementById('no-tournament');
+					if (noTournament != null)
+						noTournament.textContent = window.dataMap.get('no-tournament');
 				});
 				
 				const loginPage = document.getElementById('login-id-page');

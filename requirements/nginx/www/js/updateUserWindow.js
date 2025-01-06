@@ -13,6 +13,8 @@ userWindow.querySelector('.close-button').addEventListener('click', function() {
 
 async function updateUser() {
 	try {
+		console.log('Here');
+
 			const accountWin = document.getElementById("accountWindow");
 			const fullNameText = accountWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent.trim();
 			const userNameText = fullNameText.replace("Name: ", "").trim();
@@ -64,11 +66,6 @@ async function updateUser() {
 			if (response.ok && data.message === 'Success') {
 					raiseAlert('Les informations ont été changées avec succès.');
 
-					/*const updatedUserInfo = await getUserInfo(access_token);
-					if (updatedUserInfo) {
-						localStorage.setItem(userNameText, JSON.stringify(updatedUserInfo));
-						updateUserInfo(userNameText);
-					}*/
 					updateUserInfo();
 
 					inputAlias.value = '';
@@ -77,7 +74,67 @@ async function updateUser() {
 					inputPassword.value = '';
 					inputConfirmPassword.value = '';
 			} else {
-					raiseAlert(data.message);
+					if (data.errors) {
+						let errorMessage = '';
+						let field_txt = '';
+						let messages_txt = '';
+						for (const [field, messages] of Object.entries(data.errors)) {
+							if (field === 'new_alias') {
+								field_txt = window.dataMap.get('error-alias');
+							}
+							if (field === 'new_email') {
+								field_txt = window.dataMap.get('sign-up-email');
+							}
+							if (field === 'new_password') {
+								field_txt = window.dataMap.get('sign-up-password');
+							}
+			  			if (field === 'confirmation_password') {
+								field_txt = window.dataMap.get('sign-up-confirm-password');
+							}
+							if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
+								messages_txt = window.dataMap.get('min-characters-error');
+							}
+							if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
+								messages_txt = window.dataMap.get('max-characters-username-error');
+							}
+			  			if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
+								messages_txt = window.dataMap.get('username-taken');
+							}
+							if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
+								messages_txt = window.dataMap.get('email-taken');
+			  			}
+							if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
+								messages_txt = window.dataMap.get('valid-email');
+							}
+							if (Array.isArray(messages) && messages.includes("Bad old password")) {
+								field_txt = window.dataMap.get('old-password');
+								messages_txt = window.dataMap.get('bad-old-password');
+							}
+							if (Array.isArray(messages) && messages.includes('All change password fields are not filled')) {
+								field_txt = window.dataMap.get('profile-password');
+								messages_txt = window.dataMap.get('password-empty');
+							}
+							if (Array.isArray(messages) && messages.includes('New password and Confirm New Password are different')) {
+								field_txt = window.dataMap.get('profile-password');
+								messages_txt = window.dataMap.get('different-pwd');
+							}
+							console.log(messages);
+							errorMessage += `${field_txt}: ${messages_txt}\n`;
+							if (Array.isArray(messages) && messages.includes("Password too short")) {
+								errorMessage = window.dataMap.get('too-short-pwd');
+							}
+							if (Array.isArray(messages) && messages.includes("No uppercase in password")) {
+								errorMessage = window.dataMap.get('no-uppercase-pwd');
+							}
+							if (Array.isArray(messages) && messages.includes("No digit in password")) {
+								errorMessage = window.dataMap.get('no-digit-pwd');
+							}
+							if (Array.isArray(messages) && messages.includes("This field may not be blank.")) {
+								errorMessage = window.dataMap.get('fill-fields');
+							}
+						}
+						raiseAlert(errorMessage);
+					}
 			}
 	} catch (error) {
 			raiseAlert('Une erreur est survenue lors de la mise à jour des informations utilisateur.');
@@ -86,7 +143,7 @@ async function updateUser() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-	const updateButton = document.getElementById('update-profile');
+	const updateButton = document.getElementById('update-button');
 	if (updateButton) {
 		updateButton.addEventListener('click', updateUser);
 	} else {

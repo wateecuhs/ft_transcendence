@@ -487,7 +487,7 @@
     </div>
   </div>
 
-  <div class="window" id="tree-matchmaking" style="display: none;">
+  <div class="window" id="tree-matchmaking">
     <div class="window-header">
       <div class="header-title">Tree matchmaking</div>
       <button class="close-button">X</button>
@@ -660,7 +660,9 @@
           document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
           document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
           document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
-          document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+          const tournamentName = document.getElementById('tournament-name').textContent;
+          if (tournamentName && tournamentName != 'Aucun Tournoi Sélectionné' && tournamentName != 'Nenhum torneio selecionado' && tournamentName != 'No Tournament Selected')
+              document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
           document.getElementById('empty').textContent = window.dataMap.get('empty');
           document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
           document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
@@ -674,7 +676,6 @@
           document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
           document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
           document.getElementById('start-button').textContent = window.dataMap.get('start-button');
-          //document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
           updateTime();
           setInterval(updateTime, 1000);
         })
