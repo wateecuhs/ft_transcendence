@@ -52,6 +52,19 @@ services:
     depends_on:
       chat-db-dev:
         condition: service_healthy
+    environment:
+      - REDIS_HOST=chat-redis
+      - REDIS_PORT=6379
+
+  chat-redis:
+    container_name: chat-redis
+    image: redis:6
+    networks:
+      - chat-dev
+    volumes:
+      - chat-redis-volume-dev:/data
+    command:
+      redis-server --save 60 1 --loglevel warning
 
   chat-db-dev:
     container_name: chat-db-dev
@@ -122,6 +135,9 @@ services:
     depends_on:
       matchmaking-db-dev:
         condition: service_healthy
+    environment:
+      - REDIS_HOST=matchmaking-redis
+      - REDIS_PORT=6379
 
   matchmaking-db-dev:
     container_name: matchmaking-db-dev
@@ -140,13 +156,21 @@ services:
       timeout: 5s
       retries: 5
 
+  matchmaking-redis:
+    container_name: matchmaking-redis
+    image: redis:6
+    networks:
+      - matchmaking-dev
+    volumes:
+      - matchmaking-redis-volume-dev:/data
+    command:
+      redis-server --save 60 1 --loglevel warning
+
   ai_game:
     container_name: ai_game
     build: 
       context: ./ai_game
       dockerfile: Dockerfile.dev
-    # env_file:
-    #   - ./conf/dev.env-ai_game
     networks:
       - peas-dev
       - ai_game-dev
@@ -154,32 +178,25 @@ services:
       - ./ai_game/app:/app/
     ports:
       - "8003:8003"
-    # depends_on:
-    #   game-db:
-    #     condition: service_healthy
-    
-  # game-db:
-  #   image: postgres:14
-  #   restart: on-failure
-  #   volumes:
-  #     - game-db-volume:/var/lib/postgresql/data
-  #   env_file:
-  #     - ./conf/.env-game
-  #   networks:
-  #     - game
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready --dbname=$$POSTGRES_DB --username=$$POSTGRES_USER"]
-  #     interval: 1s
-  #     timeout: 5s
-  #     retries: 5
+    environment:
+      - REDIS_HOST=ai_game-redis
+      - REDIS_PORT=6379
+
+  ai_game_redis:
+    container_name: ai_game_redis
+    image: redis:6
+    networks:
+      - ai_game-dev
+    volumes:
+      - ai_game-redis-volume-dev:/data
+    command:
+      redis-server --save 60 1 --loglevel warning
 
   game:
     container_name: game
     build: 
       context: ./game
       dockerfile: Dockerfile.dev
-    # env_file:
-    #   - ./conf/dev.env-game
     networks:
       - peas-dev
       - game-dev
@@ -187,12 +204,26 @@ services:
       - ./game/app:/app/
     ports:
       - "8004:8004"
-    # depends_on:
-    #   game-db:
-    #     condition: service_healthy
+    environment:
+      - REDIS_HOST=game-redis
+      - REDIS_PORT=6379
+
+  game-redis:
+    container_name: game-redis
+    image: redis:6
+    networks:
+      - game-dev
+    volumes:
+      - game-redis-volume-dev:/data
+    command:
+      redis-server --save 60 1 --loglevel warning
 
 volumes:
   chat-db-volume-dev: {}
   auth-db-volume-dev: {}
   game-db-volume-dev: {}
   matchmaking-db-volume-dev: {}
+  chat-redis-volume-dev: {}
+  game-redis-volume-dev: {}
+  matchmaking-redis-volume-dev: {}
+  ai_game-redis-volume-dev: {}

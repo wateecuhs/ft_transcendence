@@ -4,6 +4,7 @@ import neat
 import os
 import pickle
 import time
+import json
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -57,7 +58,7 @@ class Ball:
 
 class Room:
     def __init__(self, room_name):
-        self.room_name = room_name
+        self.name = room_name
         self.lock = asyncio.Lock()
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
@@ -71,10 +72,12 @@ class Room:
             "move_right_down": False
         }
         self.ball.serve()
+        self.winner = None
 
     async def add_player(self, player):
         if len(self.players) < 2:
             self.players.append(player)
+            self.reset()
             return True
         return False
 
@@ -99,6 +102,9 @@ class Room:
             self.ball.move()
             self.handle_collision()
             self.update_score()
+
+            if self.score[0] == 10 or self.score[1] == 10:
+                return self.game_over()
 
             game_state = {
                 "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
@@ -149,4 +155,27 @@ class Room:
             self.score[0] += 1
             self.ball.reset()
             self.ball.MAX_VELOCITY *= 1.025
-            
+
+    def game_over(self):
+        if self.score[0] == 10:
+            self.winner = "Player 1"
+        else:
+            self.winner = "Player 2"
+
+        game_state = {
+            "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
+            "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
+            "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
+            "score": self.score,
+            "winner": self.winner
+        }
+
+        return game_state
+    
+    def reset(self):
+        self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
+        self.ball.reset()
+        self.score = [0, 0]
+
+

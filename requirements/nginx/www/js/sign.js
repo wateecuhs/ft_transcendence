@@ -19,7 +19,7 @@ function SignIn() {
 	  const textPassword = passwordInput.value.trim();
 
 	  if (!textUsername || !textPassword) {
-		raiseAlert('Veuillez remplir tous les champs.');
+		raiseAlert(window.dataMap.get('fill-fields'));
 		return;
 	  }
 
@@ -54,19 +54,37 @@ function SignIn() {
 			} else {
 				updateUserInfo(textUsername);
 				updateUserStat();
+				updateUserFriend(textUsername);
+
+				loadMessageHistory();
+				window.mmws = initMMWebSocket();
+				window.ws = initWebSocket();
+				loadMessageHistory();
+
 				slideUp();
 			}
 
 		  } else {
-			raiseAlert(data.message);
+			raiseAlert('SignIn: ' + data.message);
 		  }
 		} else {
-		  raiseAlert(errorData.message);
+		  raiseAlert('SignIn: ' + data.error);
 		}
 	  } catch (error) {
-		alert('Une erreur est survenue lors de la connexion au serveur.');
-		console.error('Error:', error);
+		raiseAlert(window.dataMap.get('credentials-error'));
 	  }
+	});
+
+	usernameInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signInButton.click();
+		}
+	});
+
+	passwordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signInButton.click();
+		}
 	});
   }
 
@@ -95,24 +113,23 @@ function SignIn() {
 	const textPassword = passwordInput.value.trim();
 	const textConfirmPassword = confirmPasswordInput.value.trim();
 
-	  if (!usernameInput || !emailInput || !passwordInput || !signUpButton) {
-		raiseAlert('Veuillez remplir tous les champs.');
+	if (usernameInput == '' || emailInput == '' || passwordInput == '' || confirmPasswordInput == '') {
+		raiseAlert(window.dataMap.get('fill-fields'));
 		return ;
-	  }
-
-	  if (!(textPassword === textConfirmPassword)) {
-		raiseAlert('Les mots de passe envoyes ne sont pas les memes.');
+	}
+	if (!(textPassword === textConfirmPassword)) {
+		raiseAlert(window.dataMap.get('not-same-pwd'));
 		return ;
-	  }
+	}
 
-	  const requestData = {
+	const requestData = {
 		username: textUsername,
 		email: textEmail,
 		password: textPassword,
 		confirmation_password: textConfirmPassword,
-	  }
+	}
 
-	  try {
+	try {
 		const response = await fetch('/auth/register/', {
 		  method: 'POST',
 		  headers: {
@@ -125,96 +142,197 @@ function SignIn() {
 		  const data = await response.json();
 
 		  if (data.message === 'success') {
-				raiseAlert('Inscription reussie');
+				raiseAlert(window.dataMap.get('register-success'));
 				displayRegister();
 				document.cookie = `access_token=${data.access_token}; path=/`;
 			} else {
-				raiseAlert(data.message);
+				raiseAlert('Signup: ' + data.message);
 			}
 		} else {
 		  const errorData = await response.json();
 
 		  if (errorData.errors) {
-			let errorMessage = 'Erreur de validation :\n';
+			let errorMessage = '';
+			let field_txt = '';
+			let messages_txt = '';
 			for (const [field, messages] of Object.entries(errorData.errors)) {
-			  errorMessage += `${field}: ${messages.join(', ')}\n`;
+				if (field === 'username') {
+					field_txt = window.dataMap.get('sign-up-username');
+				}
+				if (field === 'email') {
+					field_txt = window.dataMap.get('sign-up-email');
+				}
+				if (field === 'password') {
+					field_txt = window.dataMap.get('sign-up-password');
+				}
+			  if (field === 'confirmation_password') {
+					field_txt = window.dataMap.get('sign-up-confirm-password');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
+					messages_txt = window.dataMap.get('min-characters-error');
+				}
+				if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
+					messages_txt = window.dataMap.get('max-characters-username-error');
+				}
+			  if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
+					messages_txt = window.dataMap.get('username-taken');
+				}
+				if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
+					messages_txt = window.dataMap.get('email-taken');
+			  }
+				if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
+					messages_txt = window.dataMap.get('valid-email');
+				}
+				console.log(messages);
+				errorMessage += `${field_txt}: ${messages_txt}\n`;
+				if (Array.isArray(messages) && messages.includes("Password too short")) {
+					errorMessage = window.dataMap.get('too-short-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No uppercase in password")) {
+					errorMessage = window.dataMap.get('no-uppercase-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("No digit in password")) {
+					errorMessage = window.dataMap.get('no-digit-pwd');
+				}
+				if (Array.isArray(messages) && messages.includes("This field may not be blank.")) {
+					errorMessage = window.dataMap.get('fill-fields');
+				}
 			}
-			alert(errorMessage);
+			raiseAlert(errorMessage);
 		  } else {
 			alert('Erreur : ' + (errorData.message || 'Problème de connexion au serveur.'));
 		  }
 		}
-	  } catch (error) {
+	} catch (error) {
 		alert('Une erreur est survenue lors de la connexion au serveur.');
 		console.error('Error:', error);
-	  }
+	}
+});
+
+	usernameInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
 	});
+
+	emailInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
+	passwordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
+	confirmPasswordInput.addEventListener('keypress', function(event) {
+		if (event.key === 'Enter') {
+			signUpButton.click();
+		}
+	});
+
   }
 
 async function SignIn42() {
 	const loginPage = document.getElementById('login-id-page');
 
 	if (!loginPage) {
-	  console.error('login-id-page introuvable.');
-	  return;
+			console.error('login-id-page introuvable.');
+			return;
 	}
 
 	const login42 = loginPage.querySelector('.button-login-42');
 
 	if (!login42) {
-	  console.error('login42 button introuvable');
-	  return ;
+			console.error('login42 button introuvable');
+			return;
 	}
 
 	login42.addEventListener('click', async function () {
-		location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443&response_type=code'
+			location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443&response_type=code';
 	});
 
 	const urlParams = new URLSearchParams(window.location.search);
-
 	const code = urlParams.get('code');
 
 	if (code) {
-        console.log('Code récupéré:', code);
+		urlParams.delete('code');
+		window.history.replaceState({}, '', window.location.pathname + '?' + urlParams.toString());
 
-        try {
-            const response = await fetch('/auth/token/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ code: code })
-            });
+		try {
+			const response = await fetch('/auth/token/', {
+					method: 'POST',
+					headers: {
+							'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ code: code }),
+			});
 
-            if (response.ok) {
-                const data = await response.json();
-                if (data.message === 'Success') {
-					const userInfo = await getUserInfo(data.access_token);
+			if (response.ok) {
+					const data = await response.json();
 
-					if (userInfo) {
-						document.cookie = `access_token=${data.access_token}; path=/`;
-						localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
-						updateUserInfo(userInfo.username);
-						updateUserStat();
-						slideUp();
+					if (data.message === 'Success') {
+							const userInfo = await getUserInfo(data.access_token);
+
+							if (userInfo) {
+									document.cookie = `access_token=${data.access_token}; path=/`;
+									localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
+									updateUserInfo(userInfo.username);
+									updateUserStat();
+									updateUserFriend(userInfo.username);
+
+									window.mmws = initMMWebSocket();
+									window.ws = initWebSocket();
+									loadMessageHistory();
+
+									slideUp();
+							} else {
+									raiseAlert('Token was not valid');
+							}
 					} else {
-						raiseAlert('Token was not valid');
+							raiseAlert('Sign42: ' + data.message);
 					}
-                } else {
-                    raiseAlert(data);
-                }
-            } else {
-				raiseAlert('Error: response 42 is not ok');
+			} else {
+					raiseAlert('Error: response 42 is not ok');
 			}
-        } catch (error) {
-            console.error('Erreur réseau:', error);
-        }
-    } else {
-        console.error('Aucun code trouvé dans l\'URL');
-    }
+		} catch (error) {
+				console.error('Erreur réseau:', error);
+		}
+	}
+}
+
+async function can_sign_in() {
+	try {
+		const access_token = getTokenCookie();
+		if (access_token) {
+			const userInfo = await getUserInfo(access_token);
+			if (userInfo) {
+				updateUserInfo(userInfo.username);
+				updateUserStat();
+				updateUserFriend(userInfo.username);
+
+				window.mmws = initMMWebSocket();
+				window.ws = initWebSocket();
+
+				const loginPage = document.getElementById('login-id-page');
+				loginPage.style.display = 'none';
+			}
+		}
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+function quitDesk() {
+	document.cookie = "access_token=; path=/";
+	document.cookie = "refresh_token=; path=/";
+	slideBack();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+	can_sign_in();
 	SignIn();
 	SignUp();
 	SignIn42();

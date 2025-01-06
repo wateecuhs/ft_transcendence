@@ -42,8 +42,10 @@ class GameConsumer(AsyncWebsocketConsumer):
         command = json.loads(text_data)
         if command.get('type') == 'disconnect':
             print("Disconnected", flush=True)
+            await self.room.remove_player(self)
             self.room.game_loop.cancel()
             del rooms[self.room_name]
+            await self.close()
             return
 
         player_index = self.room.players.index(self)
@@ -73,6 +75,12 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     async def update_game_state(self):
         while True:
+            if "room_local" not in self.room.name and self.room.name != "room_ai":
+                if len(self.room.players) < 2:
+                    await asyncio.sleep(1 / FPS)
+                    self.room.reset()
+                    continue
+
             game_state = await self.room.update_game_state()
             await self.channel_layer.group_send(
                 self.room_name,

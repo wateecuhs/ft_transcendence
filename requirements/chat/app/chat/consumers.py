@@ -115,16 +115,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self._handle_public_message(message)
 
     async def _handle_block_command(self, message: str):
-        logger
+        logger.info(f"[{self.user}] Handling block command. ({message})")
         splitted_message = message.split(" ")
         if len(splitted_message) != 2:
             self.error(f"Invalid block command format. ({message})")
             return
 
         target = splitted_message[1]
-        if target == self.user_id:
+        if target == self.user:
+            print("Handling block command: You can't block yourself.", flush=True)
             self.error(f"You can't block yourself.")
             return
+        else:
+            print(f"Handling block command: {type(target)} and {type(self.user)}", flush=True)
+            print(f"Handling block command: {target} and {self.user}", flush=True)
 
         if splitted_message[0] == self.BLOCK_CHAT_CMD:
             await database_sync_to_async(block_user)(self.user, target)
@@ -147,12 +151,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
             match splitted_message[0]:
                 case self.ADD_FRIEND_CMD:
                     await database_sync_to_async(request_user)(self.user, target)
+                    await self.channel_layer.group_send(f"user.{target}", {"type": MessageType.Relationship.REQUEST, "data": {"author": self.user}})
                 case self.REMOVE_FRIEND_CMD:
                     await database_sync_to_async(remove_user)(self.user, target)
+                    await self.channel_layer.group_send(f"user.{target}", {"type": MessageType.Relationship.REMOVE, "data": {"author": self.user}})
+                    await self.channel_layer.group_send(f"user.{self.user}", {"type": MessageType.Relationship.REMOVE, "data": {"author": target}})
                 case self.ACCEPT_FRIEND_CMD:
                     await database_sync_to_async(accept_user)(self.user, target)
+                    await self.channel_layer.group_send(f"user.{target}", {"type": MessageType.Relationship.ACCEPT, "data": {"author": self.user}})
+                    await self.channel_layer.group_send(f"user.{self.user}", {"type": MessageType.Relationship.ACCEPT, "data": {"author": target}})
                 case self.DECLINE_FRIEND_CMD:
                     await database_sync_to_async(reject_user)(self.user, target)
+                case _:
+                    self.error(f"Invalid friend command. ({message})")
         except Exception as e:
             logger.info(f"[{self.user}] Error: {e}")
             self.error(e)
@@ -202,14 +213,33 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		from the group or a private message is received.
 	"""
 
+    async def relationship_request(self, event):
+        await self._json_send(MessageType.Relationship.REQUEST, event["data"])
+
+    async def relationship_accept(self, event):
+        await self._json_send(MessageType.Relationship.ACCEPT, event["data"])
+
+    async def relationship_reject(self, event):
+        await self._json_send(MessageType.Relationship.REJECT, event["data"])
+
+    async def relationship_remove(self, event):
+        await self._json_send(MessageType.Relationship.REMOVE, event["data"])
+
     async def status_request(self, event):
-        await self.channel_layer.group_send(event["data"]["author"], {"type": MessageType.Status.UPDATE, "data": {"author": self.user, "status": cmod.User.Status.ONLINE}})
+        await self.channel_layer.group_send(f"user.{event['data']['author']}", {"type": MessageType.Status.UPDATE, "data": {"author": self.user, "status": cmod.User.Status.ONLINE}})
 
     async def status_update(self, event):
         event["data"]["content"] = f"{event['data']['author']} is now {event['data']['status']}."
-        await self._json_send("status_update", event["data"])
+        await self._json_send(MessageType.Status.UPDATE, event["data"])
 
     async def chat_public(self, event):
+        try:
+            author = event["data"]["author"]
+            if await database_sync_to_async(get_relationship_status)(self.user, author) == cmod.Relationship.Status.BLOCKED or \
+                await database_sync_to_async(get_relationship_status)(author, self.user) == cmod.Relationship.Status.BLOCKED:
+                return
+        except KeyError:
+            return
         await self._json_send(MessageType.Chat.PUBLIC, event["data"])
 
     async def chat_private(self, event):
@@ -245,15 +275,11 @@ def unblock_user(sender, target):
     relationship.unblock()
 
 def request_user(sender, target):
-    logger.info(f"[{sender}] Sending friend request to {target}.")
     rel_status = get_relationship_status(sender, target)
-    logger.info(f"[{sender}] Relationship status: {rel_status}")
     if rel_status != cmod.Relationship.Status.NEUTRAL and rel_status != None:
         raise Exception(f"You can't add {target}.")
-    logger.info(f"[{sender}] Creating relationship with {target}.")
     relationship, created = cmod.Relationship.objects.get_or_create(sender=sender, receiver=target)
     relationship.request()
-    logger.info(f"[{sender}] Sending status request to {target}.")
 
 def accept_user(sender, target):
     if get_relationship_status(target, sender) != cmod.Relationship.Status.PENDING:

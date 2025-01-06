@@ -7,16 +7,13 @@ icons.forEach(icon => {
     const iconElement = icon.querySelector('.icon-text');
     const iconName = iconElement ? iconElement.textContent.trim() : '';
 
-    if (iconName === 'Msn') {
-      toggleMsnWindow();
-    }
-    if (iconName === 'Winbook') {
-      toggleWinbookWindow();
-    }
+    if (iconName === 'Msn') toggleMsnWindow();
 
-    if (iconName === 'Pong') {
-      togglePongWindow();
-    }
+    if (iconName === 'Winbook') toggleWinbookWindow();
+
+    if (iconName === 'Pong') toogleGameOptionWindow();
+
+    if (iconName === 'Trash bin') toogleTrashBin();
   });
 
   let offsetX, offsetY;
@@ -62,7 +59,7 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert');
+const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert, #game-option, #tree-matchmaking, #clientWindow, #pop-up-message, #client-action, #trash-bin, #winBook');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');

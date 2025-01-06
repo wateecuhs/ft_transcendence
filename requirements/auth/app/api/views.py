@@ -11,7 +11,7 @@ from django.conf import settings
 from .forms import  BadPasswordError, ConfirmationError
 from .models import CustomUser, Match
 from django.core.serializers.json import DjangoJSONEncoder
-from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, AddMatchSerializer, CodeSerializer, Serializer2FA
+from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, AddMatchSerializer, CodeSerializer, Serializer2FA, LanguageSerializer
 from .utils import get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
 from django.shortcuts import redirect
 
@@ -60,8 +60,10 @@ class LoginAPI(APIView):
 		encoded_access_jwt = CreateAccessToken(request, username)
 		if encoded_access_jwt is None:
 			return JsonResponse({'message': 'failed : cannot create access token'}, status=400)
-		CreateRefreshToken(request, username)
-		return JsonResponse({"message": "success", "access_token": encoded_access_jwt})
+		encoded_refresh_jwt = CreateRefreshToken(request, username)
+		response = JsonResponse({"message": "success", "access_token": encoded_access_jwt})
+		response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/')
+		return response
 
 '''
 UserInfo take a PUT request of EditAccountSerializer and the encoded_access_jwt. The function check all field of serializer and change in DB if fields aren't empty and if fields are valid
@@ -177,7 +179,8 @@ class UserInfo(APIView):
 								 "id": user.id,
 								 "room_id": user.room_id,
 								"access_token": encoded_access_jwt,
-								"is_2FA": user.is_2FA})
+								"is_2FA": user.is_2FA,
+                "language": user.language})
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
 		except jwt.ExpiredSignatureError:
@@ -186,20 +189,22 @@ class UserInfo(APIView):
 
 
 class	UserInfoId(APIView):
-	def put(self, request, id):
+	def put(self, request, **kwargs):
+		id = kwargs.get('id')
 		serializer = ChangeRoomSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user = CustomUser.get_user_by_id(id=id)
+		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"}, status=404)
 		user.room_id = serializer.validated_data['room_id']
 		return JsonResponse({"message": "Success",
 							"room_id": user.room_id})
 
-	def get(self, id):
-		user = CustomUser.get_user_by_id(id=id)
+	def get(self, request, **kwargs):
+		id = kwargs.get('id')
+		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"}, status=404)
 		return JsonResponse({"message": "Success",
@@ -211,11 +216,13 @@ class	UserInfoId(APIView):
 								 "avatar_path": user.avatar_path,
 								 "is_42_pp": user.is_42_pp,
 								 "id": user.id,
-								 "room_id": user.room_id})
+								 "room_id": user.room_id,
+                 "language": user.language})
 
 
 class	UserInfoUsername(APIView):
-	def put(self, request, username):
+	def put(self, request, **kwargs):
+		username =  kwargs.get('username')
 		serializer = ChangeRoomSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
@@ -227,8 +234,9 @@ class	UserInfoUsername(APIView):
 		return JsonResponse({"message": "Success",
 							"room_id": user.room_id})
 
-	def get(self, username):
-		user = CustomUser.get_user_by_name(username=username)
+	def get(self, request, **kwargs):
+		username = kwargs.get('username')
+		user = CustomUser.get_user_by_name(username)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"}, status=404)
 		return JsonResponse({"message": "Success",
@@ -240,7 +248,8 @@ class	UserInfoUsername(APIView):
 								 "avatar_path": user.avatar_path,
 								 "is_42_pp": user.is_42_pp,
 								 "id": user.id,
-								 "room_id": user.room_id})
+								 "room_id": user.room_id,
+                 "language": user.language})
 
 '''
 ConfirmToken verify that the response is ok and then create or connect the user with all informations and create JWT token.
@@ -274,8 +283,10 @@ class ConfirmToken(APIView):
         encoded_access_jwt = CreateAccessToken(request, username)
         if encoded_access_jwt is None:
             return JsonResponse({'message': 'failed : cannot create access token'}, status=400)
-        CreateRefreshToken(request, username)
-        return JsonResponse({"message": "Success", "access_token": encoded_access_jwt})
+        encoded_refresh_jwt = CreateRefreshToken(request, username)
+        response = JsonResponse({"message": "Success", "access_token": encoded_access_jwt})
+        response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/')
+        return response
 
 
 '''
@@ -376,7 +387,8 @@ class MatchHistory(APIView):
 
 
 class MatchHistoryId(APIView):
-	def get(self, request, id):
+	def get(self, request, **kwargs):
+		id = kwargs.get('id')
 		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
@@ -389,7 +401,8 @@ class MatchHistoryId(APIView):
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
 
-	def put(self, request, id):
+	def put(self, request, **kwargs):
+		id = kwargs.get('id')
 		serializer = AddMatchSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
@@ -403,7 +416,8 @@ class MatchHistoryId(APIView):
 		return JsonResponse({"message": "Success"})
 
 class MatchHistoryUsername(APIView):
-	def get(self, username):
+	def get(self, request, **kwargs):
+		username = kwargs.get('username')
 		user = CustomUser.get_user_by_name(username)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
@@ -416,7 +430,8 @@ class MatchHistoryUsername(APIView):
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
 
-	def put(self, request, username):
+	def put(self, request, **kwargs):
+		username = kwargs.get('username')
 		serializer = AddMatchSerializer(data=request.data)
 		if not serializer.is_valid():
 			errors = serializer.errors
@@ -462,7 +477,8 @@ class	UserStat(APIView):
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
 class	UserStatId(APIView):
-	def get(self, id):
+	def get(self, request, **kwargs):
+		id = kwargs.get('id')
 		user = CustomUser.get_user_by_id(id)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
@@ -475,7 +491,8 @@ class	UserStatId(APIView):
 							"goal_conceded": user.goal_conceded})
 
 class	UserStatUsername(APIView):
-	def get(self, username):
+	def get(self, request, **kwargs):
+		username = kwargs.get('username')
 		user = CustomUser.get_user_by_name(username)
 		if user is None:
 			return JsonResponse({"message": "failed : User not found"})
@@ -639,6 +656,43 @@ class Desactivate2FA(APIView):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
 
 			user.is_2FA = False
+			user.save()
+			return JsonResponse({'message': 'Success'})
+
+		except jwt.InvalidTokenError:
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+		except jwt.ExpiredSignatureError:
+			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+
+class ChangeLanguage(APIView):
+	def put(self, request):
+		try:
+			authorization_header = request.headers.get('Authorization')
+			if authorization_header is None:
+				return JsonResponse({"message": "failed : authorization header missing"}, status=400)
+			if not authorization_header.startswith("Bearer "):
+				return JsonResponse({'message': 'failed : no access_token in header'}, stauts=400)
+			encoded_access_jwt = authorization_header.split(" ", 1)[1]
+			if not encoded_access_jwt:
+				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+			payload = decodeAccessToken(request, encoded_access_jwt)
+			if not payload:
+				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+			username = payload.get("username")
+			if not (username):
+				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+			user = CustomUser.get_user_by_name(username)
+			if not (user):
+				return JsonResponse({'message': 'failed : user not found'}, status=404)
+
+			serializer = LanguageSerializer(data=request)
+			if not serializer.is_valid():
+				return JsonResponse({'message': 'failed : serializer is not valid'}, status=400)
+			language = serializer.validated_data['language']
+			if language != 'pt' and language != 'en' and language != 'fr' and language != 'ru':
+				return JsonResponse({'message': 'failed : not a language'}, status=400)
+			user.language = language
 			user.save()
 			return JsonResponse({'message': 'Success'})
 
