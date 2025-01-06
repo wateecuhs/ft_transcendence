@@ -13,7 +13,7 @@ icons.forEach(icon => {
 
     if (iconName === 'Pong') toogleGameOptionWindow();
 
-    if (iconName === 'Trash bin') toogleTrashBin();
+    if (iconName === window.dataMap.get('trash')) toogleTrashBin();
   });
 
   let offsetX, offsetY;

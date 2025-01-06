@@ -36,12 +36,11 @@ function initWebSocket() {
       handle_chat_private(private_message, mp_user, message);
     }
     else if (message.type === "relationship.request") {
-      showPopUp("Received friend request from " + message.data.author);
+      showPopUp(window.dataMap.get('friend-request') + message.data.author);
     }
     else if (message.type === "relationship.accept") {
       updateUserFriend();
-      showPopUp(message.data.author + " is now your friend!");
-      // devrait juste ajouter le nouvel user au lieu de tout re-render et le mettre en online par defaut
+      showPopUp(window.dataMap.get('friend-accepted') + message.data.author);
     }
     else if (message.type === "relationship.remove") {
       updateUserFriend();

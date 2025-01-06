@@ -28,7 +28,7 @@ function createTournament() {
   const tournamentName = createTournamentNameInput.value.trim();
   const readyButton = winBookWindow.querySelector('#ready-button');
   readyButton.disabled = true;
-  readyButton.textContent = 'Rejoint';
+  readyButton.textContent = window.dataMap.get('joined');
 
   if (tournamentName === '') {
     raiseAlert('Veuillez entrer un nom pour le tournoi.', 'error');
@@ -45,6 +45,7 @@ async function joinTournament() {
   const winBookWindow = document.getElementById("winBook");
   const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
   const tournament_name = tournamentNameElement.textContent;
+  const readyButton = winBookWindow.querySelector('#ready-button');
 
   try {
     const response = await fetch('https://localhost:8443/matchmaking/tournaments/', {
@@ -58,7 +59,7 @@ async function joinTournament() {
           if (tournament_name === tournament.name) {
             window.mmws.send(JSON.stringify({ type: 'tournament.join', data: tournament }));
             readyButton.disabled = true;
-            readyButton.textContent = 'Rejoint';
+            readyButton.textContent = window.dataMap.get('joined');
             return ;
           }
         });
@@ -112,5 +113,5 @@ function resetWinBook() {
   li.textContent = 'Empty';
   playerListElement.appendChild(li);
   readyButton.disabled = false;
-  readyButton.textContent = 'Join';
+  readyButton.textContent = window.dataMap.get('ready-button');
 }

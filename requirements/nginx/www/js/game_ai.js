@@ -116,4 +116,4 @@ function runAIGame() {
         ctx.fillText(state.score[1], canvas.width * 3 / 4, canvas.height * 0.1);
     }
 
-    }
+}

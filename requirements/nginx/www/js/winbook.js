@@ -26,7 +26,6 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.leave") {
-      raiseAlert(`Vous avez quitte ${message.data.name}`);
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.start") {
@@ -40,7 +39,6 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.delete") {
-      console.log('Test');
       showTournamentDetails(message.data);
     }
     else {
