@@ -218,6 +218,17 @@ services:
     command:
       redis-server --save 60 1 --loglevel warning
 
+  match-redis:
+    container_name: match-redis
+    image: redis:6
+    networks:
+      - game-dev
+      - matchmaking-dev
+    volumes:
+      - match-redis-volume-dev:/data
+    command:
+      redis-server --save 60 1 --loglevel warning
+
 volumes:
   chat-db-volume-dev: {}
   auth-db-volume-dev: {}
@@ -227,3 +238,4 @@ volumes:
   game-redis-volume-dev: {}
   matchmaking-redis-volume-dev: {}
   ai_game-redis-volume-dev: {}
+  match-redis-volume-dev: {}

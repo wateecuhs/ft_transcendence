@@ -4,6 +4,7 @@ import neat
 import os
 import pickle
 import time
+import redis
 import json
 
 WIN_WIDTH = 800
@@ -157,11 +158,11 @@ class Room:
             self.ball.MAX_VELOCITY *= 1.025
 
     def game_over(self):
+        redis_client = redis.Redis(host='match-redis', port=6379, db=0)
         if self.score[0] == 10:
             self.winner = "Player 1"
         else:
             self.winner = "Player 2"
-
         game_state = {
             "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
@@ -169,6 +170,7 @@ class Room:
             "score": self.score,
             "winner": self.winner
         }
+        redis_client.publish('game_results', json.dumps({"room_name": self.name, "winner": self.winner, "score": self.score}))
 
         return game_state
     
