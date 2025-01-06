@@ -86,3 +86,4 @@ register-success=Inscrição bem-sucedida.
 2fa-activation-failed=Código incorreto.
 2fa-activated=2FA está ativada.
 2fa-desactivated=2FA está desativada.
+start-button=Ligar

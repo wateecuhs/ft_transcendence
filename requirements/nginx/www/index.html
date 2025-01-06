@@ -116,7 +116,8 @@
 
     <!-- Affiche les optios du boutton start -->
     <button class="start-btn" onclick="toogleStartMenu()">
-      <img src="img/png/windows-0.png" alt="Start Icon" class="start-icon">Start
+      <img src="img/png/windows-0.png" alt="Start Icon" class="start-icon">
+      <div id="start-button">Start</div>
     </button>
 
     <div class="start-menu" style="display: none;">
@@ -630,7 +631,8 @@
     window.onload = function () {
       window.ws = null;
       window.mmws = null;
-      window.dict = 'pt-dict.txt';
+      window.dict = 'en-dict.txt';
+
       fetch(window.dict)
         .then(response => response.text())
         .then(content => {
@@ -704,6 +706,7 @@
           document.getElementById('join-room').textContent = window.dataMap.get('join-room');
           document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
           document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
+          document.getElementById('start-button').textContent = window.dataMap.get('start-button');
           updateTime();
           setInterval(updateTime, 1000);
         })
