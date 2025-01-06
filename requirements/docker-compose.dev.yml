@@ -182,8 +182,8 @@ services:
       - REDIS_HOST=ai_game-redis
       - REDIS_PORT=6379
 
-  ai_game_redis:
-    container_name: ai_game_redis
+  ai_game-redis:
+    container_name: ai_game-redis
     image: redis:6
     networks:
       - ai_game-dev
