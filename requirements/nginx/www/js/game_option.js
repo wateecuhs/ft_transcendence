@@ -1,3 +1,7 @@
+let room_ai = null;
+let room_local = null;
+let rooms = {};
+
 function toogleGameOptionWindow() {
   const optionWin = document.getElementById('game-option');
   if (optionWin.style.display === 'none') {
@@ -17,16 +21,31 @@ function game_option_button() {
 
       if (buttonId === 'ai-button') {
         // let win = togglePongWindow('room_ai');
-        runAIGame();
+        // runAIGame();
+        room_ai = new GameInstance('ai');
+        room_ai.run();
       } else if (buttonId === 'local-button') {
         // togglePongWindow('room_local');
-        runLocalGame();
+        // runLocalGame();
+        room_local = new GameInstance('local');
+        room_local.run();
       } else if (buttonId === 'create-room') {
-        let roomNumber = createRoom();
+        // let roomNumber = createRoom();
         // togglePongWindow('room_' + roomNumber);
-        runRemoteGame(roomNumber);
+        // runRemoteGame(roomNumber);
+        let room_remote = new GameInstance('remote');
+        rooms[room_remote.roomNumber] = room_remote;        
+        alert('Room created: ' + room_remote.roomNumber);   // make GameInstance contents private, replace with getter
+        room_remote.run();
       } else if (buttonId === 'join-room') {
-        joinRoom();
+        // joinRoom();
+        let roomNumber = prompt('Enter room number:');
+        if (!roomNumber) return;
+        // if (rooms[roomNumber] === undefined) {
+        //   alert('Room not found');
+        //   return;
+        // }
+        rooms[roomNumber].run();
       }
     });
   });
