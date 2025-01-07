@@ -1,7 +1,7 @@
 from django.db.models import TextChoices
 
 class MessageType:
-    
+
     class Tournament(TextChoices):
         CREATE = "tournament.create"
         JOIN = "tournament.join"
@@ -9,4 +9,7 @@ class MessageType:
         START = "tournament.start"
         DELETE = "tournament.delete"
 
-    
+    class Matchmaking(TextChoices):
+        JOIN = "matchmaking.join"
+        LEAVE = "matchmaking.leave"
+        START = "matchmaking.start"
