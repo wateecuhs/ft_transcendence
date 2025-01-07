@@ -59,8 +59,8 @@
 // }
 
 
-class GameInstance {
-	constructor(type) {
+class PongWindow {
+	constructor(type, roomNumber) {
 		this.commandBuffer = {};
 		this.gameOver = false;
 		this.type = type;
@@ -76,7 +76,11 @@ class GameInstance {
 		this.ballRadius = 10;
 		this.previousBallPositions = [];
 		
-		this.roomNumber = Math.floor(Math.random() * 10000);
+		if (!roomNumber)
+			this.roomNumber = Math.floor(Math.random() * 10000);
+		else
+			this.roomNumber = roomNumber;
+		
 		if (type === 'ai') {
 			this.roomName = 'room_ai_' + this.roomNumber;
 			this.socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + this.roomName + '/');
