@@ -5,6 +5,9 @@ function toogleGameOptionWindow() {
     optionWin.style.position = 'absolute';
     optionWin.style.top = `${window.innerHeight / 2 - optionWin.offsetHeight / 2}px`;
     optionWin.style.left = `${window.innerWidth / 2 - optionWin.offsetWidth / 2}px`;
+    navigateToPage("pong");
+  } else {
+    optionWin.style.display = 'none'
   }
 }
 

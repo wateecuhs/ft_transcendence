@@ -633,6 +633,7 @@ async function can_sign_in() {
 function quitDesk() {
 	document.cookie = "access_token=; path=/";
 	document.cookie = "refresh_token=; path=/";
+	history.replaceState({}, "", window.location.pathname);
 	slideBack();
 }
 
