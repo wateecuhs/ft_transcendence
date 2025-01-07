@@ -66,76 +66,78 @@ function displayDeskInconsInWindow() {
 
 let currentIndex = 0;
 let historyStack = [];
-let oldPage = null;
 
 function navigateToPage(pageName) {
+  console.log(`Navigate to ${pageName}`);
   if (historyStack.length > 0 && historyStack[currentIndex - 1].page === pageName) {
     return ;
   }
   currentIndex++;
-  history.pushState({ page: pageName, index: currentIndex }, "", "");
-  historyStack.push({ page: pageName, index: currentIndex });
 
-  window.oldPage = pageName;
-};
+  const fullPath = window.location.pathname + `#${pageName}`;
+  history.pushState({ page: pageName, index: currentIndex }, "", fullPath);
+  historyStack.push({ page: pageName, index: currentIndex });
+}
 
 window.addEventListener('popstate', function (event) {
+  console.log('Popstate event triggered');
+  console.log('Current URL:', window.location.href);
+  console.log('Event state:', JSON.stringify(event.state));
+
   if (!event.state || !event.state.page) {
-    return ;
+    //console.log('No valid state found');
+    quitDesk();
+    return;
   }
 
   const currentPage = event.state.page;
   const goingBack = event.state.index < currentIndex;
-  oldPage = this.window.oldPage;
+
+  console.log(`Going ${goingBack ? 'Back' : 'Forward'} to page: ${currentPage}`);
+
   currentIndex = event.state.index;
 
-
-  if (!goingBack) {
-    this.alert('Going Forward');
-    if (currentPage === "pong") {
-      toogleGameOptionWindow("roomId");
-      navigateToPage("pong");
-    } else if (currentPage === "winbook") {
-      toggleWinbookWindow();
-      navigateToPage("winbook");
-    } else if (currentPage === "msn") {
-      toggleMsnWindow();
-      navigateToPage("msn");
-    } else if (currentPage === "trash") {
-      toogleTrashBin();
-      navigateToPage("trash");
-    } else if (currentPage === "desktop") {
-      //quitDesk();
-      historyStack.pop();
-    }
-  } else {
-
-    let toPage = "login";
-    if (historyStack.length > 0) {
-      oldPage = historyStack[currentIndex].page;
-      toPage = historyStack[currentIndex - 1].page;
-      historyStack.pop();
-    }
-
-    if (oldPage === "pong") {
-      toogleGameOptionWindow("roomId");
-      navigateToPage(toPage);
-    } else if (oldPage === "winbook") {
-      toggleWinbookWindow();
-      navigateToPage(toPage);
-    } else if (oldPage === "msn") {
-      toggleMsnWindow();
-      navigateToPage(toPage);
-    } else if (oldPage === "trash") {
-      toogleTrashBin();
-      navigateToPage(toPage);
-    } else if (oldPage === "desktop") {
-      quitDesk();
-      navigateToPage("login");
-    }
-  }
+  handlePageTransition(currentPage, goingBack);
+  console.log('Updated history stack:', JSON.stringify(historyStack));
+  console.log(`currentIndex = ${currentIndex}`);
 });
 
-function handleTransistion(fromPage, toPage, isBack = false) {
+function handlePageTransition(pageName, isBack) {
+  console.log('handlePageTransition called with:', { pageName, isBack });
+    
+  if (isBack) {
+      console.log('Going Back');
+      let previousPageIndex = currentIndex;
 
+      let previousPage = historyStack[previousPageIndex]?.page || "login";
+      console.log(`current = ${pageName} and previous = ${previousPage}`);
+      switchPage(previousPage);
+  } else {
+      console.log('Going Forward');
+      switchPage(pageName);
+  }
+}
+
+function switchPage(pageName) {
+  switch (pageName) {
+    case "pong":
+      toogleGameOptionWindow();
+      break;
+    case "winbook":
+      toggleWinbookWindow();
+      break;
+    case "msn":
+      toggleMsnWindow();
+      break;
+    case "trash":
+      toogleTrashBin();
+      break;
+    case "desktop":
+      //history.replaceState({ page: "desktop", index: currentIndex }, "", window.location.pathname + "#login");
+      quitDesk();
+      break;
+    default:
+      console.log("Unknown page:", pageName);
+      break;
+  }
 }
