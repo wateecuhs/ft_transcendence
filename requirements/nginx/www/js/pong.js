@@ -94,9 +94,9 @@ class PongWindow {
 		window.addEventListener('resize', this.resizeCanvas);
 		this.resizeCanvas();
 
-		this.socket.onopen = () => {
-			console.log('WebSocket connection established');
-		};
+		// this.socket.onopen = () => {
+		// 	console.log('WebSocket connection established');
+		// };
 
 		this.socket.onerror = (error) => {
 			console.error('WebSocket error:', error);
