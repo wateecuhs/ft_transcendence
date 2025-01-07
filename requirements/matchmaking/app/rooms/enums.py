@@ -8,5 +8,8 @@ class MessageType:
         LEAVE = "tournament.leave"
         START = "tournament.start"
         DELETE = "tournament.delete"
-
     
+    class Matchmaking(TextChoices):
+        JOIN = "matchmaking.join"
+        LEAVE = "matchmaking.leave"
+        START = "matchmaking.start"

@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 import datetime
 import random
-import websocket
 from uuid import UUID
 import logging
 import json
@@ -18,6 +17,8 @@ logger = logging.getLogger(__name__)
 
 
 class TournamentConsumer(AsyncWebsocketConsumer):
+    players = []
+
     def __init__(self, *args, **kwargs):
         self.user_id = None
         self.username = None
@@ -54,6 +55,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 MessageType.Tournament.LEAVE: self._handle_tournament_leave,
                 MessageType.Tournament.START: self._handle_tournament_start,
                 MessageType.Tournament.DELETE: self._handle_tournament_delete,
+                MessageType.Matchmaking.JOIN: self._handle_matchmaking_join,
+                MessageType.Matchmaking.LEAVE: self._handle_matchmaking_leave,
+                MessageType.Matchmaking.START: self._handle_matchmaking_start,
             }
 
             handler = handler_map.get(event["type"])
@@ -206,7 +210,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 return
 
             if len(tournament.players) < 4:
-                await self.error(f"Minimum 4 players required")
+                await self.error("Minimum 4 players required")
                 return
             tournament.round = Tournament.Round.FIRST
             seed = [0, 1, 2, 3]
@@ -369,9 +373,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             logger.info(f"[{self.username}] Leaving tournament: {tournament.name}")
             await self._handle_tournament_leave({"data": {"name": tournament.name}})
 
+    async def matchmaking_start(self):
+        logger.info(f"[{self.username}] Starting matchmaking")
+        await self._json_send(MessageType.Matchmaking.START, {})
+
     async def error(self, error_message):
         logger.error(f"[{self.username}] Error: {error_message}")
-        await self.send(json.dumps({"type": "error", "message": error_message}))
+        await self._json_send(json.dumps({"type": "error", "message": error_message}))
     
     async def _json_send(self, message_type: str, data: Dict[str, Any]):
         data["created_at"] = datetime.datetime.now().strftime("%H:%M")
