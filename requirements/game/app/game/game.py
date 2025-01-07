@@ -1,9 +1,5 @@
 import asyncio
 import random
-import neat
-import os
-import pickle
-import time
 import redis
 import json
 
@@ -36,14 +32,10 @@ class Ball:
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.serving = True
-        self.prev_time = time.time()
 
     def move(self):
-        delta_time = (time.time() - self.prev_time) * FPS
-        self.prev_time = time.time()
-
-        self.x += self.dx * delta_time
-        self.y += self.dy * delta_time
+        self.x += self.dx
+        self.y += self.dy
 
     def reset(self):
         self.x = self.base_x
@@ -100,8 +92,11 @@ class Room:
     async def update_game_state(self):
         async with self.lock:
             self.move_paddles()
+            print(f"Ball position1: {self.ball.x}, {self.ball.y}", flush=True)
             self.ball.move()
+            print(f"Ball position2: {self.ball.x}, {self.ball.y}", flush=True)
             self.handle_collision()
+            print(f"Ball position3: {self.ball.x}, {self.ball.y}", flush=True)
             self.update_score()
 
             if self.score[0] == 10 or self.score[1] == 10:

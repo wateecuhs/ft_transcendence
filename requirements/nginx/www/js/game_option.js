@@ -19,17 +19,20 @@ function game_option_button() {
       const buttonId = button.id;
 
       if (buttonId === 'ai-button') {
-        // let win = togglePongWindow('room_ai');
-        runAIGame();
+        let game_ai = new PongWindow('ai', 0);
+        game_ai.run();
       } else if (buttonId === 'local-button') {
-        // togglePongWindow('room_local');
-        runLocalGame();
+        let game_local = new PongWindow('local', 0);
+        game_local.run();
       } else if (buttonId === 'create-room') {
-        let roomNumber = createRoom();
-        // togglePongWindow('room_' + roomNumber);
-        runRemoteGame(roomNumber);
+        let game_remote = new PongWindow('remote', 0);       
+        alert('Room created: ' + game_remote.roomNumber);   // make PongWindow contents private, replace with getter?
+        game_remote.run();
       } else if (buttonId === 'join-room') {
-        joinRoom();
+        let roomNumber = prompt('Enter room number:');
+        if (!roomNumber) return;
+        let game = new PongWindow('remote', roomNumber);
+        game.run();
       }
     });
   });
