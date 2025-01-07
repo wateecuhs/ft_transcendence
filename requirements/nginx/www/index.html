@@ -472,10 +472,10 @@
           </div>
         </div>
       </div>
-      
+
       <div class="tournament-content" id="tournament-content-id">
         <div class="tournament-pane" id="tournament-pane-id">
-          <h2 id="tournament-name">No Tournament Selected</h2> 
+          <h2 id="tournament-name">No Tournament Selected</h2>
         <ul id="player-list">
           <li id="empty">Empty</li>
         </ul>
@@ -496,7 +496,7 @@
     </div>
 
     <div class="window-content">
-      
+
     </div>
   </div>
 
@@ -591,7 +591,7 @@
     </div>
 
     <div class="window-content">
-      
+
     </div>
   </div>
 
@@ -599,6 +599,8 @@
     window.onload = function () {
       window.ws = null;
       window.mmws = null;
+      window.oldPage = "login";
+      window.currentPage = "login";
       window.dict = 'en-dict.txt';
 
       fetch(window.dict)
@@ -677,13 +679,14 @@
           document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
           document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
           document.getElementById('start-button').textContent = window.dataMap.get('start-button');
+          document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
           updateTime();
           setInterval(updateTime, 1000);
         })
         .catch(error => console.log(' '));
     }
   </script>
-  
+
   <script src="/js/explorerWindow.js"></script>
   <script src="js/accountWindow.js"></script>
   <script src="/js/start_menu.js"></script>
@@ -716,6 +719,6 @@
   <script src="js/winbook_show_tournaments.js"></script>
   <script src="js/winbook_tournament_details.js"></script>
   <script src="js/trash_bin.js"></script>
-  
+
 </body>
 </html>

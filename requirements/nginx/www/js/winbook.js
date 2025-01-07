@@ -1,10 +1,13 @@
 function toggleWinbookWindow() {
-  const msnWindow = document.getElementById('winBook');
-  if (msnWindow.style.display === 'none') {
-    msnWindow.style.display = 'flex';
-    msnWindow.style.position = 'absolute';
-    msnWindow.style.top = `${window.innerHeight / 2 - msnWindow.offsetHeight / 2}px`;
-    msnWindow.style.left = `${window.innerWidth / 2 - msnWindow.offsetWidth / 2}px`;
+  const winbook = document.getElementById('winBook');
+  if (winbook.style.display === 'none') {
+    winbook.style.display = 'flex';
+    winbook.style.position = 'absolute';
+    winbook.style.top = `${window.innerHeight / 2 - winbook.offsetHeight / 2}px`;
+    winbook.style.left = `${window.innerWidth / 2 - winbook.offsetWidth / 2}px`;
+    navigateToPage('winbook');
+  } else {
+    winbook.style.display = 'none';
   }
 }
 
@@ -17,12 +20,12 @@ function initMMWebSocket() {
     const message = JSON.parse(event.data);
 
     if (message.type === "tournament.join") {
-      raiseAlert(`Vous êtes maintenant prêt pour ${message.data.name}`);
+      raiseAlert(`${window.dataMap.get('tournament-ready')} ${message.data.name}`);
       showTournamentDetails(message.data);
-      
+
     }
     else if (message.type === "tournament.create") {
-      raiseAlert(`Le tournoi "${message.data.name}" a été créé avec succès.`);
+      raiseAlert(`${window.dataMap.get('tournament-created-1')} ${message.data.name} ${window.dataMap.get('tournament-created-2')}`);
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.leave") {
@@ -35,7 +38,7 @@ function initMMWebSocket() {
         created_at: new Date().toISOString()
       };
       displayChatMessage(data);
-      showPopUp('Tournament is now starting !');
+      showPopUp(window.dataMap.get('start-tournament'));
       showTournamentDetails(message.data);
       sendPlayersToRooms(message.data);
     }
@@ -44,7 +47,7 @@ function initMMWebSocket() {
     }
     else {
       if (message.message === 'You already have an active tournament.') {
-        raiseAlert('You already have an active tournament.');
+        raiseAlert(window.dataMap.get('already-tournament'));
       }
     }
   }
@@ -83,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   createTournamentButton.addEventListener('click', createTournament);
   searchButton.addEventListener('click', showTournament);
-  
+
   winSearchInput.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
       searchButton.click();
@@ -98,4 +101,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   showAllTournaments();
 });
-

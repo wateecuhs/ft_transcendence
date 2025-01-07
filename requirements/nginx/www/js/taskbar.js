@@ -124,8 +124,19 @@ function toogleLanguageChoices() {
             const noTournament = document.getElementById('no-tournament');
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
+            document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
             raiseAlert("Langue changé en Français");
           });
+
+          const flagIcon = document.querySelector('.flag-icon');
+          if (flagIcon) {
+            flagIcon.style.background = "url('../img/france_flag.png')";
+            flagIcon.style.backgroundSize = "contain";
+            flagIcon.style.backgroundRepeat = "no-repeat";
+            flagIcon.style.backgroundPosition = "center";
+            flagIcon.style.width = "32px";
+            flagIcon.style.height = "32px";
+          }
 
           updateUserInfo();
         const requestData = {
@@ -222,8 +233,20 @@ function toogleLanguageChoices() {
             const noTournament = document.getElementById('no-tournament');
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
+            document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
             raiseAlert("Language changed to English");
           });
+
+          const flagIcon = document.querySelector('.flag-icon');
+          if (flagIcon) {
+            flagIcon.style.background = "url('../img/uk_flag.png')";
+            flagIcon.style.backgroundSize = "contain";
+            flagIcon.style.backgroundRepeat = "no-repeat";
+            flagIcon.style.backgroundPosition = "center";
+            flagIcon.style.width = "32px";
+            flagIcon.style.height = "32px";
+          }
+
           updateUserInfo();
         const requestData = {
             language: 'en',
@@ -319,8 +342,20 @@ function toogleLanguageChoices() {
             const noTournament = document.getElementById('no-tournament');
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
+            document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
             raiseAlert("Idioma alterado para português");
           });
+
+          const flagIcon = document.querySelector('.flag-icon');
+          if (flagIcon) {
+            flagIcon.style.background = "url('../img/portugal_flag.png')";
+            flagIcon.style.backgroundSize = "contain";
+            flagIcon.style.backgroundRepeat = "no-repeat";
+            flagIcon.style.backgroundPosition = "center";
+            flagIcon.style.width = "32px";
+            flagIcon.style.height = "32px";
+          }
+
           updateUserInfo();
         const requestData = {
             language: 'pt',
@@ -416,7 +451,19 @@ function toogleLanguageChoices() {
             const noTournament = document.getElementById('no-tournament');
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
+            document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
           });
+
+          const flagIcon = document.querySelector('.flag-icon');
+          if (flagIcon) {
+            flagIcon.style.background = "url('../img/russia_flag.png')";
+            flagIcon.style.backgroundSize = "contain";
+            flagIcon.style.backgroundRepeat = "no-repeat";
+            flagIcon.style.backgroundPosition = "center";
+            flagIcon.style.width = "32px";
+            flagIcon.style.height = "32px";
+          }
+
           updateUserInfo();
         const requestData = {
           language: 'ru',

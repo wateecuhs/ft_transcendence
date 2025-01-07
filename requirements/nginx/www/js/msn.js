@@ -52,6 +52,12 @@ function initWebSocket() {
       console.log(message.type);
     }
   }
+
+  window.ws.onclose = function() {
+    for (const key in conversations) {
+      conversations[key] = "";
+    }
+  };
   return window.ws;
 }
 
@@ -73,6 +79,9 @@ function toggleMsnWindow() {
     msnWindow.style.position = 'absolute';
     msnWindow.style.top = `${window.innerHeight / 2 - msnWindow.offsetHeight / 2}px`;
     msnWindow.style.left = `${window.innerWidth / 2 - msnWindow.offsetWidth / 2}px`;
+    navigateToPage('msn');
+  } else {
+    msnWindow.style.display = 'none';
   }
 
   showMsnPage(msnCurrentPage);
@@ -108,7 +117,6 @@ async function updateClientsTab(friends) {
   clientTab.innerHTML = '';
 
   for (const friend of friends) {
-
     const li = document.createElement('li');
     li.classList.add("li-friend");
 
@@ -185,7 +193,7 @@ function displayChatMessage(data) {
   const chatMessages = document.querySelector('#msnWindow .chat-messages');
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message');
-  
+
   messageDiv.textContent = data.author + ': ' + data.content;
   chatMessages.appendChild(messageDiv);
 

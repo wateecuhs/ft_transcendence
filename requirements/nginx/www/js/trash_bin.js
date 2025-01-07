@@ -3,6 +3,7 @@ function toogleTrashBin() {
 
   if (trashBin.style.display === 'none') {
     trashBin.style.display = 'flex';
+    navigateToPage('trash');
   } else {
     trashBin.style.display = 'none';
   }

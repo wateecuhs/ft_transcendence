@@ -56,4 +56,3 @@ function handleKeyUp(event) {
 	if (event.key === 'ArrowUp') commandBuffer.move_right_up = false;
 	if (event.key === 'ArrowDown') commandBuffer.move_right_down = false;
 }
-

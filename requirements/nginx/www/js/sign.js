@@ -130,16 +130,33 @@ function SignIn() {
 					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
 					document.getElementById('start-button').textContent = window.dataMap.get('start-button');
 					document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
+					document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
 				});
+
+				let langageUrl = null;
+				if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
+				else if (userInfo.language === 'en') langageUrl = '../img/uk_flag.png';
+				else if (userInfo.language === 'pt') langageUrl = '../img/portugal_flag.png';
+				else if (userInfo.language === 'ru') langageUrl = '../img/russia_flag.png';
+
+				const flagIcon = document.querySelector('.flag-icon');
+				if (flagIcon) {
+					flagIcon.style.background = `url(${langageUrl})`;
+					flagIcon.style.backgroundSize = "contain";
+					flagIcon.style.backgroundRepeat = "no-repeat";
+					flagIcon.style.backgroundPosition = "center";
+					flagIcon.style.width = "32px";
+					flagIcon.style.height = "32px";
+				}
 
 				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(textUsername);
-				
+
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
 				loadMessageHistory();
-
+				navigateToPage('desktop');
 				slideUp();
 			}
 
@@ -441,7 +458,24 @@ async function SignIn42() {
 										const noTournament = document.getElementById('no-tournament');
 										if (noTournament != null)
 											noTournament.textContent = window.dataMap.get('no-tournament');
+										document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
 									});
+
+									let langageUrl = null;
+									if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
+									else if (userInfo.language === 'en') langageUrl = '../img/uk_flag.png';
+									else if (userInfo.language === 'pt') langageUrl = '../img/portugal_flag.png';
+									else if (userInfo.language === 'ru') langageUrl = '../img/russia_flag.png';
+
+									const flagIcon = document.querySelector('.flag-icon');
+									if (flagIcon) {
+										flagIcon.style.background = `url(${langageUrl})`;
+										flagIcon.style.backgroundSize = "contain";
+										flagIcon.style.backgroundRepeat = "no-repeat";
+										flagIcon.style.backgroundPosition = "center";
+										flagIcon.style.width = "32px";
+										flagIcon.style.height = "32px";
+									}
 
 									updateUserInfo();
 									updateUserStat();
@@ -450,6 +484,7 @@ async function SignIn42() {
 									window.mmws = initMMWebSocket();
 									window.ws = initWebSocket();
 									loadMessageHistory();
+									navigateToPage('desktop');
 
 									slideUp();
 							} else {
@@ -557,7 +592,7 @@ async function can_sign_in() {
 					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
 					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
 					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
-					
+
 					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
 
 					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
@@ -566,10 +601,28 @@ async function can_sign_in() {
 					const noTournament = document.getElementById('no-tournament');
 					if (noTournament != null)
 						noTournament.textContent = window.dataMap.get('no-tournament');
+					document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
 				});
-				
+
+				let langageUrl = null;
+				if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
+				else if (userInfo.language === 'en') langageUrl = '../img/uk_flag.png';
+				else if (userInfo.language === 'pt') langageUrl = '../img/portugal_flag.png';
+				else if (userInfo.language === 'ru') langageUrl = '../img/russia_flag.png';
+
+				const flagIcon = document.querySelector('.flag-icon');
+				if (flagIcon) {
+					flagIcon.style.background = `url(${langageUrl})`;
+					flagIcon.style.backgroundSize = "contain";
+					flagIcon.style.backgroundRepeat = "no-repeat";
+					flagIcon.style.backgroundPosition = "center";
+					flagIcon.style.width = "32px";
+					flagIcon.style.height = "32px";
+				}
+
 				const loginPage = document.getElementById('login-id-page');
 				loginPage.style.display = 'none';
+				navigateToPage('desktop');
 			}
 		}
 	} catch (error) {
