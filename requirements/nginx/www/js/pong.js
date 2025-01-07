@@ -94,10 +94,6 @@ class PongWindow {
 		window.addEventListener('resize', this.resizeCanvas);
 		this.resizeCanvas();
 
-		// this.socket.onopen = () => {
-		// 	console.log('WebSocket connection established');
-		// };
-
 		this.socket.onerror = (error) => {
 			console.error('WebSocket error:', error);
 		};
@@ -112,8 +108,6 @@ class PongWindow {
 			if (gameState.score[0] >= 10 || gameState.score[1] >= 10) {
 				this.gameOver = true;
 				alert('Game Over! Player ' + gameState.winner + ' wins!');
-				document.removeEventListener('keydown', handleKeyDown);
-				document.removeEventListener('keyup', handleKeyUp);
 				this.close();
 				return;
 			}
