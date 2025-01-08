@@ -55,9 +55,14 @@ function initWebSocket() {
     }
   }
 
-  window.ws.onclose = function() {
+  window.ws.onclose = function(event) {
     for (const key in conversations) {
       conversations[key] = "";
+    }
+
+    const isRefreshed = getRefreshToken();
+    if (isRefreshed) {
+      return initWebSocket();
     }
   };
   return window.ws;

@@ -146,7 +146,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         else:
             logger.info(
                 f"Handling block command: {type(target)} and {type(self.user)}")
-            logger.info(f"Handling block command: {target} and {self.user}", flush=True)
+            logger.info(f"Handling block command: {target} and {self.user}")
 
         if splitted_message[0] == self.BLOCK_CHAT_CMD:
             await database_sync_to_async(block_user)(self.user, target)

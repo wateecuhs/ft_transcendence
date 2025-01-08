@@ -133,8 +133,8 @@ class	ChangeRoomSerializer(serializers.Serializer):
 
 
 class	AddMatchSerializer(serializers.ModelSerializer):
-	user1_id = serializers.UUIDField(required=True)
-	user2_id = serializers.UUIDField(required=True)
+	user1_name = serializers.CharField(required=True)
+	user2_name = serializers.CharField(required=True)
 	user1_score = serializers.IntegerField(required=True)
 	user2_score = serializers.IntegerField(required=True)
 	user1_status = serializers.ChoiceField(required=True, choices=Status.choices)

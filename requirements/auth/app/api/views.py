@@ -341,7 +341,7 @@ class MatchHistory(APIView):
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
 			user_matches = user.match_history.all()
-			matches_data = list(user_matches.values("user_id", "opponent_id", "status", "user_score", "opponent_score", "date"))
+			matches_data = list(user_matches.values("user_name", "opponent_name", "status", "user_score", "opponent_score", "date"))
 			response = {
 				"message": "Success",
 				"matches": matches_data
@@ -370,14 +370,14 @@ class MatchHistory(APIView):
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
 				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
-			user1_id = payload.get("id")
-			if not (user1_id):
+			user1_name = payload.get("username")
+			if not (user1_name):
 				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
-			user1 = CustomUser.get_user_by_id(user1_id)
+			user1 = CustomUser.get_user_by_name(user1_name)
 			if not (user1):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
-			user2_id = serializer.validated_data['user2_id']
-			user2 = CustomUser.get_user_by_id(user2_id)
+			user2_name = serializer.validated_data['user2_name']
+			user2 = CustomUser.get_user_by_name(user2_name)
 			if user2 is None :
 				return JsonResponse({"message": "failed : User not found"})
 			Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
@@ -410,8 +410,8 @@ class MatchHistoryId(APIView):
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		user1 = CustomUser.get_user_by_id(id)
-		user2_id = serializer.validated_data['user2_id']
-		user2 = CustomUser.get_user_by_id(user2_id)
+		user2_name = serializer.validated_data['user2_name']
+		user2 = CustomUser.get_user_by_name(user2_name)
 		if user1 is None or user2 is None:
 			return JsonResponse({"message": "failed : User not found"})
 		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
@@ -439,8 +439,8 @@ class MatchHistoryUsername(APIView):
 			errors = serializer.errors
 			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
 		user1 = CustomUser.get_user_by_username(username)
-		user2_id = serializer.validated_data['user2_id']
-		user2 = CustomUser.get_user_by_id(user2_id)
+		user2_name = serializer.validated_data['user2_name']
+		user2 = CustomUser.get_user_by_a(user2_name)
 		if user1 is None or user2 is None:
 			return JsonResponse({"message": "failed : User not found"})
 		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])

@@ -58,6 +58,13 @@ function initMMWebSocket() {
       }
     }
   }
+
+  window.mmws.onclose = function(event) {
+    const isRefreshed = getRefreshToken();
+    if (isRefreshed) {
+      return initMMWebSocket();
+    }
+  }
   return window.mmws;
 }
 
