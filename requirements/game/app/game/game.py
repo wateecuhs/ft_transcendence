@@ -92,11 +92,8 @@ class Room:
     async def update_game_state(self):
         async with self.lock:
             self.move_paddles()
-            print(f"Ball position1: {self.ball.x}, {self.ball.y}", flush=True)
             self.ball.move()
-            print(f"Ball position2: {self.ball.x}, {self.ball.y}", flush=True)
             self.handle_collision()
-            print(f"Ball position3: {self.ball.x}, {self.ball.y}", flush=True)
             self.update_score()
 
             if self.score[0] == 10 or self.score[1] == 10:

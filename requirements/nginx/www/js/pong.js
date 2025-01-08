@@ -37,7 +37,7 @@ class PongWindow {
 		this.handleKeyUp = this.handleKeyUp.bind(this);
 		this.resizeCanvas = this.resizeCanvas.bind(this);
 		this.run = this.run.bind(this);
-		this.stop = this.close.bind(this);
+		this.close = this.close.bind(this);
 		this.drawGame = this.drawGame.bind(this);
 		this.drawBackground = this.drawBackground.bind(this);
 		this.drawPaddles = this.drawPaddles.bind(this);
@@ -64,15 +64,16 @@ class PongWindow {
 	close() {
 		if (this.socket.readyState === WebSocket.OPEN) {
 			this.socket.send(JSON.stringify({ type: 'disconnect' }));
+			this.socket.close();
 		}
 		document.removeEventListener('keydown', this.handleKeyDown);
 		document.removeEventListener('keyup', this.handleKeyUp);
 		window.removeEventListener('resize', this.resizeCanvas);
-		this.socket.close();
 	}
 
 	run() {
 		this.open();
+
 		window.addEventListener('popstate', (event) => {
 			const currentPage = window.location.hash;
 		
@@ -94,6 +95,10 @@ class PongWindow {
 		window.addEventListener('resize', this.resizeCanvas);
 		this.resizeCanvas();
 
+		this.socket.onopen = () => {
+            console.log('WebSocket connection established');
+        };
+
 		this.socket.onerror = (error) => {
 			console.error('WebSocket error:', error);
 		};
@@ -107,7 +112,6 @@ class PongWindow {
 			}
 			if (gameState.score[0] >= 10 || gameState.score[1] >= 10) {
 				this.gameOver = true;
-				// alert('Game Over! Player ' + gameState.winner + ' wins!');
 				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
 				this.close();
 				return;
