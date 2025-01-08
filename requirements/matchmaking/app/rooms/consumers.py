@@ -35,7 +35,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.accept()
         except Exception as e:
             logger.error(f"Connection setup failed: {e}")
-            await self.close()
+            await self.close(code=3000)
 
     async def disconnect(self, close_code):
         try:
