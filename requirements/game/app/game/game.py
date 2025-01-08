@@ -96,7 +96,7 @@ class Room:
             self.handle_collision()
             self.update_score()
 
-            if self.score[0] == 10 or self.score[1] == 10:
+            if self.score[0] == 3 or self.score[1] == 3:
                 return self.game_over()
 
             game_state = {
@@ -151,10 +151,17 @@ class Room:
 
     def game_over(self):
         redis_client = redis.Redis(host='match-redis', port=6379, db=0)
-        if self.score[0] == 10:
-            self.winner = "Player 1"
+        if self.score[0] == 3:
+            if len(self.players) == 2:
+                self.winner = self.players[0].user["username"]
+            else:
+                self.winner = "Player 1"
         else:
-            self.winner = "Player 2"
+            if len(self.players) == 2:
+                self.winner = self.players[1].user["username"]
+            else:
+                self.winner = "Player 2"
+
         game_state = {
             "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
