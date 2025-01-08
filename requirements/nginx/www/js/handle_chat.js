@@ -39,16 +39,29 @@ async function handle_chat_public(private_message, mp_user, message) {
 }
 
 function handle_status_update(friendToUpdate) {
+
   const clientTab = document.querySelector('#msnWindow .client.tab .ul-client-tab');
-  const friends = clientTab.querySelectorAll('li');
-
-
-  for (const friend of friends) {
-    const name = friend.querySelector('.friend-name');
-    if (name.textContent === friendToUpdate.author) {
-      const statusDot = friend.querySelector('.status-dot');
-      statusDot.style.backgroundColor = friendToUpdate.status === "ON" ? 'green' : 'red';
-      return ;
-    }
-  }
+  console.log(clientTab);
+  
+    setTimeout(() => {
+      const friends = clientTab.querySelectorAll('li');
+      console.log(friends);
+      
+      if (!friends.length) {
+        console.error('Error: No friends found');
+        return ;
+      }
+      
+      for (const friend of friends) {
+        const name = friend.querySelector('.friend-name');
+        console.log(name.textContent);
+        console.log(friendToUpdate.author);
+        
+        if (name.textContent === friendToUpdate.author) {
+          const statusDot = friend.querySelector('.status-dot');
+          statusDot.style.backgroundColor = friendToUpdate.status === "ON" ? 'green' : 'red';
+          return ;
+        }
+      }
+    }, 500);
 }

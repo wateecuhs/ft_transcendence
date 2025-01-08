@@ -1,9 +1,5 @@
 import asyncio
 import random
-import neat
-import os
-import pickle
-import time
 import redis
 import json
 
@@ -36,14 +32,10 @@ class Ball:
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.serving = True
-        self.prev_time = time.time()
 
     def move(self):
-        delta_time = (time.time() - self.prev_time) * FPS
-        self.prev_time = time.time()
-
-        self.x += self.dx * delta_time
-        self.y += self.dy * delta_time
+        self.x += self.dx
+        self.y += self.dy
 
     def reset(self):
         self.x = self.base_x

@@ -46,7 +46,9 @@ function initWebSocket() {
       updateUserFriend();
     }
     else if (message.type === "status.update") {
+      console.log(message.data);
       handle_status_update(message.data);
+      console.log('status update');
     }
     else {
       console.log(message.type);
@@ -124,7 +126,7 @@ async function updateClientsTab(friends) {
 
     const statusDot = document.createElement('span');
     statusDot.classList.add("status-dot");
-    statusDot.style.backgroundColor = 'green';
+    statusDot.style.backgroundColor = 'red';
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = friend;
@@ -176,8 +178,6 @@ function setupSendMessage() {
           }
         }));
       }
-
-
       chatInput.value = '';
     }
   });
