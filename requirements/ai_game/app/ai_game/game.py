@@ -75,7 +75,7 @@ class Bot:
         # elif difficulty == "medium":
         #     genome_path = os.path.join(local_dir, 'bots', 'normal-gen50.pkl')
         if difficulty == "hard":
-            genome_path = os.path.join(local_dir, 'bots', 'new.pkl')
+            genome_path = os.path.join(local_dir, 'bots', 'hard-gen50_2.pkl')
 
         with open(genome_path, 'rb') as f:
             genome = pickle.load(f)
