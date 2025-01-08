@@ -11,7 +11,24 @@ from channels.sessions import SessionMiddlewareStack
 from core.middleware import TokenAuthMiddleware
 from rooms.consumers import TournamentConsumer
 from django.urls import path
+from threading import Thread
 import logging
+import redis
+import json
+
+redis_client = redis.Redis(host='match-redis', port=6379, db=0)
+
+def listen_to_game_results():
+    pubsub = redis_client.pubsub()
+    pubsub.subscribe('game_results')
+    
+    for message in pubsub.listen():
+        if message['type'] == 'message':
+            game_result = json.loads(message['data'])
+            logger.info(f"Received game result: {game_result}")
+
+Thread(target=listen_to_game_results, daemon=True).start()
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

@@ -1,5 +1,7 @@
 import asyncio
 import random
+import redis
+import json
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -90,11 +92,8 @@ class Room:
     async def update_game_state(self):
         async with self.lock:
             self.move_paddles()
-            print(f"Ball position1: {self.ball.x}, {self.ball.y}", flush=True)
             self.ball.move()
-            print(f"Ball position2: {self.ball.x}, {self.ball.y}", flush=True)
             self.handle_collision()
-            print(f"Ball position3: {self.ball.x}, {self.ball.y}", flush=True)
             self.update_score()
 
             if self.score[0] == 10 or self.score[1] == 10:
@@ -151,11 +150,11 @@ class Room:
             self.ball.MAX_VELOCITY *= 1.025
 
     def game_over(self):
+        redis_client = redis.Redis(host='match-redis', port=6379, db=0)
         if self.score[0] == 10:
             self.winner = "Player 1"
         else:
             self.winner = "Player 2"
-
         game_state = {
             "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
@@ -163,6 +162,7 @@ class Room:
             "score": self.score,
             "winner": self.winner
         }
+        redis_client.publish('game_results', json.dumps({"room_name": self.name, "winner": self.winner, "score": self.score}))
 
         return game_state
     

@@ -10,8 +10,10 @@ function slideUp() {
 function slideBack() {
 	const loginPage = document.getElementById('login-id-page');
 
-	loginPage.style.display = 'flex';
-	loginPage.classList.add('slide-back');
+	if (loginPage.style.display === 'none') {
+		loginPage.style.display = 'flex';
+		loginPage.classList.add('slide-back');
+	}
 }
 
 function displayRegister() {

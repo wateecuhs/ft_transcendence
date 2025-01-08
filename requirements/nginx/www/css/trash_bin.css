@@ -1,0 +1,30 @@
+#trash-bin {
+  width: 240px;
+  height: 240px;
+	border: 2px solid #000;
+	box-shadow: 3px 3px 6px #aaa;
+	background-color: #f9f6f6;
+	margin: auto;
+	display: flex;
+	flex-direction: column;
+	z-index: 2000;
+	box-sizing: border-box;
+}
+
+#trash-bin .header-title {
+	margin: auto;
+}
+
+#trash-bin .window-content {
+	padding: 20px;
+	background-color: #dcdcdc;
+	border: 2px solid #808080;
+	box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;
+	display: flex;
+  background-image: url('../img/rickroll-roll.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+	flex-direction: column;
+	flex-grow: 1;
+}

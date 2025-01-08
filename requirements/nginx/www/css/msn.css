@@ -49,7 +49,6 @@
 }
 
 #msnWindow .chat-tab {
-  width: 180px;
   background-color: #e0e0e0;
   border-right: 2px solid #808080;
   display: flex;
@@ -114,7 +113,7 @@
   height: 10px;
   border-radius: 50%;
   margin-left: 15px;
-  background-color: grey;
+  background-color: green;
   vertical-align: middle;
 }
 
@@ -164,18 +163,20 @@
 }
 
 #msnWindow .msn-page {
+  min-width: 0;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 #msnWindow .chat-area {
+  min-width: 0;
   flex-grow: 1;
   background-color: #dcdcdc;
   border: 1px solid #808080;
+  max-width: 100%;
   margin: 8px;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: scroll;
   box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
   display: flex;
   flex-direction: column;
@@ -190,6 +191,8 @@
   border: 1px solid #808080;
   padding: 8px;
   margin-bottom: 8px;
+  word-wrap: break-word;
+  overflow-x: scroll;
   font-size: 14px;
 }
 
@@ -254,21 +257,4 @@
 
 #msnWindow .info-friend:hover {
   cursor: pointer;
-}
-
-#msnWindow .chat-tab .client.tab .ul-client-action {
-  flex-direction: column;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
-
-#msnWindow .chat-tab .client.tab .ul-client-action li {
-  background-color: #dcdcdc;
-  border: 1px solid #808080;
-  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
-}
-
-#msnWindow .chat-tab .client.tab .ul-client-action li:hover {
-  background-color: #b8b8b8;
 }

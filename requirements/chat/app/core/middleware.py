@@ -4,13 +4,13 @@ import chat.enums as enu
 from chat.models import User
 import json
 import requests
+import os
 from channels.db import database_sync_to_async
 
 class TokenAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         try:
             headers = dict(scope["headers"])
-            print(headers, flush=True)
             cookies = {}
             for cookie in headers[b"cookie"].decode().split("; "):
                 cookies[cookie.split("=")[0]] = cookie.split("=")[1]

@@ -29,11 +29,11 @@ class FriendsView(APIView):
             if r.status_code != 200:
                 return Response("Invalid token", status=403)
             username = r.json()["username"]
-            user = cmod.User.objects.get(username=username)
-            if not user:
-                return Response("User not found", status=404)
+            user, created = cmod.User.objects.get_or_create(username=username)
             print([str(username) for username in user.get_friends()], flush=True)
             return Response([str(username) for username in user.get_friends()])
+        except cmod.User.DoesNotExist:
+            return Response("User not found", status=404)
         except ValueError:
             return Response("Invalid token", status=403)
         except IndexError:

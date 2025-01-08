@@ -42,6 +42,7 @@ async function getUserInfo(accessToken) {
           is_42_account: data.is_42_account,
           is_2FA: data.is_2FA,
           room_id: data.room_id,
+          language: data.language,
         };
       } else {
         raiseAlert('Erreur lors de la récupération des informations utilisateur');
@@ -109,19 +110,24 @@ async function getUserStatistic(accessToken) {
   return null;
 }
 
-async function updateUserInfo(accesUsername) {
-	const userInfo = localStorage.getItem(accesUsername);
+async function updateUserInfo() {
+	const tmp = await getUserInfo(getTokenCookie());
+  const userInfo = JSON.stringify(tmp);
 
 	if (userInfo) {
 		const user = JSON.parse(userInfo);
+    const userWin = document.querySelector("#accountWindow");
 
-    document.querySelector("#account-page-0 .user-img span").textContent = user.alias || 'default pseudo';
-    document.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `Name: ${user.username || 'default'}`;
-    document.querySelector("#account-page-0 ul li:nth-child(2)").textContent = `Email address: ${user.email || 'default@gmail.com'}`;
-    document.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `42 Member: ${user.is_42_account || 'false'}`;
-    document.querySelector("#account-page-0 ul li:nth-child(4)").textContent = `Alias: ${user.alias || 'defuat_alias'}`;
+    if (user == null) {
+      return
+    }
+    userWin.querySelector("#account-page-0 .user-img span").textContent = user.alias || 'default pseudo';
+    userWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `${window.dataMap.get('account-name')}: ${user.username || 'default'}`;
+    userWin.querySelector("#account-page-0 ul li:nth-child(2)").textContent = `${window.dataMap.get('account-email')}: ${user.email || 'default@gmail.com'}`;
+    userWin.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `${window.dataMap.get('account-42')}: ${user.is_42_account || 'false'}`;
+    userWin.querySelector("#account-page-0 ul li:nth-child(4)").textContent = `${window.dataMap.get('account-alias')}: ${user.alias || 'defuat_alias'}`;
 
-		const avatarImg = document.querySelector("#account-page-0 .user-img img");
+		const avatarImg = userWin.querySelector("#account-page-0 .user-img img");
 		avatarImg.src = "";
 		avatarImg.src = user.avatar_path || 'img/png/game_spider-0.png';
 	} else {
@@ -172,13 +178,14 @@ async function updateUserStat() {
 
     if (userStatistic) {
       const stat = userStatistic;
+      const user = document.querySelector("#accountWindow");
 
-      document.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `Number of matches: ${stat.matches_number}`;
-      document.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `Matches won: ${stat.matches_win}`;
-      document.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `Matches lost: ${stat.matches_lose}`;
-      document.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `Winning Rate: ${stat.winrate}`;
-      document.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `Goal scored: ${stat.goal_scored}`;
-      document.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `Goal conceded: ${stat.goal_conceded}`;
+      user.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `${window.dataMap.get('number-match')}: ${stat.matches_number}`;
+      user.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `${window.dataMap.get('number-win')}: ${stat.matches_win}`;
+      user.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `${window.dataMap.get('number-lose')}: ${stat.matches_lose}`;
+      user.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `${window.dataMap.get('winrate')}: ${stat.winrate}`;
+      user.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `${window.dataMap.get('goal-scored')}: ${stat.goal_scored}`;
+      user.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `${window.dataMap.get('goal-conceded')}: ${stat.goal_conceded}`;
     }
   } catch(error) {
     console.error(error);

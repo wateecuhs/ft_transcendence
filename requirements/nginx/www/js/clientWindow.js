@@ -130,17 +130,17 @@ async function updateClientInfo(username) {
   const stat = await getClientStatistic(username);
 
   clientWindow.querySelector("#account-page-0 .user-img span").textContent = user.alias || 'default pseudo';
-  clientWindow.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `Name: ${user.username || 'default'}`;
-	clientWindow.querySelector("#account-page-0 ul li:nth-child(2)").textContent = `42 Member: ${user.is_42_account || 'false'}`;
-  clientWindow.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `Alias: ${user.alias || 'defuat_alias'}`;
+  clientWindow.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `${window.dataMap.get('account-name')}: ${user.username || 'default'}`;
+	clientWindow.querySelector("#account-page-0 ul li:nth-child(2)").textContent = `${window.dataMap.get('account-42')}: ${user.is_42_account || 'false'}`;
+  clientWindow.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `${window.dataMap.get('account-alias')}: ${user.alias || 'defuat_alias'}`;
 
 	const avatarImg = clientWindow.querySelector("#account-page-0 .user-img img");
 	avatarImg.src = user.avatar_path || 'img/png/game_spider-0.png';
 
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `Number of matches: ${stat.matches_number}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `Matches won: ${stat.matches_win}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `Matches lost: ${stat.matches_lose}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `Winning Rate: ${stat.winrate}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `Goal scored: ${stat.goal_scored}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `Goal conceded: ${stat.goal_conceded}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `${window.dataMap.get('number-match')}: ${stat.matches_number}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `${window.dataMap.get('number-win')}: ${stat.matches_win}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `${window.dataMap.get('number-lose')}: ${stat.matches_lose}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `${window.dataMap.get('winrate')}: ${stat.winrate}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `${window.dataMap.get('goal-scored')}: ${stat.goal_scored}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `${window.dataMap.get('goal-conceded')}: ${stat.goal_conceded}`;
 }
