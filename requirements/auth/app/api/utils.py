@@ -10,10 +10,12 @@ CreateAccessToken take an username. Create, stock in DB and return an encoded_ac
 '''
 
 def CreateAccessToken(request, username):
+	print(f"create access token {username}", flush=True)
 	user = CustomUser.get_user_by_name(username)
 	if not user:
 		return None
-	exp_access = datetime.now() + timedelta(hours=5)
+	print("coucou", flush=True)
+	exp_access = datetime.now() + timedelta(seconds=60)
 	iat = datetime.now()
 	payload = {
 		"username": username,
@@ -60,9 +62,10 @@ checkRefreshToken check if the refresh token in cookies is the same that the ref
 def checkRefreshToken(encoded_refresh_token, username):
     user = CustomUser.get_user_by_name(username)
     if not user:
-        return None
-    if user.refresh_token is not encoded_refresh_token:
+        return False
+    if user.refresh_token != encoded_refresh_token:
         raise jwt.InvalidTokenError
+    return True
 
 '''
 decodeAccessToken take an access_token. Check if access token is valid and not expire and return the payload with information.

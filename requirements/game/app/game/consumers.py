@@ -28,7 +28,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not hasattr(self.room, "game_loop"):
             self.room.game_loop = asyncio.create_task(self.update_game_state())
         await self.accept()
-        
+
         if len(self.room.players) == 2:
             self.room.reset()
 
@@ -38,7 +38,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         if len(self.room.players) == 0:
             self.room.game_loop.cancel()
-            del rooms[self.room_name]
+            if self.room_name in rooms:
+                del rooms[self.room_name]
 
     async def receive(self, text_data):
         command = json.loads(text_data)

@@ -136,7 +136,7 @@ function sendPlayersToRooms(tournament) {
       const matches = round.matches;
       let i = 1;
       matches.forEach(match => {
-        
+
         const newData = document.createElement('div');
           const dataMatch = {
             room_code: match.room_code,
@@ -149,7 +149,9 @@ function sendPlayersToRooms(tournament) {
       });
       matches.forEach(match => {
         if (tournament.author === match.player1 || tournament.author === match.player2) {
-          runRemoteGame(match.room_code);
+          // runRemoteGame(match.room_code);
+          let game = new PongWindow("remote", match.room_code);
+          game.run();
           return ;
         }
       });

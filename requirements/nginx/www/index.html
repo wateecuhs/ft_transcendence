@@ -58,6 +58,7 @@
     </div>
 
     <div class="login-42">
+      <div class="flag-icon-login" id="language-flag-login" alt="Language Flag" onclick="toogleLanguageChoicesLogin()"></div>
       <button class="button-login-42" id="button-login-42">Login 42</button>
     </div>
 
@@ -79,6 +80,23 @@
       <input type="text" id="2fa-input" class="input-login-page" placeholder="Code">
       <button class="button-login-page" id="2fa-button">Validate</button>
     </div>
+  </div>
+
+  <div class="language-choices-login">
+    <ul>
+      <li>
+        <div class="flag-icon-login" id="france-flag-login" alt="France Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="england-flag-login" alt="England Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="portugal-flag-login" alt="Portugal Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="russia-flag-login" alt="Russia Flag"></div>
+      </li>
+    </ul>
   </div>
 
   </div>
@@ -526,6 +544,7 @@
           <li><button id="local-button">Local multiplayer</button></li>
           <li><button id="create-room">Create room</button></li>
           <li><button id="join-room">Join room</button></li>
+          <li><button id="launch-matchmaking">Launch matchmaking</button></li>
         </ul>
       </div>
     </div>
@@ -602,6 +621,7 @@
       window.oldPage = "login";
       window.currentPage = "login";
       window.dict = 'en-dict.txt';
+      window.matchmaking = true;
 
       fetch(window.dict)
         .then(response => response.text())
@@ -680,6 +700,11 @@
           document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
           document.getElementById('start-button').textContent = window.dataMap.get('start-button');
           document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+          if (window.matchmaking) {
+            document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
+          } else {
+            document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
+          }
           updateTime();
           setInterval(updateTime, 1000);
         })

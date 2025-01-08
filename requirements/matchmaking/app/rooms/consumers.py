@@ -41,6 +41,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             if self.username:
                 logger.info(f"[{self.username}] Disconnecting. ({close_code})")
+                await self._handle_matchmaking_leave({"data": {"author": self.username}})
                 await self.leave_tournaments()
         except Exception as e:
             logger.error(f"Disconnection cleanup failed: {e}")
@@ -79,10 +80,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.error("Player name is required")
                 return
             self.list.append(player)
+            print(len(self.list), flush=True)
             if (len(self.list) >= 2):
                 room_code = "mm_" + os.urandom(4).hex()
+                print(room_code, flush=True)
                 await self.channel_layer.group_send(
-                    f"matchmaking.{self.list[0]}",
+                    f"user.{self.list[0]}",
                     {
                         "type": MessageType.Matchmaking.START,
                         "data": {
@@ -93,7 +96,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     }
                 )
                 await self.channel_layer.group_send(
-                    f"matchmaking.{self.list[1]}",
+                    f"user.{self.list[1]}",
                     {
                         "type": MessageType.Matchmaking.START,
                         "data": {
@@ -103,8 +106,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                         }
                     }
                 )
-                self.list.remove(self.list[0])
                 self.list.remove(self.list[1])
+                self.list.remove(self.list[0])
         except Exception as e:
             await self.error(f"Matchmaking join failed: {str(e)}")
 
@@ -115,6 +118,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if player == None:
                 await self.error("Player name is required")
                 return
+            print("Leaving", flush=True)
             self.list.remove(player)
         except Exception as e:
             await self.error(f"Matchmaking leave failed: {str(e)}")
@@ -378,6 +382,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     """
 
     async def matchmaking_start(self, event):
+        logger.info(f"[{self.username}] Matchmaking start: {event['data']}")
         await self._json_send(MessageType.Matchmaking.START, event["data"])
 
     async def tournament_create(self, event):
@@ -422,15 +427,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             logger.info(f"[{self.username}] Leaving tournament: {tournament.name}")
             await self._handle_tournament_leave({"data": {"name": tournament.name}})
 
-    async def matchmaking_start(self):
-        logger.info(f"[{self.username}] Starting matchmaking")
-        await self._json_send(MessageType.Matchmaking.START, {})
-
     async def error(self, error_message):
         logger.error(f"[{self.username}] Error: {error_message}")
         await self.send(json.dumps({"type": "error", "message": error_message}))
-
-        await self._json_send(json.dumps({"type": "error", "message": error_message}))
 
     async def _json_send(self, message_type: str, data: Dict[str, Any]):
         data["created_at"] = datetime.datetime.now().strftime("%H:%M")

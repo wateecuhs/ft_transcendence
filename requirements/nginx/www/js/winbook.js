@@ -22,7 +22,6 @@ function initMMWebSocket() {
     if (message.type === "tournament.join") {
       raiseAlert(`${window.dataMap.get('tournament-ready')} ${message.data.name}`);
       showTournamentDetails(message.data);
-
     }
     else if (message.type === "tournament.create") {
       raiseAlert(`${window.dataMap.get('tournament-created-1')} ${message.data.name} ${window.dataMap.get('tournament-created-2')}`);
@@ -44,6 +43,14 @@ function initMMWebSocket() {
     }
     else if (message.type === "tournament.delete") {
       showTournamentDetails(message.data);
+    }
+    else if (message.type === "matchmaking.start") {
+      showPopUp(window.dataMap.get('matchmaking-start'));
+      let game = new PongWindow("remote", message.data.room_code);
+      game.run();
+    }
+    else if (message.type === "matchmaking.leave") {
+      showPopUp(window.dataMap.get('matchmaking-leave'));
     }
     else {
       if (message.message === 'You already have an active tournament.') {

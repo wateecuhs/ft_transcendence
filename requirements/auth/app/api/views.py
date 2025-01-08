@@ -307,12 +307,14 @@ class refresh(APIView):
             username = payload.get("username")
             if not username:
                 return JsonResponse({'message' : 'failed : username not found in refresh token'}, status=404)
-            if checkRefreshToken(encoded_refresh_jwt, username) is None:
+            if checkRefreshToken(encoded_refresh_jwt, username) is False:
                 return JsonResponse({'message' : f'{username} not found'}, status=404)
             new_access_jwt = CreateAccessToken(request, username)
             if not new_access_jwt:
                 return JsonResponse({'message': f'{username} not found'}, status=404)
-            return JsonResponse({"message": "Success", "access_token": new_access_jwt})
+            response = JsonResponse({"message": "Success", "access_token": new_access_jwt})
+            response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/')
+            return response
         except jwt.ExpiredSignatureError:
             return JsonResponse({"message": "failed : Refresh token has expired"}, status=401)
         except jwt.InvalidTokenError:
@@ -579,7 +581,7 @@ class Activate2FA(APIView):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
 			serializer = Serializer2FA(data=request.data)
 			if not serializer.is_valid():
-				return JsonResponse({'message': 'failed : serializer is not valid'})
+				return JsonResponse({'message': 'failed : serializer is not valid'}, status=400)
 			otp_code = serializer.validated_data['otp_code']
 			totp = pyotp.TOTP(user.totp)
 
@@ -589,7 +591,7 @@ class Activate2FA(APIView):
 				return JsonResponse({'message': 'Success'})
 
 			else:
-				return JsonResponse({'message': 'failed : wrong 2FA code'})
+				return JsonResponse({'message': 'failed : wrong 2FA code'}, status=401)
 
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)

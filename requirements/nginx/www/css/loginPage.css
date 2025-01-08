@@ -39,7 +39,7 @@
   margin: 5px 0;
   padding: 5px;
   border: 1px solid #404040;
-  background-color: #ffffff; 
+  background-color: #ffffff;
   color: black;
   font-size: 1rem;
   width: 300px;
@@ -125,12 +125,14 @@
 
 /* Bouton login-42 en bas à droite */
 .login-42 {
+  display: flex;
   position: absolute;
   bottom: 20px;
   right: 20px;
 }
 
 .button-login-42 {
+  margin-left: 15px;
   padding: 5px 10px;
   background-color: #00aa00;
   color: black;
@@ -144,7 +146,102 @@
   background-color: #008800;
 }
 
-/* Animations pour Windows 98 */
+/* Langage choices */
+
+.flag-icon-login {
+  background-image: url('../img/uk_flag.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 32px;
+  height: 32px;
+  padding: auto;
+  margin: auto;
+}
+
+
+.language-choices-login {
+  position:fixed;
+  bottom: 70px;
+  right: 50px;
+  padding: 10px;
+  font-family: 'Tahoma', Arial, sans-serif;
+  z-index: 300;
+  background-color: rgba(192, 192, 192, 0.5);
+  box-sizing: border-box;
+  overflow: hidden;
+  display: none;
+}
+
+.language-choices-login ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#france-flag-login {
+  background-image: url('../img/france_flag.png');
+}
+
+#england-flag-login {
+  background-image: url('../img/uk_flag.png');
+}
+
+#portugal-flag-login {
+  background-image: url('../img/portugal_flag.png');
+}
+
+#russia-flag-login {
+  background-image: url('../img/russia_flag.png');
+}
+
+@keyframes slide-flag-up-login {
+  from  {
+    transform: translateY(140px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-flag-down-login {
+  from  {
+    transform: translateY(140px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+
+.language-choices-login li {
+  margin-bottom: 5px;
+  cursor: pointer;
+  animation: slide-flag-up 1s ease-in-out forwards;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transform: translateY(140px);
+}
+
+.language-choices-login li:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.language-choices-login li:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.language-choices-login li:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+.language-choices-login li:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+/* Langage choices */
+
+
 @keyframes slide-in {
   from {
     opacity: 0;
