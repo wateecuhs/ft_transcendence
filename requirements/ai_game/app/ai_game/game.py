@@ -75,7 +75,7 @@ class Bot:
         # elif difficulty == "medium":
         #     genome_path = os.path.join(local_dir, 'bots', 'normal-gen50.pkl')
         if difficulty == "hard":
-            genome_path = os.path.join(local_dir, 'bots', 'new.pkl')
+            genome_path = os.path.join(local_dir, 'bots', 'hard-gen50_2.pkl')
 
         with open(genome_path, 'rb') as f:
             genome = pickle.load(f)
@@ -227,6 +227,9 @@ class Room:
         if delta_time >= 1:
             self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x, self.ball.dx, self.ball.dy)
             self.prev_time = time.time()
+        else:
+            predictions = self.predict_ball_position(self.bot.ball_y, self.bot.ball_x, self.bot.ball_dx, self.bot.ball_dy)
+            self.bot.update(self.bot.paddle_y, predictions[0], predictions[1], predictions[2], predictions[3])
 
         output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x), self.bot.ball_dx, self.bot.ball_dy))
         decision = output.index(max(output))
@@ -237,6 +240,23 @@ class Room:
             self.keys_pressed["move_right_up"] = True
         elif decision == 2:
             self.keys_pressed["move_right_down"] = True
+
+    def predict_ball_position(self, ball_y, ball_x, ball_dx, ball_dy):
+        predicted_dx = ball_dx
+        predicted_dy = ball_dy
+
+        for _ in range(5):
+            predicted_x = ball_x + predicted_dx
+            predicted_y = ball_y + predicted_dy
+        
+            if predicted_x - BALL_RADIUS < 0:
+                predicted_dx = -ball_dx
+                predicted_x = ball_x + predicted_dx * 2
+            if predicted_y - BALL_RADIUS < 0 or predicted_y + BALL_RADIUS > WIN_HEIGHT:
+                predicted_dy = -ball_dy
+                predicted_y = ball_y + predicted_dy
+
+        return predicted_y, predicted_x, predicted_dx, predicted_dy
 
     # Used for training purposes
     def loop(self):
