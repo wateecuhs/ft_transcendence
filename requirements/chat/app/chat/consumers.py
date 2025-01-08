@@ -47,7 +47,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         if self.scope["user"] is None:
-            await self.close()
+            await self.close(code=3000)
             return
         self.user = str(self.scope["user"])
 
