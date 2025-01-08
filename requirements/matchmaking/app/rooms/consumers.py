@@ -17,8 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class TournamentConsumer(AsyncWebsocketConsumer):
-    players = []
-
+    list = []
     def __init__(self, *args, **kwargs):
         self.user_id = None
         self.username = None
@@ -57,7 +56,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 MessageType.Tournament.DELETE: self._handle_tournament_delete,
                 MessageType.Matchmaking.JOIN: self._handle_matchmaking_join,
                 MessageType.Matchmaking.LEAVE: self._handle_matchmaking_leave,
-                MessageType.Matchmaking.START: self._handle_matchmaking_start,
             }
 
             handler = handler_map.get(event["type"])
@@ -73,10 +71,58 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.error(f"Message processing error: {str(e)}")
 
+    async def _handle_matchmaking_join(self, event):
+        try:
+            data = event.get("data", {})
+            player = data["author"]
+            if player == None:
+                await self.error("Player name is required")
+                return
+            self.list.append(player)
+            if (len(self.list) >= 2):
+                room_code = "mm_" + os.urandom(4).hex()
+                await self.channel_layer.group_send(
+                    f"matchmaking.{self.list[0]}",
+                    {
+                        "type": MessageType.Matchmaking.START,
+                        "data": {
+                            "player_1": self.list[0],
+                            "player_2": self.list[1],
+                            "room_code": room_code
+                        }
+                    }
+                )
+                await self.channel_layer.group_send(
+                    f"matchmaking.{self.list[1]}",
+                    {
+                        "type": MessageType.Matchmaking.START,
+                        "data": {
+                            "player_1": self.list[0],
+                            "player_2": self.list[1],
+                            "room_code": room_code
+                        }
+                    }
+                )
+                self.list.remove(self.list[0])
+                self.list.remove(self.list[1])
+        except Exception as e:
+            await self.error(f"Matchmaking join failed: {str(e)}")
+
+    async def _handle_matchmaking_leave(self, event):
+        try:
+            data = event.get("data", {})
+            player = data["author"]
+            if player == None:
+                await self.error("Player name is required")
+                return
+            self.list.remove(player)
+        except Exception as e:
+            await self.error(f"Matchmaking leave failed: {str(e)}")
+
     async def _handle_tournament_create(self, event):
         try:
             existing_active = await sync_to_async(Tournament.objects.filter)(
-                Q(owner=self.user_id) & 
+                Q(owner=self.user_id) &
                 Q(status__in=[Tournament.Status.PENDING, Tournament.Status.PLAYING])
             )
             if await sync_to_async(existing_active.count)():
@@ -110,7 +156,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
             existing_tournament = await sync_to_async(
                 Tournament.objects.filter(
-                    Q(players__contains=self.username) & 
+                    Q(players__contains=self.username) &
                     Q(status__in=[Tournament.Status.PENDING, Tournament.Status.PLAYING])
                 ).first
             )()
@@ -139,7 +185,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 f"tournament.{tournament_name}",
                 {
-                    "type": MessageType.Tournament.JOIN, 
+                    "type": MessageType.Tournament.JOIN,
                     "data": {
                         "name": tournament_name,
                         "players": tournament.players
@@ -165,16 +211,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 return
 
             tournament.players.remove(self.username)
-            
+
             if not tournament.players:
                 tournament.status = Tournament.Status.CANCELLED
-            
+
             await sync_to_async(tournament.save)()
 
             await self.channel_layer.group_send(
                 f"tournament.{tournament_name}",
                 {
-                    "type": MessageType.Tournament.LEAVE, 
+                    "type": MessageType.Tournament.LEAVE,
                     "data": {
                         "name": tournament_name,
                         "players": tournament.players,
@@ -194,7 +240,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             logger.info(f"[{self.username}] Starting tournament")
             data = event.get("data", {})
             tournament_name = data.get("name")
-            
+
             if not tournament_name:
                 await self.error("Tournament name is required")
                 return
@@ -238,7 +284,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 f"tournament.{tournament_name}",
                 {
-                    "type": MessageType.Tournament.START, 
+                    "type": MessageType.Tournament.START,
                     "data": {
                         "name": tournament_name,
                         "players": tournament.players,
@@ -311,7 +357,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 f"tournament.{tournament_name}",
                 {
-                    "type": MessageType.Tournament.DELETE, 
+                    "type": MessageType.Tournament.DELETE,
                     "data": {
                         "name": tournament_name,
                         "reason": "Tournament deleted by owner"
@@ -320,7 +366,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             )
 
             await sync_to_async(tournament.delete)()
-            
+
             await self.channel_layer.group_discard(f"tournament.{tournament_name}", self.channel_name)
         except Tournament.DoesNotExist:
             await self.error("Tournament not found")
@@ -330,6 +376,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     """
     Default routing methods
     """
+
+    async def matchmaking_start(self, event):
+        await self._json_send(MessageType.Matchmaking.START, event["data"])
 
     async def tournament_create(self, event):
         logger.info(f"[{self.username}] Tournament create: {event['data']}")
@@ -347,11 +396,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         except Tournament.DoesNotExist:
             await self.error("Tournament not found")
         await self._json_send(MessageType.Tournament.JOIN, event["data"])
-    
+
     async def tournament_leave(self, event):
         logger.info(f"[{self.username}] Tournament leave: {event['data']}")
         await self._json_send(MessageType.Tournament.LEAVE, event["data"])
-    
+
     async def tournament_start(self, event):
         logger.info(f"[{self.username}] Tournament start: {event['data']}")
         event["data"]["author"] = self.username
@@ -367,7 +416,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         for tournament in user_owned_tournaments:
             logger.info(f"[{self.username}] Deleting tournament: {tournament.name}")
             await self._handle_tournament_delete({"data": {"name": tournament.name}})
-        
+
         user_tournaments = await sync_to_async(get_user_tournaments)(self.username)
         for tournament in user_tournaments:
             logger.info(f"[{self.username}] Leaving tournament: {tournament.name}")
@@ -379,8 +428,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def error(self, error_message):
         logger.error(f"[{self.username}] Error: {error_message}")
+        await self.send(json.dumps({"type": "error", "message": error_message}))
+
         await self._json_send(json.dumps({"type": "error", "message": error_message}))
-    
+
     async def _json_send(self, message_type: str, data: Dict[str, Any]):
         data["created_at"] = datetime.datetime.now().strftime("%H:%M")
         try:
