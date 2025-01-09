@@ -13,11 +13,19 @@ FPS = 60
 rooms = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
+    user = None
+
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         if self.room_name not in rooms:
             rooms[self.room_name] = Room(self.room_name)
         self.room = rooms[self.room_name]
+
+        self.user = self.scope.get("user")
+        if self.user:
+            print(f"User connected: {self.user['username']} (ID: {self.user['id']})", flush=True)
+        else:
+            print("Anonymous user connected", flush=True)
 
         if not await self.room.add_player(self):
             await self.close()
@@ -42,6 +50,11 @@ class GameConsumer(AsyncWebsocketConsumer):
                 del rooms[self.room_name]
 
     async def receive(self, text_data):
+        # data = json.loads(text_data)
+        # user = self.scope.get("user")
+        # if user:
+        #     data["user"] = {"id": user["id"], "username": user["username"]}
+
         command = json.loads(text_data)
         if command.get('type') == 'disconnect':
             print("Disconnected", flush=True)
