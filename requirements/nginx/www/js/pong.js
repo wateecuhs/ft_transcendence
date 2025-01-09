@@ -110,7 +110,7 @@ class PongWindow {
 			if (gameState.type === 'handler') {
 				return;
 			}
-			if (gameState.score[0] >= 3 || gameState.score[1] >= 3) {
+			if (gameState.score[0] >= 5 || gameState.score[1] >= 5) {
 				this.gameOver = true;
 				// alert('Game Over! Player ' + gameState.winner + ' wins!');
 				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');

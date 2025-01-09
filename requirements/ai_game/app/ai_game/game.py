@@ -10,6 +10,7 @@ WIN_HEIGHT = 600
 PADDLE_WIDTH = 20
 PADDLE_HEIGHT = 100
 BALL_RADIUS = 10
+MAX_VELOCITY = 6.0
 FPS = 60
 
 class Paddle:
@@ -25,7 +26,7 @@ class Paddle:
         self.y -= self.SPEED if up else -self.SPEED
 
 class Ball:
-    MAX_VELOCITY = 7.0
+    MAX_VELOCITY = MAX_VELOCITY
 
     def __init__(self, x, y, radius):
         self.x = self.base_x = x
@@ -75,7 +76,7 @@ class Bot:
         # elif difficulty == "medium":
         #     genome_path = os.path.join(local_dir, 'bots', 'normal-gen50.pkl')
         if difficulty == "hard":
-            genome_path = os.path.join(local_dir, 'bots', 'hard-gen50_2.pkl')
+            genome_path = os.path.join(local_dir, 'bots', 'new1.pkl')
 
         with open(genome_path, 'rb') as f:
             genome = pickle.load(f)
@@ -88,6 +89,28 @@ class Bot:
         self.ball_x = ball_x
         self.ball_dx = ball_dx
         self.ball_dy = ball_dy
+
+    def predict(self, paddle_y):
+        self.paddle_y = paddle_y
+
+        # for _ in range(10):
+        if self.ball_y - BALL_RADIUS < 0 or self.ball_y + BALL_RADIUS > WIN_HEIGHT:
+            self.ball_dy = -self.ball_dy
+
+        if self.ball_dx < 0:
+            if self.ball_x - BALL_RADIUS < PADDLE_WIDTH:
+                self.ball_dx = -self.ball_dx
+        else:
+            if (self.paddle_y - BALL_RADIUS <= self.ball_y <= self.paddle_y + PADDLE_HEIGHT and
+                self.ball_x + BALL_RADIUS >= self.paddle_x):
+                self.ball_dx = -self.ball_dx
+                y_mid = self.paddle_y + PADDLE_HEIGHT // 2
+                y_diff = self.ball_y - y_mid
+                bounce_mod = (PADDLE_HEIGHT / 2) / MAX_VELOCITY
+                self.ball_dy = y_diff / bounce_mod
+
+        self.ball_x += self.ball_dx
+        self.ball_y += self.ball_dy
 
 class GameInformation:
     def __init__(self, left_hits, right_hits, left_score, right_score):
@@ -228,8 +251,9 @@ class Room:
             self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x, self.ball.dx, self.ball.dy)
             self.prev_time = time.time()
         else:
-            predictions = self.predict_ball_position(self.bot.ball_y, self.bot.ball_x, self.bot.ball_dx, self.bot.ball_dy)
-            self.bot.update(self.bot.paddle_y, predictions[0], predictions[1], predictions[2], predictions[3])
+            self.bot.predict(self.paddle_right.y)
+            # predictions = self.predict_ball_position()
+            # self.bot.update(self.bot.paddle_y, predictions[0], predictions[1], predictions[2], predictions[3])
 
         output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x), self.bot.ball_dx, self.bot.ball_dy))
         decision = output.index(max(output))
@@ -240,23 +264,6 @@ class Room:
             self.keys_pressed["move_right_up"] = True
         elif decision == 2:
             self.keys_pressed["move_right_down"] = True
-
-    def predict_ball_position(self, ball_y, ball_x, ball_dx, ball_dy):
-        predicted_dx = ball_dx
-        predicted_dy = ball_dy
-
-        for _ in range(5):
-            predicted_x = ball_x + predicted_dx
-            predicted_y = ball_y + predicted_dy
-        
-            if predicted_x - BALL_RADIUS < 0:
-                predicted_dx = -ball_dx
-                predicted_x = ball_x + predicted_dx * 2
-            if predicted_y - BALL_RADIUS < 0 or predicted_y + BALL_RADIUS > WIN_HEIGHT:
-                predicted_dy = -ball_dy
-                predicted_y = ball_y + predicted_dy
-
-        return predicted_y, predicted_x, predicted_dx, predicted_dy
 
     # Used for training purposes
     def loop(self):
