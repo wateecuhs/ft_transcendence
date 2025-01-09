@@ -149,7 +149,6 @@ function sendPlayersToRooms(tournament) {
       });
       matches.forEach(match => {
         if (tournament.author === match.player1 || tournament.author === match.player2) {
-          // runRemoteGame(match.room_code);
           let game = new PongWindow("remote", match.room_code);
           game.run();
           return ;
