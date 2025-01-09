@@ -39,6 +39,7 @@ CHANNEL_LAYERS = {
 
 
 INSTALLED_APPS = [
+    "daphne",
 	'api.apps.GameConfig',
 	'django.contrib.admin',
 	'django.contrib.auth',
