@@ -346,8 +346,7 @@ class MatchHistory(APIView):
 				"message": "Success",
 				"matches": matches_data
 			}
-			matches_json = json.dumps(response, cls=DjangoJSONEncoder)
-			return JsonResponse(matches_json)
+			return JsonResponse(response)
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
 		except jwt.ExpiredSignatureError:
@@ -403,20 +402,6 @@ class MatchHistoryId(APIView):
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
 
-	def put(self, request, **kwargs):
-		id = kwargs.get('id')
-		serializer = AddMatchSerializer(data=request.data)
-		if not serializer.is_valid():
-			errors = serializer.errors
-			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user1 = CustomUser.get_user_by_id(id)
-		user2_name = serializer.validated_data['user2_name']
-		user2 = CustomUser.get_user_by_name(user2_name)
-		if user1 is None or user2 is None:
-			return JsonResponse({"message": "failed : User not found"})
-		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
-		return JsonResponse({"message": "Success"})
-
 class MatchHistoryUsername(APIView):
 	def get(self, request, **kwargs):
 		username = kwargs.get('username')
@@ -431,20 +416,6 @@ class MatchHistoryUsername(APIView):
 		}
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
-
-	def put(self, request, **kwargs):
-		username = kwargs.get('username')
-		serializer = AddMatchSerializer(data=request.data)
-		if not serializer.is_valid():
-			errors = serializer.errors
-			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user1 = CustomUser.get_user_by_username(username)
-		user2_name = serializer.validated_data['user2_name']
-		user2 = CustomUser.get_user_by_a(user2_name)
-		if user1 is None or user2 is None:
-			return JsonResponse({"message": "failed : User not found"})
-		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
-		return JsonResponse({"message": "Success"})
 
 class	UserStat(APIView):
 	def get(self, request):

@@ -31,7 +31,9 @@ accountWindow.querySelector('.left-arrow').addEventListener('click', function() 
   displayStylePage(currentPage);
 });
 
-function toogleAccountWindow() {
+async function toogleAccountWindow() {
+  console.log('toogleAccountWindow');
+  updateMatchHistory();
   const work_desk = accountWindow;
 
   work_desk.style.display = (work_desk.style.display == 'none') ? 'block' : 'none';
@@ -45,6 +47,12 @@ function toogleAccountWindow() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const button_2fa = document.getElementById('user2FA');
+  const button_account = document.getElementById('account');
+
+  if (button_account != null) {
+    button_account.addEventListener('click', toogleAccountWindow);
+  }
+
 	if (button_2fa != null) {
 		button_2fa.addEventListener('click', activate_2fa);
 	}
