@@ -13,7 +13,10 @@ FPS = 60
 rooms = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
-    user = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
 
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']

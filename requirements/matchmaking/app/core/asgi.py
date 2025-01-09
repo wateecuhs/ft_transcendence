@@ -26,6 +26,7 @@ def listen_to_game_results():
         if message['type'] == 'message':
             game_result = json.loads(message['data'])
             logger.info(f"Received game result: {game_result}")
+            
 
 Thread(target=listen_to_game_results, daemon=True).start()
 
