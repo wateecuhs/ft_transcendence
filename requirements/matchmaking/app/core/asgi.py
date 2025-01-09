@@ -29,6 +29,7 @@ def listen_to_game_results():
             game_result = json.loads(message['data'])
             if game_result["room_name"].startswith("room_t_") is False:
                 continue
+            logger.info(f"Game result: {game_result}")
             channel_layer = get_channel_layer()
             winner = game_result['player_1'] if game_result['score'][0] > game_result['score'][1] else game_result['player_2']
             async_to_sync(channel_layer.group_send)(

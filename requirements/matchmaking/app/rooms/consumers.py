@@ -274,13 +274,17 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                             "player1": tournament.players[seed[0]],
                             "player2": tournament.players[seed[1]],
                             "room_code": "t_" + os.urandom(4).hex(),
-                            "status": tournament.Status.PENDING
+                            "status": tournament.Status.PENDING,
+                            "score": [0, 0],
+                            "winner": None
                         },
                         {
                             "player1": tournament.players[seed[2]],
                             "player2": tournament.players[seed[3]],
                             "room_code": "t_" + os.urandom(4).hex(),
-                            "status": tournament.Status.PENDING
+                            "status": tournament.Status.PENDING,
+                            "score": [0, 0],
+                            "winner": None
                         }
                     ]
                 }
@@ -321,11 +325,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 return
 
             if tournament.round == Tournament.Round.FIRST:
-                for game in tournament.matches[0]["matches"]:
-                    if set([data["player_1"], data["player_2"]]) == set([game["player1"], game["player2"]]) and game["status"] == Tournament.Status.PENDING:
-                        game["status"] = tournament.Status.FINISHED
-                        game["winner"] = data["player_1"] if data["score"][0] > data["score"][1] else data["player_2"]
-                        game["score"] = data["score"]
+                for i in range(len(tournament.matches[0]["matches"])): 
+                    if set([data["player_1"], data["player_2"]]) == set([tournament.matches[0]["matches"][i]["player1"], tournament.matches[0]["matches"][i]["player2"]]):
+                        tournament.matches[0]["matches"][i]["status"] = tournament.Status.FINISHED
+                        tournament.matches[0]["matches"][i]["winner"] = data["player_1"] if data["score"][0] > data["score"][1] else data["player_2"]
+                        tournament.matches[0]["matches"][i]["score"] = data["score"]
                         break
 
                 if all(game["status"] == Tournament.Status.FINISHED for game in tournament.matches[0]["matches"]):
@@ -340,22 +344,26 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                                     "player1": tournament.matches[0]["matches"][seed[0]]["winner"],
                                     "player2": tournament.matches[0]["matches"][seed[1]]["winner"],
                                     "room_code": "t_" + os.urandom(4).hex(),
-                                    "status": tournament.Status.PENDING
+                                    "status": tournament.Status.PENDING,
+                                    "score": [0, 0],
+                                    "winner": None
                                 }
                             ]
                         }
                     )
             else:
-                for game in tournament.matches[1]["matches"]:
-                    if set([data["player_1"], data["player_2"]]) == set([game["player1"], game["player2"]]):
-                        game["status"] = tournament.Status.FINISHED
-                        game["winner"] = data["player_1"] if data["score"][0] > data["score"][1] else data["player_2"]
-                        game["score"] = data["score"]
+                for i in range(len(tournament.matches[1]["matches"])):
+                    if set([data["player_1"], data["player_2"]]) == set([tournament.matches[1]["matches"][i]["player1"], tournament.matches[1]["matches"][i]["player2"]]):
+                        tournament.matches[1]["matches"][i]["status"] = tournament.Status.FINISHED
+                        tournament.matches[1]["matches"][i]["winner"] = data["player_1"] if data["score"][0] > data["score"][1] else data["player_2"]
+                        tournament.matches[1]["matches"][i]["score"] = data["score"]
                         break
 
                 if all(game["status"] == Tournament.Status.FINISHED for game in tournament.matches[1]["matches"]):
                     tournament.status = Tournament.Status.FINISHED
             
+            await sync_to_async(tournament.save)()
+
             await self.channel_layer.group_send(
                 f"tournament.{tournament.name}",
                 {
@@ -366,7 +374,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     }
                 }
             )
-            await sync_to_async(tournament.save)()
 
         except Tournament.DoesNotExist:
             await self.error("Tournament not found")
@@ -444,11 +451,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self._json_send(MessageType.Tournament.START, event["data"])
 
     async def tournament_result(self, event):
-        # logger.info(f"[{self.username}] Tournament result: {event['data']}\n")
+        logger.info(f"[{self.username}] Tournament result: {event['data']}\n")
         await self._handle_tournament_update(event)
 
     async def tournament_update(self, event):
-        # logger.info(f"[{self.username}] Tournament update: {event['data']}\n")
+        logger.info(f"[{self.username}] Tournament update: {event['data']}\n")
+        event["data"]["author"] = self.username
         await self._json_send(MessageType.Tournament.UPDATE, event["data"])
 
     async def tournament_delete(self, event):

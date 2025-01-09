@@ -38,14 +38,28 @@ function initMMWebSocket() {
       };
       displayChatMessage(data);
       showPopUp(window.dataMap.get('start-tournament'));
+      console.log("Starting tournament");
       showTournamentDetails(message.data);
+      console.log("Post showTournamentDetails");
       sendPlayersToRooms(message.data);
+      console.log("Post sendPlayersToRooms2");
     }
     else if (message.type === "tournament.delete") {
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.update") {
-      console.log('tournament.update', message.data);
+      firstRoundResults(message.data);
+      if (message.data.rounds.length === 2 && message.data.rounds[1].matches[0].status !== "FINISHED") {
+        if (message.data.author === message.data.rounds[1].matches[0].player1 || message.data.author === message.data.rounds[1].matches[0].player2) {
+          showPopUp("Hurry up ! You are in the next round !");
+		      const pongWindow = document.getElementById('PongGame');
+          pongWindow.style.display = 'none';
+          setTimeout(() => {
+            let game = new PongWindow("remote", message.data.rounds[1].matches[0].room_code);
+            game.run();
+          }, 2000);
+        }
+      }
     }
     else if (message.type === "matchmaking.start") {
       showPopUp(window.dataMap.get('matchmaking-start'));
