@@ -5,16 +5,18 @@ from django.core.asgi import get_asgi_application
 django_asgi_app = get_asgi_application()
 
 
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
-from channels.sessions import SessionMiddlewareStack
-from core.middleware import TokenAuthMiddleware
-from rooms.consumers import TournamentConsumer
-from django.urls import path
-from threading import Thread
-import logging
-import redis
-import json
+from channels.routing import ProtocolTypeRouter, URLRouter  # noqa: E402
+from channels.sessions import SessionMiddlewareStack  # noqa: E402
+from core.middleware import TokenAuthMiddleware  # noqa: E402
+from rooms.consumers import TournamentConsumer  # noqa: E402
+from django.urls import path  # noqa: E402
+from threading import Thread  # noqa: E402
+import logging  # noqa: E402
+import redis  # noqa: E402
+import json  # noqa: E402
+from channels.layers import get_channel_layer  # noqa: E402
+from asgiref.sync import async_to_sync  # noqa: E402
+from rooms.enums import MessageType  # noqa: E402
 
 redis_client = redis.Redis(host='match-redis', port=6379, db=0)
 
@@ -25,8 +27,24 @@ def listen_to_game_results():
     for message in pubsub.listen():
         if message['type'] == 'message':
             game_result = json.loads(message['data'])
+            if game_result["room_name"].startswith("room_t_") is False:
+                continue
             logger.info(f"Received game result: {game_result}")
-            
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"user.{game_result['player_1']}",
+                {
+                    "type": MessageType.Tournament.RESULT,
+                    "data": game_result
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                f"user.{game_result['player_2']}",
+                {
+                    "type": MessageType.Tournament.RESULT,
+                    "data" : game_result
+                }
+            )
 
 Thread(target=listen_to_game_results, daemon=True).start()
 

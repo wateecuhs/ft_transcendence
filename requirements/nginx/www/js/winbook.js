@@ -44,6 +44,9 @@ function initMMWebSocket() {
     else if (message.type === "tournament.delete") {
       showTournamentDetails(message.data);
     }
+    else if (message.type === "tournament.update") {
+      console.log('tournament.update', message.data);
+    }
     else if (message.type === "matchmaking.start") {
       showPopUp(window.dataMap.get('matchmaking-start'));
       let game = new PongWindow("remote", message.data.room_code);
