@@ -52,6 +52,7 @@ function initWebSocket() {
     }
     else {
       console.log(message.type);
+      console.log(message.data);
     }
   }
 

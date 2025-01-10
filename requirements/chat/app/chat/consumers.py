@@ -9,6 +9,7 @@ import chat.models as cmod
 import datetime
 import logging
 import json
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     REMOVE_FRIEND_CMD = "/remove"
     ACCEPT_FRIEND_CMD = "/accept"
     DECLINE_FRIEND_CMD = "/decline"
+    MATCH_INVITE_CMD = "/invite"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -126,6 +128,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     | self.DECLINE_FRIEND_CMD
                 ):
                     await self._handle_friend_command(message)
+                case self.MATCH_INVITE_CMD:
+                    await self._handle_match_command(message)
                 case _:
                     await self.error(f"Invalid command. ({message.split(' ')[0]})")
         else:
@@ -152,6 +156,45 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await database_sync_to_async(block_user)(self.user, target)
         elif splitted_message[0] == self.UNBLOCK_CHAT_CMD:
             await database_sync_to_async(unblock_user)(self.user, target)
+
+    async def _handle_match_command(self, message: str):
+        try:
+            logger.info(f"[{self.user}] Handling match command. ({message})")
+            splitted_message = message.split(" ")
+            if len(splitted_message) != 2:
+                await self.error(f"Invalid match command format. ({message})")
+                return
+
+            if await sync_to_async(get_relationship_status)(self.user, splitted_message[1]) != cmod.Relationship.Status.ACCEPTED or splitted_message[1] == self.user:
+                await self.error(f"You can't invite {splitted_message[1]}.")
+                return
+
+            target = splitted_message[1]
+            await self.channel_layer.group_send(
+                f"user.{target}",
+                {
+                    "type": MessageType.Match.INVITE,
+                    "data": {
+                        "author": self.user,
+                        "target": target,
+                        "room_code": os.urandom(4).hex(),
+                    },
+                },
+            )
+            await self.channel_layer.group_send(
+                f"user.{self.user}",
+                {
+                    "type": MessageType.Match.INVITE,
+                    "data": {
+                        "author": self.user,
+                        "target": target,
+                        "room_code": os.urandom(4).hex(),
+                    },
+                },
+            )
+        except Exception as e:
+            await self.error(f"Invalid match command format. ({e})")
+            return
 
     async def _handle_friend_command(self, message: str):
         logger.info(f"[{self.user}] Handling friend command. ({message})")
@@ -266,8 +309,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 {"type": MessageType.Chat.PUBLIC, "data": message_data},
             )
             await sync_to_async(serializer.save)()
-        except ValidationError as e:
-            await self.error(f"Invalid message format. ({e})")
+        except ValidationError as ve:
+            await self.error(f"Invalid message format. ({ve.detail.get('name')[0].title()})")
 
     """
 		These methods are called by the channel layer when a message is received /
@@ -292,6 +335,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def relationship_remove(self, event):
         await self._json_send(MessageType.Relationship.REMOVE, event["data"])
+
+    async def match_invite(self, event):
+        await self._json_send(MessageType.Match.INVITE, event["data"])
 
     async def status_request(self, event):
         await self.channel_layer.group_send(

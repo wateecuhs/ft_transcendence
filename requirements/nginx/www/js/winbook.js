@@ -69,6 +69,9 @@ function initMMWebSocket() {
     else if (message.type === "matchmaking.leave") {
       //showPopUp(window.dataMap.get('matchmaking-leave'));
     }
+    else if (message.type === "error") {
+      raiseAlert(message.message);
+    }
     else {
       if (message.message === 'You already have an active tournament.') {
         raiseAlert(window.dataMap.get('already-tournament'));

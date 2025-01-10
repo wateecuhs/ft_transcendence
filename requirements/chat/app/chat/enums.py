@@ -20,3 +20,6 @@ class MessageType:
         REQUEST = "relationship.request"
         REMOVE = "relationship.remove"
 
+    class Match(TextChoices):
+        INVITE = "match.invite"
+        

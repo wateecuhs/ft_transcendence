@@ -1,5 +1,4 @@
 from rest_framework import serializers
-import requests
 from .models import Tournament
 
 class TournamentSerializer(serializers.ModelSerializer):
@@ -14,7 +13,7 @@ class TournamentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Name must not contain spaces")
         if len(value) < 3:
             raise serializers.ValidationError("Name must be at least 3 characters long")
-        if len(value) > 50:
+        if len(value) > 20:
             raise serializers.ValidationError("Name must be at most 50 characters long")
         return value
 
