@@ -99,11 +99,11 @@ class Bot:
 
         if self.ball_dx < 0:
             if self.ball_x - BALL_RADIUS < PADDLE_WIDTH:
-                self.ball_dx = -self.ball_dx
+                self.ball_dx = -self.ball_dx * 1.07
         else:
             if (self.paddle_y - BALL_RADIUS <= self.ball_y <= self.paddle_y + PADDLE_HEIGHT and
                 self.ball_x + BALL_RADIUS >= self.paddle_x):
-                self.ball_dx = -self.ball_dx
+                self.ball_dx = -self.ball_dx * 1.07
                 y_mid = self.paddle_y + PADDLE_HEIGHT // 2
                 y_diff = self.ball_y - y_mid
                 bounce_mod = (PADDLE_HEIGHT / 2) / MAX_VELOCITY
@@ -177,7 +177,7 @@ class Room:
                 "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
                 "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
-                "score": self.score
+                "score": self.score,
             }
         return game_state
 
@@ -221,26 +221,24 @@ class Room:
         if self.ball.x < 0:
             self.score[1] += 1
             self.ball.reset()
-            # self.ball.MAX_VELOCITY *= 1.025
         elif self.ball.x > WIN_WIDTH:
             self.score[0] += 1
             self.ball.reset()
-            # self.ball.MAX_VELOCITY *= 1.025
 
     def game_over(self):
-        if self.score[0] == 10:
+        if self.score[0] == 5:
             self.winner = "Player 1"
         else:
             self.winner = "Player 2"
 
         game_state = {
+            "type": "game_over",
             "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
             "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
             "score": self.score,
             "winner": self.winner
         }
-
         return game_state
 
     def move_paddle_ai(self):
@@ -254,8 +252,6 @@ class Room:
             self.prev_time = time.time()
         else:
             self.bot.predict(self.paddle_right.y)
-            # predictions = self.predict_ball_position()
-            # self.bot.update(self.bot.paddle_y, predictions[0], predictions[1], predictions[2], predictions[3])
 
         output = self.bot.net.activate((self.bot.paddle_y, self.bot.ball_y, abs(self.bot.paddle_x - self.bot.ball_x), self.bot.ball_dx, self.bot.ball_dy))
         decision = output.index(max(output))

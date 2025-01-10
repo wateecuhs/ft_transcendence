@@ -96,7 +96,7 @@ class Room:
             self.handle_collision()
             self.update_score()
 
-            if self.score[0] == 5 or self.score[1] == 5:
+            if self.score[0] == 3 or self.score[1] == 3:
                 return self.game_over()
 
             game_state = {
@@ -152,6 +152,7 @@ class Room:
             # self.ball.MAX_VELOCITY *= 1.025
 
     def game_over(self):
+        print("Game Over", flush=True)
         redis_client = redis.Redis(host='match-redis', port=6379, db=0)
         if self.score[0] == 3:
             if len(self.players) == 2:
@@ -165,12 +166,14 @@ class Room:
                 self.winner = "Player 2"
 
         game_state = {
+            "type": "game_over",
             "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
             "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
             "score": self.score,
             "winner": self.winner
         }
+        print("still here", flush=True)
         if self.name != "room_local":
             redis_client.publish('game_results', json.dumps({
                 "room_name": self.name,
@@ -180,7 +183,7 @@ class Room:
                 "player_2_win": True if self.score[1] == 3 else False,
                 "score": self.score
             }))
-
+        print("but not here", flush=True)
         return game_state
 
     def reset(self):
