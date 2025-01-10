@@ -1,0 +1,97 @@
+#tree-matchmaking {
+  width: 400px;
+  height: auto;
+  border: 2px solid #fff;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #7d7d7d, inset -2px -2px 0 #000;
+  background-color: #c3c7cb;
+  margin: auto;
+  flex-direction: column;
+  font-family: 'Tahoma', Geneva, Verdana, sans-serif;
+  z-index: 2001;
+}
+
+#tree-matchmaking .header-title {
+  margin: auto;
+  padding: 5px;
+  background-color: #000080;
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+
+#tree-matchmaking .window-content {
+  background-color: #c0c0c0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 250px;
+  font-family: 'Tahoma', Geneva, Verdana, sans-serif;
+  border: 2px solid #fff;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #7d7d7d;
+}
+
+#tree-matchmaking .round {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+#tree-matchmaking .match {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  background-color: green;
+}
+
+#tree-matchmaking .player {
+  padding: 5px 10px;
+  background-color: #e0e0e0;
+  border: 2px solid #fff;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #7d7d7d;
+  border-radius: 2px;
+  font-size: 12px;
+}
+
+#tree-matchmaking .match::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -25px;
+  width: 25px;
+  height: 2px;
+  background-color: #000;
+}
+
+#tree-matchmaking .match:nth-child(odd)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -25px;
+  width: 25px;
+  height: 2px;
+  background-color: #000;
+}
+
+#tree-matchmaking .round:last-child .match::before,
+#tree-matchmaking .round:last-child .match::after {
+  display: none;
+}
+
+
+#tree-matchmaking button {
+  padding: 5px 15px;
+  font-family: 'Tahoma', Geneva, Verdana, sans-serif;
+  font-size: 12px;
+  background-color: #c3c7cb;
+  border: 2px solid #fff;
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #7d7d7d;
+  color: #000;
+  cursor: pointer;
+}
+
+#tree-matchmaking button:active {
+  box-shadow: inset -1px -1px 0 #fff, inset 1px 1px 0 #7d7d7d;
+  border: 2px solid #7d7d7d;
+}

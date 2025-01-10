@@ -9,7 +9,7 @@ DOCKER_COMPOSE_DEV := docker compose -f $(DOCKER_COMPOSE_DEV_FILE)
 all: build
 
 up:
-	$(DOCKER_COMPOSE) up -d
+	$(DOCKER_COMPOSE) up -d --abort-on-container-exit
 
 build:
 	$(DOCKER_COMPOSE) up --build

@@ -1,9 +1,6 @@
 import asyncio
 import random
-import neat
-import os
-import pickle
-import time
+import redis
 import json
 
 WIN_WIDTH = 800
@@ -35,14 +32,10 @@ class Ball:
         self.dx = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.dy = random.choice([-1, 1]) * self.MAX_VELOCITY
         self.serving = True
-        self.prev_time = time.time()
 
     def move(self):
-        delta_time = (time.time() - self.prev_time) * FPS
-        self.prev_time = time.time()
-
-        self.x += self.dx * delta_time
-        self.y += self.dy * delta_time
+        self.x += self.dx
+        self.y += self.dy
 
     def reset(self):
         self.x = self.base_x
@@ -103,7 +96,7 @@ class Room:
             self.handle_collision()
             self.update_score()
 
-            if self.score[0] == 10 or self.score[1] == 10:
+            if self.score[0] == 3 or self.score[1] == 3:
                 return self.game_over()
 
             game_state = {
@@ -157,10 +150,17 @@ class Room:
             self.ball.MAX_VELOCITY *= 1.025
 
     def game_over(self):
-        if self.score[0] == 10:
-            self.winner = "Player 1"
+        redis_client = redis.Redis(host='match-redis', port=6379, db=0)
+        if self.score[0] == 3:
+            if len(self.players) == 2:
+                self.winner = self.players[0].user["username"]
+            else:
+                self.winner = "Player 1"
         else:
-            self.winner = "Player 2"
+            if len(self.players) == 2:
+                self.winner = self.players[1].user["username"]
+            else:
+                self.winner = "Player 2"
 
         game_state = {
             "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
@@ -169,6 +169,7 @@ class Room:
             "score": self.score,
             "winner": self.winner
         }
+        redis_client.publish('game_results', json.dumps({"room_name": self.name, "winner": self.winner, "score": self.score}))
 
         return game_state
     

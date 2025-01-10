@@ -45,7 +45,7 @@ function toogleAccountWindow() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const button_2fa = document.getElementById('user2FA');
-	if (button_2fa) {
+	if (button_2fa != null) {
 		button_2fa.addEventListener('click', activate_2fa);
 	}
 });

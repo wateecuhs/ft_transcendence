@@ -125,7 +125,7 @@ class EditAccountSerializer(serializers.ModelSerializer):
 					raise ValidationError(message="No digit in password")
 
 		elif old_password is not "" or new_password is not "" or confirmation_password is not "":
-			raise ValidationError("All change password field are not fill")
+			raise ValidationError("All change password fields are not filled")
 		return data
 
 class	ChangeRoomSerializer(serializers.Serializer):
@@ -146,3 +146,6 @@ class CodeSerializer(serializers.Serializer):
 
 class Serializer2FA(serializers.Serializer):
 	otp_code = serializers.CharField(required=True)
+
+class LanguageSerializer(serializers.Serializer):
+	language = serializers.CharField(required=True, max_length=3)

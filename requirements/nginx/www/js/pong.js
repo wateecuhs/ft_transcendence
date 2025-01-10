@@ -1,66 +1,5 @@
-// function togglePongWindow(roomId) {
-// 	const pongWindow = document.getElementById('PongGame');
-
-// 	if (pongWindow.style.display === 'none') {
-// 	  pongWindow.style.display = 'flex';
-// 	  history.pushState({ page: "pong" }, "", "#pong");
-// 	} else {
-// 	  pongWindow.style.display = 'none';
-// 	  stopGameInstance(roomId);
-// 	}
-// 	pongWindow.querySelector('.close-button').addEventListener('click', function() {
-// 		pongWindow.style.display = 'none';
-// 		stopGameInstance(roomId);
-// 	});
-// }
-
-// // ------------------ Need to find a way to pass room id to event listener ------------------
-// //   window.addEventListener('popstate', function (event) {
-// // 	const currentPage = window.location.hash;
-
-// // 	if (currentPage === "#pong") {
-// // 		togglePongWindow('room_ai');
-// // 	}
-// //   });
-
-//   function stopGameInstance(roomId) {
-// 	// const roomName = "room1"; // Replace with dynamic room name
-// 	// console.log('stopGameInstance called, roomId:', roomId);
-// 	let socket;
-// 	if (roomId === 'room_ai'){
-// 		socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + roomId + '/');
-// 	}
-// 	else {
-// 		socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + roomId + '/');
-// 	}
-// 	socket.onopen = function() {
-// 		console.log('sending disconnect message');
-// 		socket.send(JSON.stringify({ type: 'disconnect' }));
-// 		document.removeEventListener('keydown', handleKeyDown);
-// 		document.removeEventListener('keyup', handleKeyUp);
-// 		socket.close();
-// 	};
-//  }
-
-//  function handleKeyDown(event) {
-// 	commandBuffer.type = 'handler';
-// 	if (event.key === 'w') commandBuffer.move_left_up = true;
-// 	if (event.key === 's') commandBuffer.move_left_down = true;
-// 	if (event.key === 'ArrowUp') commandBuffer.move_right_up = true;
-// 	if (event.key === 'ArrowDown') commandBuffer.move_right_down = true;
-// }
-
-// function handleKeyUp(event) {
-// 	commandBuffer.type = 'handler';
-// 	if (event.key === 'w') commandBuffer.move_left_up = false;
-// 	if (event.key === 's') commandBuffer.move_left_down = false;
-// 	if (event.key === 'ArrowUp') commandBuffer.move_right_up = false;
-// 	if (event.key === 'ArrowDown') commandBuffer.move_right_down = false;
-// }
-
-
-class GameInstance {
-	constructor(type) {
+class PongWindow {
+	constructor(type, roomNumber) {
 		this.commandBuffer = {};
 		this.gameOver = false;
 		this.type = type;
@@ -76,7 +15,11 @@ class GameInstance {
 		this.ballRadius = 10;
 		this.previousBallPositions = [];
 		
-		this.roomNumber = Math.floor(Math.random() * 10000);
+		if (!roomNumber)
+			this.roomNumber = Math.floor(Math.random() * 10000);
+		else
+			this.roomNumber = roomNumber;
+		
 		if (type === 'ai') {
 			this.roomName = 'room_ai_' + this.roomNumber;
 			this.socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + this.roomName + '/');
@@ -94,7 +37,7 @@ class GameInstance {
 		this.handleKeyUp = this.handleKeyUp.bind(this);
 		this.resizeCanvas = this.resizeCanvas.bind(this);
 		this.run = this.run.bind(this);
-		this.stop = this.stop.bind(this);
+		this.close = this.close.bind(this);
 		this.drawGame = this.drawGame.bind(this);
 		this.drawBackground = this.drawBackground.bind(this);
 		this.drawPaddles = this.drawPaddles.bind(this);
@@ -102,7 +45,7 @@ class GameInstance {
 		this.drawScore = this.drawScore.bind(this);
 	}
 
-	toggleWindow() {
+	open() {
 		const pongWindow = document.getElementById('PongGame');
 
 		if (pongWindow.style.display === 'none') {
@@ -110,31 +53,32 @@ class GameInstance {
 			history.pushState({ page: "pong" }, "", "#pong");
 		} else {
 			pongWindow.style.display = 'none';
-			this.stop();
+			this.close();
 		}
 		pongWindow.querySelector('.close-button').addEventListener('click', () => {
 			pongWindow.style.display = 'none';
-			this.stop();
+			this.close();
 		});
 	}
 
-	stop() {
+	close() {
 		if (this.socket.readyState === WebSocket.OPEN) {
 			this.socket.send(JSON.stringify({ type: 'disconnect' }));
+			this.socket.close();
 		}
 		document.removeEventListener('keydown', this.handleKeyDown);
 		document.removeEventListener('keyup', this.handleKeyUp);
 		window.removeEventListener('resize', this.resizeCanvas);
-		this.socket.close();
 	}
 
 	run() {
-		this.toggleWindow();
+		this.open();
+
 		window.addEventListener('popstate', (event) => {
 			const currentPage = window.location.hash;
 		
 			if (currentPage === "#pong") {
-				this.toggleWindow();
+				this.open();
 			}
 		});
 
@@ -152,8 +96,8 @@ class GameInstance {
 		this.resizeCanvas();
 
 		this.socket.onopen = () => {
-			console.log('WebSocket connection established');
-		};
+            console.log('WebSocket connection established');
+        };
 
 		this.socket.onerror = (error) => {
 			console.error('WebSocket error:', error);
@@ -166,12 +110,11 @@ class GameInstance {
 			if (gameState.type === 'handler') {
 				return;
 			}
-			if (gameState.score[0] >= 10 || gameState.score[1] >= 10) {
+			if (gameState.score[0] >= 5 || gameState.score[1] >= 5) {
 				this.gameOver = true;
-				alert('Game Over! Player ' + gameState.winner + ' wins!');
-				document.removeEventListener('keydown', handleKeyDown);
-				document.removeEventListener('keyup', handleKeyUp);
-				this.stop();
+				// alert('Game Over! Player ' + gameState.winner + ' wins!');
+				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
+				this.close();
 				return;
 			}
 			this.drawGame(gameState);

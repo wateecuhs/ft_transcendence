@@ -4,44 +4,6 @@ let mp_user = null;
 
 const conversations = {};
 
-function toogleClientAction(event, friend) {
-  const clientAction = document.querySelector('#msnWindow .client.tab .ul-client-action');
-  const mouse = event.target;
-  const rect = mouse.getBoundingClientRect();
-  const x = rect.x;
-  const y = rect.y;
-
-
-  if (clientAction.style.display === 'none') {
-    clientAction.style.display = 'flex';
-  } else {
-    clientAction.style.display = 'none';
-  }
-
-  clientAction.style.position = 'absolute';
-  clientAction.style.left = `${x} - 180px`;
-  clientAction.style.top = `${y} - 180px`;
-
-  const clientLi = clientAction.querySelectorAll('li');
-  clientLi.forEach((li) => {
-    li.addEventListener('click', function() {
-      if (li.id === "client-info") {
-        toogleClientWindow(friend);
-      }
-
-      if (li.id === "client-msg") {
-        const chatMessages = document.querySelector('#msnWindow .chat-messages');
-        const chatInput = document.querySelector('#msnWindow .chat-input');
-        chatMessages.innerHTML = '';
-        loadPrivateHistory(friend);
-        private_message = true;
-        mp_user = friend;
-        chatInput.placeholder = `Send a message to ${friend}`;
-      }
-    });
-  });
-}
-
 async function loadMessageHistory() {
   try {
     const response = await fetch(`/chat/messages/`);
@@ -61,7 +23,7 @@ async function loadMessageHistory() {
 
 function initWebSocket() {
   if (!window.ws || window.ws.readyState === WebSocket.CLOSED) {
-    window.ws = new WebSocket('wss://localhost:8443/chat/');
+    window.ws = new WebSocket(`wss://${window.location.host}/chat/`);
   }
 
   window.ws.onmessage = function(event) {
@@ -74,15 +36,30 @@ function initWebSocket() {
       handle_chat_private(private_message, mp_user, message);
     }
     else if (message.type === "relationship.request") {
-      raiseAlert("Invitation succesfully send");
+      showPopUp(window.dataMap.get('friend-request') + message.data.author);
+    }
+    else if (message.type === "relationship.accept") {
+      updateUserFriend();
+      showPopUp(window.dataMap.get('friend-accepted') + message.data.author);
+    }
+    else if (message.type === "relationship.remove") {
+      updateUserFriend();
     }
     else if (message.type === "status.update") {
-      handle_status_update(message.data)
+      console.log(message.data);
+      handle_status_update(message.data);
+      console.log('status update');
     }
     else {
       console.log(message.type);
     }
   }
+
+  window.ws.onclose = function() {
+    for (const key in conversations) {
+      conversations[key] = "";
+    }
+  };
   return window.ws;
 }
 
@@ -104,6 +81,9 @@ function toggleMsnWindow() {
     msnWindow.style.position = 'absolute';
     msnWindow.style.top = `${window.innerHeight / 2 - msnWindow.offsetHeight / 2}px`;
     msnWindow.style.left = `${window.innerWidth / 2 - msnWindow.offsetWidth / 2}px`;
+    navigateToPage('msn');
+  } else {
+    msnWindow.style.display = 'none';
   }
 
   showMsnPage(msnCurrentPage);
@@ -126,7 +106,7 @@ async function updateUserFriend(username) {
 
       const friends = await response.json();
 
-      if (friends && friends.length > 0) {
+      if (friends) {
           await updateClientsTab(friends);
       }
   } catch (error) {
@@ -139,7 +119,6 @@ async function updateClientsTab(friends) {
   clientTab.innerHTML = '';
 
   for (const friend of friends) {
-
     const li = document.createElement('li');
     li.classList.add("li-friend");
 
@@ -147,7 +126,7 @@ async function updateClientsTab(friends) {
 
     const statusDot = document.createElement('span');
     statusDot.classList.add("status-dot");
-    console.log(client.status);
+    statusDot.style.backgroundColor = 'red';
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = friend;
@@ -165,7 +144,10 @@ async function updateClientsTab(friends) {
     li.appendChild(span);
     clientTab.appendChild(li);
 
-    img.addEventListener('click', function(event) {
+    const newImg = img.cloneNode(true);
+    img.replaceWith(newImg);
+
+    newImg.addEventListener('click', function(event) {
       toogleClientAction(event, friend);
     });
   }
@@ -196,8 +178,6 @@ function setupSendMessage() {
           }
         }));
       }
-
-
       chatInput.value = '';
     }
   });
@@ -213,7 +193,7 @@ function displayChatMessage(data) {
   const chatMessages = document.querySelector('#msnWindow .chat-messages');
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message');
-  
+
   messageDiv.textContent = data.author + ': ' + data.content;
   chatMessages.appendChild(messageDiv);
 
@@ -265,6 +245,11 @@ function searchFriends() {
       searchInput.value = '';
     }
   });
+  searchInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      sendButton.click();
+    }
+  });
 }
 
 function openGeneralMessage() {
@@ -285,11 +270,9 @@ function addMessageToConversation(friend, message) {
 }
 
 function loadPrivateHistory(friend) {
-  alert(friend);
   if (!conversations || !conversations[friend]) return ;
 
   for (const data of conversations[friend]) {
-    console.log(data);
     const chatMessages = document.querySelector('#msnWindow .chat-messages');
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message');

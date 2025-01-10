@@ -1,7 +1,3 @@
-let room_ai = null;
-let room_local = null;
-let rooms = {};
-
 function toogleGameOptionWindow() {
   const optionWin = document.getElementById('game-option');
   if (optionWin.style.display === 'none') {
@@ -9,6 +5,9 @@ function toogleGameOptionWindow() {
     optionWin.style.position = 'absolute';
     optionWin.style.top = `${window.innerHeight / 2 - optionWin.offsetHeight / 2}px`;
     optionWin.style.left = `${window.innerWidth / 2 - optionWin.offsetWidth / 2}px`;
+    navigateToPage("pong");
+  } else {
+    optionWin.style.display = 'none'
   }
 }
 
@@ -20,32 +19,20 @@ function game_option_button() {
       const buttonId = button.id;
 
       if (buttonId === 'ai-button') {
-        // let win = togglePongWindow('room_ai');
-        // runAIGame();
-        room_ai = new GameInstance('ai');
-        room_ai.run();
+        let game_ai = new PongWindow('ai', 0);
+        game_ai.run();
       } else if (buttonId === 'local-button') {
-        // togglePongWindow('room_local');
-        // runLocalGame();
-        room_local = new GameInstance('local');
-        room_local.run();
+        let game_local = new PongWindow('local', 0);
+        game_local.run();
       } else if (buttonId === 'create-room') {
-        // let roomNumber = createRoom();
-        // togglePongWindow('room_' + roomNumber);
-        // runRemoteGame(roomNumber);
-        let room_remote = new GameInstance('remote');
-        rooms[room_remote.roomNumber] = room_remote;        
-        alert('Room created: ' + room_remote.roomNumber);   // make GameInstance contents private, replace with getter
-        room_remote.run();
+        let game_remote = new PongWindow('remote', 0);       
+        alert('Room created: ' + game_remote.roomNumber);   // make PongWindow contents private, replace with getter?
+        game_remote.run();
       } else if (buttonId === 'join-room') {
-        // joinRoom();
         let roomNumber = prompt('Enter room number:');
         if (!roomNumber) return;
-        // if (rooms[roomNumber] === undefined) {
-        //   alert('Room not found');
-        //   return;
-        // }
-        rooms[roomNumber].run();
+        let game = new PongWindow('remote', roomNumber);
+        game.run();
       }
     });
   });

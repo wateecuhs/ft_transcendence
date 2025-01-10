@@ -6,6 +6,8 @@ import time
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
+PADDLE_WIDTH = 20
+PADDLE_HEIGHT = 100
 FPS = 60
 
 class GameInstance:
@@ -26,7 +28,7 @@ class GameInstance:
 		self.ball_dy = self.game.ball.dy
 		self.loops_done = 0
 
-	def update_bot(self):
+	def update_bots(self):
 		self.paddle_left_x = self.game.paddle_left.x
 		self.paddle_left_y = self.game.paddle_left.y
 		self.paddle_right_x = self.game.paddle_right.x
@@ -36,6 +38,17 @@ class GameInstance:
 		self.ball_dx = self.game.ball.dx
 		self.ball_dy = self.game.ball.dy
 
+	def predict(self):
+
+		if self.ball_y - self.game.ball.radius < 0 or self.ball_y + self.game.ball.radius > WIN_HEIGHT:
+			self.ball_dy = -self.ball_dy
+
+		if self.ball_x - self.game.ball.radius < PADDLE_WIDTH or self.ball_x + self.game.ball.radius > WIN_WIDTH - PADDLE_WIDTH:
+			self.ball_dx = -self.ball_dx
+
+		self.ball_x += self.ball_dx
+		self.ball_y += self.ball_dy
+
 	def eval_genomes(self, genome1, genome2, config):
 		ai1 = neat.nn.FeedForwardNetwork.create(genome1, config)
 		ai2 = neat.nn.FeedForwardNetwork.create(genome2, config)
@@ -44,10 +57,12 @@ class GameInstance:
 			# time_passed = time.time() - self.prev_time
 			# if time_passed >= 1:
 			if self.loops_done >= 60:
-				self.game.ball.MAX_VELOCITY *= 1.05
-				self.update_bot()
+				# self.game.ball.MAX_VELOCITY *= 1.05
+				self.update_bots()
 				self.loops_done = 0
 				# self.prev_time = time.time()
+			else:
+				self.predict()
 
 			# output1 = ai1.activate((self.paddle_left.y, self.ball.y, abs(self.paddle_left.x - self.ball.x)))
 			output1 = ai1.activate((self.paddle_left_y, self.ball_y, abs(self.paddle_left_x - self.ball_x), self.ball_dx, self.ball_dy))
@@ -98,7 +113,7 @@ def train_ai(genomes, config):
 			game_instance.eval_genomes(genome1, genome2, config)
 
 def run_neat(config):
-	# pop = neat.Checkpointer.restore_checkpoint('ai_game/training_checkpoints/generation-39')
+	# pop = neat.Checkpointer.restore_checkpoint(os.path.join(os.path.dirname(__file__), 'training_checkpoints', 'generation-49'))
 	pop = neat.Population(config)
 	pop.add_reporter(neat.StdOutReporter(True))
 	stats = neat.StatisticsReporter()
