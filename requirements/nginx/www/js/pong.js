@@ -14,12 +14,12 @@ class PongWindow {
 		this.paddleHeight = 100;
 		this.ballRadius = 10;
 		this.previousBallPositions = [];
-		
+
 		if (!roomNumber)
 			this.roomNumber = Math.floor(Math.random() * 10000);
 		else
 			this.roomNumber = roomNumber;
-		
+
 		if (type === 'ai') {
 			this.roomName = 'room_ai_' + this.roomNumber;
 			this.socket = new WebSocket('wss://' + window.location.host + '/ai_game/rooms/' + this.roomName + '/');
@@ -76,7 +76,7 @@ class PongWindow {
 
 		window.addEventListener('popstate', (event) => {
 			const currentPage = window.location.hash;
-		
+
 			if (currentPage === "#pong") {
 				this.open();
 			}
@@ -112,7 +112,7 @@ class PongWindow {
 			}
 			if (gameState.score[0] >= 3 || gameState.score[1] >= 3) {
 				this.gameOver = true;
-				// alert('Game Over! Player ' + gameState.winner + ' wins!');
+				//alert('Game Over! Player ' + gameState.winner + ' wins!');
 				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
 				this.close();
 				return;
@@ -155,20 +155,20 @@ class PongWindow {
 
 	drawPaddles(state) {
 		this.ctx.fillStyle = 'white';
-		this.ctx.fillRect(state.paddle_left.x / this.winWidth * this.canvas.width, 
-						state.paddle_left.y / this.winHeight * this.canvas.height, 
+		this.ctx.fillRect(state.paddle_left.x / this.winWidth * this.canvas.width,
+						state.paddle_left.y / this.winHeight * this.canvas.height,
 						this.paddleWidth, this.paddleHeight);
-		this.ctx.fillRect(state.paddle_right.x / this.winWidth * this.canvas.width, 
-						state.paddle_right.y / this.winHeight * this.canvas.height, 
+		this.ctx.fillRect(state.paddle_right.x / this.winWidth * this.canvas.width,
+						state.paddle_right.y / this.winHeight * this.canvas.height,
 						this.paddleWidth, this.paddleHeight);
-		
+
 		this.ctx.strokeStyle = '#000000';
 		this.ctx.lineWidth = 2;
-		this.ctx.strokeRect(state.paddle_left.x / this.winWidth * this.canvas.width, 
-							state.paddle_left.y / this.winHeight * this.canvas.height, 
+		this.ctx.strokeRect(state.paddle_left.x / this.winWidth * this.canvas.width,
+							state.paddle_left.y / this.winHeight * this.canvas.height,
 							this.paddleWidth, this.paddleHeight);
-		this.ctx.strokeRect(state.paddle_right.x / this.winWidth * this.canvas.width, 
-							state.paddle_right.y / this.winHeight * this.canvas.height, 
+		this.ctx.strokeRect(state.paddle_right.x / this.winWidth * this.canvas.width,
+							state.paddle_right.y / this.winHeight * this.canvas.height,
 							this.paddleWidth, this.paddleHeight);
 	}
 
@@ -181,8 +181,8 @@ class PongWindow {
         this.ctx.globalAlpha = 0.3;
         this.previousBallPositions.forEach((pos) => {
             this.ctx.beginPath();
-            this.ctx.arc(pos.x / this.winWidth * this.canvas.width, 
-						pos.y / this.winHeight * this.canvas.height, 
+            this.ctx.arc(pos.x / this.winWidth * this.canvas.width,
+						pos.y / this.winHeight * this.canvas.height,
 						this.ballRadius, 0, Math.PI * 2);
             this.ctx.fillStyle = "white";
             this.ctx.fill();
@@ -191,8 +191,8 @@ class PongWindow {
 
         this.ctx.globalAlpha = 1.0;
         this.ctx.beginPath();
-        this.ctx.arc(state.ball.x / this.winWidth * this.canvas.width, 
-					state.ball.y / this.winHeight * this.canvas.height, 
+        this.ctx.arc(state.ball.x / this.winWidth * this.canvas.width,
+					state.ball.y / this.winHeight * this.canvas.height,
 					this.ballRadius, 0, Math.PI * 2);
         this.ctx.fillStyle = "white";
         this.ctx.fill();

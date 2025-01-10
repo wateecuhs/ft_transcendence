@@ -37,7 +37,7 @@ function initMMWebSocket() {
         created_at: new Date().toISOString()
       };
       displayChatMessage(data);
-      showPopUp(window.dataMap.get('start-tournament'));
+      //showPopUp(window.dataMap.get('start-tournament'));
       showTournamentDetails(message.data);
       sendPlayersToRooms(message.data);
     }
@@ -45,12 +45,12 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else if (message.type === "matchmaking.start") {
-      showPopUp(window.dataMap.get('matchmaking-start'));
+      //showPopUp(window.dataMap.get('matchmaking-start'));
       let game = new PongWindow("remote", message.data.room_code);
       game.run();
     }
     else if (message.type === "matchmaking.leave") {
-      showPopUp(window.dataMap.get('matchmaking-leave'));
+      //showPopUp(window.dataMap.get('matchmaking-leave'));
     }
     else {
       if (message.message === 'You already have an active tournament.') {

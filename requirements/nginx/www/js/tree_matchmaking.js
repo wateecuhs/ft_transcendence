@@ -99,7 +99,7 @@ async function addPlayerMatchmaking() {
     author: userInfo.username,
   };
   window.mmws.send(JSON.stringify({ type: 'matchmaking.join', data: newPlayer}));
-  raiseAlert(`${window.dataMap.get('matchmaking-join')}`);
+  //raiseAlert(`${window.dataMap.get('matchmaking-join')}`);
 }
 
 async function removePlayerMatchmaking() {
@@ -112,5 +112,5 @@ async function removePlayerMatchmaking() {
     author: userInfo.username,
   };
   window.mmws.send(JSON.stringify({ type: 'matchmaking.leave', data: newPlayer}));
-  raiseAlert(`${window.dataMap.get('matchmaking-leave')}`);
+  //raiseAlert(`${window.dataMap.get('matchmaking-leave')}`);
 }
