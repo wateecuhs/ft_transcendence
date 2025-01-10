@@ -4,7 +4,7 @@ from .serializers import TournamentSerializer
 from asgiref.sync import sync_to_async
 from .models import Tournament
 from typing import Dict, Any
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from django.db.models import Q
 import datetime
 import random
@@ -29,6 +29,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             self.user_id = self.scope["user"]["id"]
             self.username = self.scope["user"]["username"]
+            self.alias = self.scope["user"]["alias"]
 
             logger.info(f"[{self.username}] Connected to WebSocket.")
             await self.channel_layer.group_add(f"user.{self.username}", self.channel_name)
@@ -81,10 +82,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.error("Player name is required")
                 return
             self.list.append(player)
-            print(len(self.list), flush=True)
             if (len(self.list) >= 2):
                 room_code = "mm_" + os.urandom(4).hex()
-                print(room_code, flush=True)
                 await self.channel_layer.group_send(
                     f"user.{self.list[0]}",
                     {
@@ -119,7 +118,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if player is None:
                 await self.error("Player name is required")
                 return
-            print("Leaving", flush=True)
             self.list.remove(player)
         except Exception as e:
             await self.error(f"Matchmaking leave failed: {str(e)}")
@@ -146,7 +144,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(f"tournament.{tournament.name}", { "type": MessageType.Tournament.CREATE, "data": serializer.data })
 
         except ValidationError as ve:
-            await self.error(f"Invalid tournament data: {ve}")
+            await self.error(f"Invalid tournament data: {ve.detail.get('name')[0].title()}")
         except Exception as e:
             await self.error(f"Tournament creation failed: {str(e)}")
 

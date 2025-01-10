@@ -14,7 +14,7 @@ class Tournament(models.Model):
         FINAL = "FINAL", "Final"
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=20)
     owner = models.UUIDField()
     players = models.JSONField(default=list)
     created_at = models.DateTimeField(auto_now_add=True)
