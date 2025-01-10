@@ -97,7 +97,7 @@ class Room:
             self.update_score()
 
             if self.score[0] == 3 or self.score[1] == 3:
-                return self.game_over()
+                return await self.game_over()
 
             game_state = {
                 "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
@@ -151,9 +151,9 @@ class Room:
             self.ball.reset()
             # self.ball.MAX_VELOCITY *= 1.025
 
-    def game_over(self):
-        print("Game Over", flush=True)
-        redis_client = redis.Redis(host='match-redis', port=6379, db=0)
+    async def game_over(self):
+        # print("Game Over", flush=True)
+        # redis_client = redis.Redis(host='match-redis', port=6379, db=0)
         if self.score[0] == 3:
             if len(self.players) == 2:
                 self.winner = self.players[0].user["username"]
@@ -173,17 +173,18 @@ class Room:
             "score": self.score,
             "winner": self.winner
         }
-        print("still here", flush=True)
-        if self.name != "room_local":
-            redis_client.publish('game_results', json.dumps({
-                "room_name": self.name,
-                "player_1": self.players[0].user["username"],
-                "player_2": self.players[1].user["username"],
-                "player_1_win": True if self.score[0] == 3 else False,
-                "player_2_win": True if self.score[1] == 3 else False,
-                "score": self.score
-            }))
-        print("but not here", flush=True)
+        # print("still here", flush=True)
+        # if self.name != "room_local":
+        #     redis_client.publish('game_results', json.dumps({
+        #         "room_name": self.name,
+        #         "player_1": self.players[0].user["username"],
+        #         "player_2": self.players[1].user["username"],
+        #         "player_1_win": True if self.score[0] == 3 else False,
+        #         "player_2_win": True if self.score[1] == 3 else False,
+        #         "score": self.score
+        #     }))
+        # await self.publish_results()
+        # print("but not here", flush=True)
         return game_state
 
     def reset(self):

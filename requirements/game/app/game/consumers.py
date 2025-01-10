@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 import asyncio
 from .game import Room
+import redis
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -110,6 +111,18 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def game_update(self, event):
         await self.send(text_data=event['message'])
 
+    async def publish_results(self):
+        redis_client = redis.Redis(host='match-redis', port=6379, db=0)
+        if self.name != "room_local":
+            redis_client.publish('game_results', json.dumps({
+                "room_name": self.name,
+                "player_1": self.players[0].user["username"],
+                "player_2": self.players[1].user["username"],
+                "player_1_win": True if self.score[0] == 3 else False,
+                "player_2_win": True if self.score[1] == 3 else False,
+                "score": self.score
+            }))
+
     async def update_game_state(self):
         while True:
             if "room_local" not in self.room.name:
@@ -126,4 +139,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "message": json.dumps(game_state)
                 }
             )
+
+            if game_state.get("type") == "game_over":
+                await self.publish_results()
+
             await asyncio.sleep(1 / FPS)
