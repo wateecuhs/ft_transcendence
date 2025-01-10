@@ -11,7 +11,7 @@ BALL_RADIUS = 10
 FPS = 60
 
 class Paddle:
-    SPEED = 7.0
+    SPEED = 10.0
 
     def __init__(self, x, y, width, height):
         self.x = x
@@ -23,7 +23,7 @@ class Paddle:
         self.y -= self.SPEED if up else -self.SPEED
 
 class Ball:
-    MAX_VELOCITY = 7.0
+    MAX_VELOCITY = 6.0
 
     def __init__(self, x, y, radius):
         self.x = self.base_x = x
@@ -96,7 +96,7 @@ class Room:
             self.handle_collision()
             self.update_score()
 
-            if self.score[0] == 3 or self.score[1] == 3:
+            if self.score[0] == 5 or self.score[1] == 5:
                 return self.game_over()
 
             game_state = {
@@ -126,6 +126,7 @@ class Room:
                     self.ball.serving = False
                     self.ball.dx *= 2
                     self.ball.dy *= 2
+                self.ball.dx *= 1.07
         else:
             if (self.paddle_right.y - self.ball.radius <= self.ball.y <= self.paddle_right.y + self.paddle_right.height and
                 self.ball.x + self.ball.radius >= self.paddle_right.x):
@@ -138,16 +139,17 @@ class Room:
                     self.ball.serving = False
                     self.ball.dx *= 2
                     self.ball.dy *= 2
+                self.ball.dx *= 1.07
 
     def update_score(self):
         if self.ball.x < 0:
             self.score[1] += 1
             self.ball.reset()
-            self.ball.MAX_VELOCITY *= 1.025
+            # self.ball.MAX_VELOCITY *= 1.025
         elif self.ball.x > WIN_WIDTH:
             self.score[0] += 1
             self.ball.reset()
-            self.ball.MAX_VELOCITY *= 1.025
+            # self.ball.MAX_VELOCITY *= 1.025
 
     def game_over(self):
         redis_client = redis.Redis(host='match-redis', port=6379, db=0)
@@ -180,7 +182,7 @@ class Room:
             }))
 
         return game_state
-    
+
     def reset(self):
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
