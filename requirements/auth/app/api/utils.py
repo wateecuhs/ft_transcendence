@@ -1,6 +1,6 @@
 import requests, os, uuid, base64
 from datetime import datetime, timedelta
-from .models import CustomUser
+from .models import CustomUser, Match
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
 import jwt
@@ -112,3 +112,10 @@ def decode_and_save_base64_image(base64_image, file_name):
         return ContentFile(image_data, name=file_name)
     else:
         raise ValueError("Invalid base64 image data")
+
+def save_match(player1, player2, player1_status, player2_status, player1_score, player2_score):
+	print(f"Saving match between {player1} and {player2}", flush=True)
+	user1 = CustomUser.get_user_by_name(player1)
+	user2 = CustomUser.get_user_by_name(player2)
+	Match.create_match(user=user1, date="2025-01-01", status=player1_status, user_score=player1_score, opponent_score=player2_score, user_name=player1, opponent_name=player2)
+	Match.create_match(user=user2, date="2025-01-01", status=player2_status, user_score=player2_score, opponent_score=player1_score, user_name=player2, opponent_name=player1)

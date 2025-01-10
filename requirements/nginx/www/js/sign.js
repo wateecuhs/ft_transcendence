@@ -157,6 +157,7 @@ function SignIn() {
 				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(textUsername);
+				updateMatchHistory();
 
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
@@ -280,9 +281,12 @@ function SignIn() {
 				}
 				if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
 					messages_txt = window.dataMap.get('email-taken');
-			  }
+				}
 				if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
 					messages_txt = window.dataMap.get('valid-email');
+				}
+				if (Array.isArray(messages) && messages.includes("The username can only contain alphanumeric characters or underscores.")) {
+					messages_txt = window.dataMap.get('alphanumeric-username');
 				}
 				console.log(messages);
 				errorMessage += `${field_txt}: ${messages_txt}\n`;
@@ -490,6 +494,7 @@ async function SignIn42() {
 									updateUserInfo();
 									updateUserStat();
 									updateUserFriend(userInfo.username);
+									updateMatchHistory();
 
 									window.mmws = initMMWebSocket();
 									window.ws = initWebSocket();
@@ -522,6 +527,7 @@ async function can_sign_in() {
 				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(userInfo.username);
+				updateMatchHistory();
 
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
@@ -783,6 +789,7 @@ async function verify2FA() {
 				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(textUsername);
+				updateMatchHistory();
 
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();

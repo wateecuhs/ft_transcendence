@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import CustomUser, Status, Match
 from django.core.exceptions import ValidationError
-import uuid
+from django.core.validators import RegexValidator
 
 class EmptyFieldError(ValidationError):
 	def __init__(self, message="This field cannot be empty", code='empty_field'):
@@ -31,7 +31,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 	email = serializers.EmailField(label='Email')
 	password = serializers.CharField(label='Password')
 	confirmation_password = serializers.CharField(label='Confirm Password')
-	username = serializers.CharField(label='Username', max_length=30, min_length=2)
+	username = serializers.CharField(label='Username', max_length=30, min_length=2, validators=[RegexValidator(regex='^[a-zA-Z0-9_]*$', message='The username can only contain alphanumeric characters or underscores.', code='invalid_username')])
 
 	class Meta:
 		model = CustomUser

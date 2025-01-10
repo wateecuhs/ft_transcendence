@@ -135,6 +135,107 @@ async function updateUserInfo() {
 	}
 }
 
+async function getMatchesHistory() {
+  try {
+    const response = await fetch('/auth/matches/me/', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getTokenCookie()}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.message === 'Success') {
+        return {
+          matches: data.matches,
+        };
+      } else {
+        raiseAlert(data.message);
+      }
+    } else {
+      const errorData = await response.json();
+      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+        const isRefreshed = await getRefreshToken();
+        if (isRefreshed) {
+          return await getMatchesHistory();
+        } else {
+          console.log(errorData.message);
+        }
+      }
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+async function updateMatchHistory() {
+  const matchesData = await getMatchesHistory();
+  const userWin = document.querySelector("#accountWindow");
+  const matchesList = userWin.querySelector("#account-page-2 ul");
+
+  matchesList.innerHTML = '';
+
+  if (matchesData && matchesData.matches) {
+    if (matchesData.matches.length === 0) {
+      const matchElement = document.createElement('li');
+      matchElement.classList.add('match');
+
+      const noMatch = document.createElement('div');
+      noMatch.classList.add('no-match');
+      noMatch.textContent = 'No match history available.';
+      matchElement.appendChild(noMatch);
+      matchesList.appendChild(matchElement);
+      return ;
+    }
+
+    matchesData.matches.forEach((match) => {
+      const matchElement = document.createElement('li');
+      matchElement.classList.add('match');
+
+      const matchDate = document.createElement('div');
+      matchDate.classList.add('match-date');
+      matchDate.textContent = `--- Match ${match.date} ---`;
+
+      const matchVersus = document.createElement('div');
+      matchVersus.classList.add('match-versus');
+      matchVersus.textContent = `${match.user_name} vs ${match.opponent_name}`;
+
+      const matchScore = document.createElement('div');
+      matchScore.classList.add('match-score');
+      matchScore.textContent = `Score ${match.user_score} - ${match.opponent_score}`;
+
+      const matchStatus = document.createElement('div');
+      matchStatus.classList.add('match-status');
+      const statusVal = match.status === 1 ? 'Win' : 'Lose';
+      matchStatus.textContent = `Status: ${statusVal }`;
+
+      const matchSeparator = document.createElement('div');
+      matchSeparator.classList.add('match-details');
+      matchSeparator.textContent = '--- ---';
+
+      matchElement.appendChild(matchDate);
+      matchElement.appendChild(matchVersus);
+      matchElement.appendChild(matchScore);
+      matchElement.appendChild(matchStatus);
+      matchElement.appendChild(matchSeparator);
+
+      matchesList.appendChild(matchElement);
+    });
+  } else {
+    const matchElement = document.createElement('li');
+    matchElement.classList.add('match');
+
+    const noMatch = document.createElement('div');
+    noMatch.classList.add('no-match');
+    noMatch.textContent = 'No match history available.';
+    matchElement.appendChild(noMatch);
+    return ;
+  }
+}
+
 function getTokenCookie() {
   let cookieString = document.cookie;
 

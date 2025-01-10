@@ -108,3 +108,4 @@ matchmaking-join=Você está entrando na fila
 launch-matchmaking=Iniciar o matchmaking
 stop-matchmaking=Parar o matchmaking
 change-info=As informações foram alteradas com sucesso.
+alphanumeric-username=O nome de usuário pode conter apenas caracteres alfanuméricos ou underscores.

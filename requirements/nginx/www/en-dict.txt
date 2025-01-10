@@ -108,3 +108,4 @@ matchmaking-join=You are entering the queue
 launch-matchmaking=Launch matchmaking
 stop-matchmaking=Stop matchmaking
 change-info=The information has been successfully changed.
+alphanumeric-username=Username can only contain alphanumeric characters or underscores.
