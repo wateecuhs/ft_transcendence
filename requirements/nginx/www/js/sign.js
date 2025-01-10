@@ -131,6 +131,11 @@ function SignIn() {
 					document.getElementById('start-button').textContent = window.dataMap.get('start-button');
 					document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
 					document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+					if (window.matchmaking) {
+						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
+					  } else {
+						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
+					  }
 				});
 
 				let langageUrl = null;
@@ -152,6 +157,7 @@ function SignIn() {
 				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(textUsername);
+				updateMatchHistory();
 
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
@@ -275,9 +281,12 @@ function SignIn() {
 				}
 				if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
 					messages_txt = window.dataMap.get('email-taken');
-			  }
+				}
 				if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
 					messages_txt = window.dataMap.get('valid-email');
+				}
+				if (Array.isArray(messages) && messages.includes("The username can only contain alphanumeric characters or underscores.")) {
+					messages_txt = window.dataMap.get('alphanumeric-username');
 				}
 				console.log(messages);
 				errorMessage += `${field_txt}: ${messages_txt}\n`;
@@ -459,6 +468,11 @@ async function SignIn42() {
 										if (noTournament != null)
 											noTournament.textContent = window.dataMap.get('no-tournament');
 										document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+										if (window.matchmaking) {
+											document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
+										  } else {
+											document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
+										  }
 									});
 
 									let langageUrl = null;
@@ -480,6 +494,7 @@ async function SignIn42() {
 									updateUserInfo();
 									updateUserStat();
 									updateUserFriend(userInfo.username);
+									updateMatchHistory();
 
 									window.mmws = initMMWebSocket();
 									window.ws = initWebSocket();
@@ -512,6 +527,7 @@ async function can_sign_in() {
 				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(userInfo.username);
+				updateMatchHistory();
 
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
@@ -602,6 +618,11 @@ async function can_sign_in() {
 					if (noTournament != null)
 						noTournament.textContent = window.dataMap.get('no-tournament');
 					document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+					if (window.matchmaking) {
+						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
+					  } else {
+						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
+					  }
 				});
 
 				let langageUrl = null;
@@ -637,50 +658,171 @@ function quitDesk() {
 	slideBack();
 }
 
+async function verify2FA() {
+	const access_token = getTokenCookie();
+
+	const loginPage = document.getElementById('login-id-page');
+	const win_content = loginPage.querySelector('.window-content');
+	const inputText = win_content.querySelector('.input-login-page');
+	const code = inputText.value.trim();
+
+	request_data = {
+		otp_code: code
+	};
+
+	try {
+		const response = await fetch('/auth/2FA/verify/', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': `Bearer ${access_token}`,
+			},
+			body: JSON.stringify(request_data)
+		});
+
+		if (response.ok) {
+			const data = await response.json();
+			if (data.message === 'Success') {
+				const userInfo = await getUserInfo(access_token);
+				window.dict = `${userInfo.language}-dict.txt`;
+				fetch(window.dict)
+				.then(response => response.text())
+				.then(text => {
+					let file = text.split('\n');
+					window.dataMap = null;
+					window.dataMap = new Map();
+					for (let line of file) {
+					let lineSplit = line.split('=');
+					window.dataMap.set(lineSplit[0], lineSplit[1]);
+					}
+					document.getElementById('login-title').textContent = window.dataMap.get('login-title');
+					document.getElementById('sign-in-button').textContent = window.dataMap.get('sign-in-button');
+					document.getElementById('button-sign-up-page').textContent = window.dataMap.get('button-sign-up-page');
+					document.getElementById('button-register-page').textContent = window.dataMap.get('button-register-page');
+					document.getElementById('button-login-42').textContent = window.dataMap.get('button-login-42');
+					document.getElementById('sign-in-username').placeholder = window.dataMap.get('sign-in-username');
+					document.getElementById('sign-in-password').placeholder = window.dataMap.get('sign-in-password');
+					document.getElementById('sign-up-username').placeholder = window.dataMap.get('sign-up-username');
+					document.getElementById('sign-up-email').placeholder = window.dataMap.get('sign-up-email');
+					document.getElementById('sign-up-password').placeholder = window.dataMap.get('sign-up-password');
+					document.getElementById('sign-up-confirm-password').placeholder = window.dataMap.get('sign-up-confirm-password');
+					document.getElementById('2fa-sign').textContent = window.dataMap.get('2fa-sign');
+					document.getElementById('2fa-text').textContent = window.dataMap.get('2fa-text');
+					document.getElementById('2fa-button').textContent = window.dataMap.get('2fa-button');
+					document.getElementById('desktop').textContent = window.dataMap.get('desktop');
+					document.getElementById('account').textContent = window.dataMap.get('account');
+					document.getElementById('settings').textContent = window.dataMap.get('settings');
+					document.getElementById('quit').textContent = window.dataMap.get('quit');
+					document.getElementById('application-explorer').textContent = window.dataMap.get('application-explorer');
+					document.getElementById('account-window').textContent = window.dataMap.get('account-window');
+					document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
+					document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
+					document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+					document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
+					document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
+					document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
+					document.getElementById('profile-old-password').placeholder = window.dataMap.get('profile-old-password');
+					document.getElementById('profile-password').placeholder = window.dataMap.get('profile-password');
+					document.getElementById('profile-confirm-password').placeholder = window.dataMap.get('profile-confirm-password');
+					document.getElementById('update-button').textContent = window.dataMap.get('update-button');
+					document.getElementById('friend-account').textContent = window.dataMap.get('friend-account');
+					document.getElementById('activate-2fa-text').textContent = window.dataMap.get('activate-2fa-text');
+					document.getElementById('enter-code').placeholder = window.dataMap.get('enter-code');
+					document.getElementById('validate-qr-code-id').textContent = window.dataMap.get('validate-qr-code-id');
+					document.getElementById('desktop-image').textContent = window.dataMap.get('desktop-image');
+					document.getElementById('trash').textContent = window.dataMap.get('trash');
+					document.getElementById('general').textContent = window.dataMap.get('general');
+					document.getElementById('add-friends').textContent = window.dataMap.get('add-friends');
+					document.getElementById('search-friends').placeholder = window.dataMap.get('search-friends');
+					document.getElementById('type-message').placeholder = window.dataMap.get('type-message');
+					document.getElementById('send').textContent = window.dataMap.get('send');
+					document.getElementById('client-info').textContent = window.dataMap.get('client-info');
+					document.getElementById('client-msg').textContent = window.dataMap.get('client-msg');
+					document.getElementById('winbook-title').textContent = window.dataMap.get('winbook-title');
+					document.getElementById('search').textContent = window.dataMap.get('search');
+					document.getElementById('create').textContent = window.dataMap.get('create');
+					document.getElementById('search-button').textContent = window.dataMap.get('search-button');
+					document.getElementById('search-tournament').placeholder = window.dataMap.get('search-tournament');
+					document.getElementById('create-tournament-name').placeholder = window.dataMap.get('create-tournament-name');
+					document.getElementById('create-tournament-button').textContent = window.dataMap.get('create-tournament-button');
+					const tournamentName = document.getElementById('tournament-name').textContent;
+					if (tournamentName != 'Aucun Tournoi Sélectionné' && tournamentName != 'Nenhum torneio selecionado' && tournamentName != 'No Tournament Selected')
+						document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+					document.getElementById('empty').textContent = window.dataMap.get('empty');
+					document.getElementById('ready-button').textContent = window.dataMap.get('ready-button');
+					document.getElementById('quit-button').textContent = window.dataMap.get('quit-button');
+					document.getElementById('game').textContent = window.dataMap.get('game');
+					document.getElementById('game-options').textContent = window.dataMap.get('game-options');
+					document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
+					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
+					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
+					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
+					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
+					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
+					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
+					document.getElementById('start-button').textContent = window.dataMap.get('start-button');
+					document.getElementById('no-tournament').textContent = window.dataMap.get('no-tournament');
+					document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+					if (window.matchmaking) {
+						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
+					  } else {
+						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
+					  }
+				});
+
+				let langageUrl = null;
+				if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
+				else if (userInfo.language === 'en') langageUrl = '../img/uk_flag.png';
+				else if (userInfo.language === 'pt') langageUrl = '../img/portugal_flag.png';
+				else if (userInfo.language === 'ru') langageUrl = '../img/russia_flag.png';
+
+				const flagIcon = document.querySelector('.flag-icon');
+				if (flagIcon) {
+					flagIcon.style.background = `url(${langageUrl})`;
+					flagIcon.style.backgroundSize = "contain";
+					flagIcon.style.backgroundRepeat = "no-repeat";
+					flagIcon.style.backgroundPosition = "center";
+					flagIcon.style.width = "32px";
+					flagIcon.style.height = "32px";
+				}
+
+				updateUserInfo();
+				updateUserStat();
+				updateUserFriend(textUsername);
+				updateMatchHistory();
+
+				window.mmws = initMMWebSocket();
+				window.ws = initWebSocket();
+				loadMessageHistory();
+				navigateToPage('desktop');
+				slideUp();
+			} else {
+				raiseAlert(data.message);
+			}
+		} else {
+			if (errorMessage.message === 'failed : wrong 2FA code') {
+				raiseAlert('Wrong code');
+			}
+			else if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+				const isRefreshed = await getRefreshToken();
+				if (isRefreshed) {
+					return await verify2FA();
+				}
+			} else {
+				console.log(errorData.message);
+			}
+		}
+	} catch(error) {
+		console.log(error);
+	}
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 	can_sign_in();
 	SignIn();
 	SignUp();
 	SignIn42();
 
-	const loginPage = document.getElementById('login-id-page');
-    const win_content = loginPage.querySelector('.window-content');
-    const button_2fa = win_content.querySelector('.button-login-page');
-
-
-	button_2fa.addEventListener('click', async function() {
-
-		const access_token = getTokenCookie();
-		const inputText = win_content.querySelector('.input-login-page');
-		const code = inputText.value.trim();
-
-		request_data = {
-			otp_code: code
-		};
-
-		try {
-			const response = await fetch('/auth/2FA/verify/', {
-				method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-					'Authorization': `Bearer ${access_token}`,
-                },
-                body: JSON.stringify(request_data)
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				if (data.message === 'Success') {
-					updateUserInfo();
-					slideUp();
-				} else {
-					raiseAlert(data.message);
-				}
-			} else {
-				raiseAlert('Wrong 2FA code');
-			}
-		} catch(error) {
-			console.log(error);
-		}
-	});
+    const button_2fa = document.getElementById('2fa-button');
+	button_2fa.addEventListener('click', verify2FA);
 });

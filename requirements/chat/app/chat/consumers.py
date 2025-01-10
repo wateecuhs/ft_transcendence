@@ -31,7 +31,6 @@ logger = logging.getLogger(__name__)
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    user = None
     GLOBAL_CHAT = "chat"
     PRIVATE_CHAT_CMD = "/w"
     BLOCK_CHAT_CMD = "/block"
@@ -44,6 +43,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user_id = None
+        self.user = None
 
     async def connect(self):
         if self.scope["user"] is None:
@@ -146,7 +146,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         else:
             logger.info(
                 f"Handling block command: {type(target)} and {type(self.user)}")
-            logger.info(f"Handling block command: {target} and {self.user}", flush=True)
+            logger.info(f"Handling block command: {target} and {self.user}")
 
         if splitted_message[0] == self.BLOCK_CHAT_CMD:
             await database_sync_to_async(block_user)(self.user, target)

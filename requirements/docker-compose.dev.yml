@@ -224,6 +224,7 @@ services:
     networks:
       - game-dev
       - matchmaking-dev
+      - auth-dev
     volumes:
       - match-redis-volume-dev:/data
     command:

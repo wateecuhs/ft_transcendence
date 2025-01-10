@@ -22,7 +22,6 @@ function initMMWebSocket() {
     if (message.type === "tournament.join") {
       raiseAlert(`${window.dataMap.get('tournament-ready')} ${message.data.name}`);
       showTournamentDetails(message.data);
-
     }
     else if (message.type === "tournament.create") {
       raiseAlert(`${window.dataMap.get('tournament-created-1')} ${message.data.name} ${window.dataMap.get('tournament-created-2')}`);
@@ -39,16 +38,48 @@ function initMMWebSocket() {
       };
       displayChatMessage(data);
       showPopUp(window.dataMap.get('start-tournament'));
+      console.log("Starting tournament");
       showTournamentDetails(message.data);
+      console.log("Post showTournamentDetails");
       sendPlayersToRooms(message.data);
+      console.log("Post sendPlayersToRooms2");
     }
     else if (message.type === "tournament.delete") {
       showTournamentDetails(message.data);
+    }
+    else if (message.type === "tournament.update") {
+      firstRoundResults(message.data);
+      if (message.data.rounds.length === 2 && message.data.rounds[1].matches[0].status !== "FINISHED") {
+        if (message.data.author === message.data.rounds[1].matches[0].player1 || message.data.author === message.data.rounds[1].matches[0].player2) {
+          showPopUp("Hurry up ! You are in the next round !");
+		      const pongWindow = document.getElementById('PongGame');
+          pongWindow.style.display = 'none';
+          setTimeout(() => {
+            let game = new PongWindow("remote", message.data.rounds[1].matches[0].room_code);
+            game.run();
+          }, 2000);
+        }
+      }
+    }
+    else if (message.type === "matchmaking.start") {
+      //showPopUp(window.dataMap.get('matchmaking-start'));
+      let game = new PongWindow("remote", message.data.room_code);
+      game.run();
+    }
+    else if (message.type === "matchmaking.leave") {
+      //showPopUp(window.dataMap.get('matchmaking-leave'));
     }
     else {
       if (message.message === 'You already have an active tournament.') {
         raiseAlert(window.dataMap.get('already-tournament'));
       }
+    }
+  }
+
+  window.mmws.onclose = function(event) {
+    const isRefreshed = getRefreshToken();
+    if (isRefreshed) {
+      return initMMWebSocket();
     }
   }
   return window.mmws;

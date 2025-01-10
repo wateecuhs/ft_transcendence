@@ -31,6 +31,10 @@ function createTournament() {
   const createTournamentNameInput = document.querySelector('#create-tournament-name');
   const tournamentName = createTournamentNameInput.value.trim();
   const readyButton = winBookWindow.querySelector('#ready-button');
+  if (!readyButton) {
+    console.error("L'élément #ready-button est introuvable !");
+    return;
+  }
   readyButton.disabled = true;
   readyButton.textContent = window.dataMap.get('joined');
 
@@ -123,7 +127,7 @@ function resetWinBook() {
 
 function sendPlayersToRooms(tournament) {
   const winBookWindow = document.getElementById("winBook");
-  const tournamentContent = winBookWindow.querySelector('#tournament-pane-id');
+  const tournamentContent = winBookWindow.querySelector('#tournament-status-id');
   const readyButton = winBookWindow.querySelector('#ready-button');
   const quitButton = document.querySelector('#quit-button');
 
@@ -131,13 +135,131 @@ function sendPlayersToRooms(tournament) {
   quitButton.style.display = 'none';
 
   const rounds = tournament.rounds;
+  tournamentContent.innerHTML = '';
+
+  rounds.forEach(round => {
+    if (round.round === "FIRST") {
+        const matches = round.matches;
+        let i = 1;
+        matches.forEach(match => {
+          const dataMatch = {
+            room_code: match.room_code,
+            player1: match.player1,
+            player2: match.player2,
+            score: match.score,
+            status: match.status,
+            winner: match.winner
+          };
+
+          const newData = document.createElement('div');
+
+          const matchVs = document.createElement('div');
+          matchVs.textContent = `Match ${i} : ${dataMatch.player1} vs ${dataMatch.player2}`;
+
+          const matchScore = document.createElement('div');
+          matchScore.textContent = `Score : ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
+
+          const matchStatus = document.createElement('div');
+          matchStatus.textContent = `Status : ${dataMatch.status}`;
+
+          const matchWinner = document.createElement('div');
+          matchWinner.textContent = `Winner : ${dataMatch.winner}`;
+
+          const matchSeparator = document.createElement('div');
+          matchSeparator.textContent = '-----------------------------';
+
+
+          newData.appendChild(matchVs);
+          newData.appendChild(matchScore);
+          newData.appendChild(matchStatus);
+          newData.appendChild(matchWinner);
+          newData.appendChild(matchSeparator);
+
+          tournamentContent.appendChild(newData);
+          i += 1;
+      });
+      matches.forEach(match => {
+        if ((tournament.author === match.player1 || tournament.author === match.player2)) {
+          let game = new PongWindow("remote", match.room_code);
+          game.run();
+          return ;
+        }
+      });
+    } else if (round.round === "FINAL") {
+      console.log('FINAL');
+      const matches = round.matches;
+        matches.forEach(match => {
+          const dataMatch = {
+            room_code: match.room_code,
+            player1: match.player1,
+            player2: match.player2,
+            score: match.score,
+            status: match.status,
+            winner: match.winner
+          };
+
+          const newData = document.createElement('div');
+
+          const matchVs = document.createElement('div');
+          matchVs.textContent = `Match Final : ${dataMatch.player1} vs ${dataMatch.player2}`;
+
+          const matchScore = document.createElement('div');
+          matchScore.textContent = `Score : ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
+
+          const matchStatus = document.createElement('div');
+          matchStatus.textContent = `Status : ${dataMatch.status}`;
+
+          const matchWinner = document.createElement('div');
+          matchWinner.textContent = `Winner : ${dataMatch.winner}`;
+
+          const matchSeparator = document.createElement('div');
+          matchSeparator.textContent = '-----------------------------';
+
+
+          newData.appendChild(matchVs);
+          newData.appendChild(matchScore);
+          newData.appendChild(matchStatus);
+          newData.appendChild(matchWinner);
+          newData.appendChild(matchSeparator);
+
+          tournamentContent.appendChild(newData);
+      });
+
+      matches.forEach(match => {
+        if ((tournament.author === match.player1 || tournament.author === match.player2)) {
+          let game = new PongWindow("remote", match.room_code);
+          game.run();
+          return ;
+        }
+      });
+    }
+  });
+}
+
+
+function firstRoundResults(tournament) {
+  const winBookWindow = document.getElementById("winBook");
+  const tournamentContent = winBookWindow.querySelector('#tournament-pane-id');
+  const rounds = tournament.rounds;
+
   rounds.forEach(round => {
     if (round.round === "FIRST") {
       const matches = round.matches;
       let i = 1;
       matches.forEach(match => {
-        
         const newData = document.createElement('div');
+        if (match.status === "FINISHED") {
+          const dataMatch = {
+            room_code: match.room_code,
+            player1: match.player1,
+            player2: match.player2,
+            score: match.score
+          };
+          newData.textContent = `Match ${i} : ${dataMatch.player1} vs ${dataMatch.player2} -> ${dataMatch.score[0]}-${dataMatch.score[1]}`;
+          tournamentContent.appendChild(newData);
+          i += 1;
+        }
+        else {
           const dataMatch = {
             room_code: match.room_code,
             player1: match.player1,
@@ -146,13 +268,9 @@ function sendPlayersToRooms(tournament) {
           newData.textContent = `Match ${i} : ${dataMatch.player1} vs ${dataMatch.player2}`;
           tournamentContent.appendChild(newData);
           i += 1;
-      });
-      matches.forEach(match => {
-        if (tournament.author === match.player1 || tournament.author === match.player2) {
-          runRemoteGame(match.room_code);
-          return ;
         }
       });
     }
   });
 }
+

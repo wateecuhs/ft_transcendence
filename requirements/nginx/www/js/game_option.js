@@ -25,7 +25,7 @@ function game_option_button() {
         let game_local = new PongWindow('local', 0);
         game_local.run();
       } else if (buttonId === 'create-room') {
-        let game_remote = new PongWindow('remote', 0);       
+        let game_remote = new PongWindow('remote', 0);
         alert('Room created: ' + game_remote.roomNumber);   // make PongWindow contents private, replace with getter?
         game_remote.run();
       } else if (buttonId === 'join-room') {
@@ -33,6 +33,16 @@ function game_option_button() {
         if (!roomNumber) return;
         let game = new PongWindow('remote', roomNumber);
         game.run();
+      } else if (buttonId === 'launch-matchmaking') {
+        if (window.matchmaking) {
+          addPlayerMatchmaking();
+          button.textContent = window.dataMap.get('stop-matchmaking');
+          window.matchmaking = false;
+        } else {
+          removePlayerMatchmaking();
+          button.textContent = window.dataMap.get('launch-matchmaking');
+          window.matchmaking = true;
+        }
       }
     });
   });

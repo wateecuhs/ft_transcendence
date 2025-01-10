@@ -307,12 +307,14 @@ class refresh(APIView):
             username = payload.get("username")
             if not username:
                 return JsonResponse({'message' : 'failed : username not found in refresh token'}, status=404)
-            if checkRefreshToken(encoded_refresh_jwt, username) is None:
+            if checkRefreshToken(encoded_refresh_jwt, username) is False:
                 return JsonResponse({'message' : f'{username} not found'}, status=404)
             new_access_jwt = CreateAccessToken(request, username)
             if not new_access_jwt:
                 return JsonResponse({'message': f'{username} not found'}, status=404)
-            return JsonResponse({"message": "Success", "access_token": new_access_jwt})
+            response = JsonResponse({"message": "Success", "access_token": new_access_jwt})
+            response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/')
+            return response
         except jwt.ExpiredSignatureError:
             return JsonResponse({"message": "failed : Refresh token has expired"}, status=401)
         except jwt.InvalidTokenError:
@@ -339,13 +341,12 @@ class MatchHistory(APIView):
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
 			user_matches = user.match_history.all()
-			matches_data = list(user_matches.values("user_id", "opponent_id", "status", "user_score", "opponent_score", "date"))
+			matches_data = list(user_matches.values("user_name", "opponent_name", "status", "user_score", "opponent_score", "date"))
 			response = {
 				"message": "Success",
 				"matches": matches_data
 			}
-			matches_json = json.dumps(response, cls=DjangoJSONEncoder)
-			return JsonResponse(matches_json)
+			return JsonResponse(response)
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
 		except jwt.ExpiredSignatureError:
@@ -368,14 +369,14 @@ class MatchHistory(APIView):
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
 				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
-			user1_id = payload.get("id")
-			if not (user1_id):
+			user1_name = payload.get("username")
+			if not (user1_name):
 				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
-			user1 = CustomUser.get_user_by_id(user1_id)
+			user1 = CustomUser.get_user_by_name(user1_name)
 			if not (user1):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
-			user2_id = serializer.validated_data['user2_id']
-			user2 = CustomUser.get_user_by_id(user2_id)
+			user2_name = serializer.validated_data['user2_name']
+			user2 = CustomUser.get_user_by_name(user2_name)
 			if user2 is None :
 				return JsonResponse({"message": "failed : User not found"})
 			Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
@@ -401,20 +402,6 @@ class MatchHistoryId(APIView):
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
 
-	def put(self, request, **kwargs):
-		id = kwargs.get('id')
-		serializer = AddMatchSerializer(data=request.data)
-		if not serializer.is_valid():
-			errors = serializer.errors
-			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user1 = CustomUser.get_user_by_id(id)
-		user2_id = serializer.validated_data['user2_id']
-		user2 = CustomUser.get_user_by_id(user2_id)
-		if user1 is None or user2 is None:
-			return JsonResponse({"message": "failed : User not found"})
-		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
-		return JsonResponse({"message": "Success"})
-
 class MatchHistoryUsername(APIView):
 	def get(self, request, **kwargs):
 		username = kwargs.get('username')
@@ -429,20 +416,6 @@ class MatchHistoryUsername(APIView):
 		}
 		matches_json = json.dumps(response, cls=DjangoJSONEncoder)
 		return JsonResponse(matches_json)
-
-	def put(self, request, **kwargs):
-		username = kwargs.get('username')
-		serializer = AddMatchSerializer(data=request.data)
-		if not serializer.is_valid():
-			errors = serializer.errors
-			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		user1 = CustomUser.get_user_by_username(username)
-		user2_id = serializer.validated_data['user2_id']
-		user2 = CustomUser.get_user_by_id(user2_id)
-		if user1 is None or user2 is None:
-			return JsonResponse({"message": "failed : User not found"})
-		Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
-		return JsonResponse({"message": "Success"})
 
 class	UserStat(APIView):
 	def get(self, request):
@@ -579,7 +552,7 @@ class Activate2FA(APIView):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
 			serializer = Serializer2FA(data=request.data)
 			if not serializer.is_valid():
-				return JsonResponse({'message': 'failed : serializer is not valid'})
+				return JsonResponse({'message': 'failed : serializer is not valid'}, status=400)
 			otp_code = serializer.validated_data['otp_code']
 			totp = pyotp.TOTP(user.totp)
 
@@ -589,7 +562,7 @@ class Activate2FA(APIView):
 				return JsonResponse({'message': 'Success'})
 
 			else:
-				return JsonResponse({'message': 'failed : wrong 2FA code'})
+				return JsonResponse({'message': 'failed : wrong 2FA code'}, status=401)
 
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)

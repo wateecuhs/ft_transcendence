@@ -36,11 +36,11 @@ function initWebSocket() {
       handle_chat_private(private_message, mp_user, message);
     }
     else if (message.type === "relationship.request") {
-      showPopUp(window.dataMap.get('friend-request') + message.data.author);
+      showPopUp(window.dataMap.get('friend-request') + ' ' + message.data.author);
     }
     else if (message.type === "relationship.accept") {
       updateUserFriend();
-      showPopUp(window.dataMap.get('friend-accepted') + message.data.author);
+      showPopUp(window.dataMap.get('friend-accepted') + ' ' + message.data.author);
     }
     else if (message.type === "relationship.remove") {
       updateUserFriend();
@@ -55,9 +55,14 @@ function initWebSocket() {
     }
   }
 
-  window.ws.onclose = function() {
+  window.ws.onclose = function(event) {
     for (const key in conversations) {
       conversations[key] = "";
+    }
+
+    const isRefreshed = getRefreshToken();
+    if (isRefreshed) {
+      return initWebSocket();
     }
   };
   return window.ws;
@@ -100,8 +105,18 @@ async function updateUserFriend(username) {
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.message === 'Invalid token') {
+          const isRefreshed = await getRefreshToken();
+          if (isRefreshed) {
+            return updateUserFriend(username);
+          }
+          console.log(errorData.message);
+          return;
+        } else {
           console.error('Error: Failed to fetch friends', response.status);
           return;
+        }
       }
 
       const friends = await response.json();

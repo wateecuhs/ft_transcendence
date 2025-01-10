@@ -13,7 +13,10 @@ FPS = 60
 rooms = {}
 
 class GameConsumer(AsyncWebsocketConsumer):
-    user = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
 
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
@@ -36,7 +39,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         if not hasattr(self.room, "game_loop"):
             self.room.game_loop = asyncio.create_task(self.update_game_state())
         await self.accept()
-        
+
         if len(self.room.players) == 2:
             self.room.reset()
 

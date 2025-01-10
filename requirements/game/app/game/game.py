@@ -169,7 +169,15 @@ class Room:
             "score": self.score,
             "winner": self.winner
         }
-        redis_client.publish('game_results', json.dumps({"room_name": self.name, "winner": self.winner, "score": self.score}))
+        if self.name != "room_local":
+            redis_client.publish('game_results', json.dumps({
+                "room_name": self.name,
+                "player_1": self.players[0].user["username"],
+                "player_2": self.players[1].user["username"],
+                "player_1_win": True if self.score[0] == 3 else False,
+                "player_2_win": True if self.score[1] == 3 else False,
+                "score": self.score
+            }))
 
         return game_state
     

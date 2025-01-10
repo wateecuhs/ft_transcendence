@@ -57,14 +57,14 @@ async function updateUser() {
 					method: 'PUT',
 					headers: {
 							'Content-Type': 'application/json',
-							'Authorization': `Bearer ${access_token}`,
+							'Authorization': `Bearer ${getTokenCookie()}`,
 					},
 					body: JSON.stringify(requestData),
 			});
 
 			const data = await response.json();
 			if (response.ok && data.message === 'Success') {
-					raiseAlert('Les informations ont été changées avec succès.');
+					raiseAlert(window.dataMap.get('change-info'));
 
 					updateUserInfo();
 

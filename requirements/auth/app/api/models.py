@@ -158,37 +158,27 @@ class   Status(models.IntegerChoices):
 
 class   Match(models.Model):
 
-    user1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
-    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="opponent_match_history")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
+    user_name = models.CharField(max_length=30)
+    opponent_name = models.CharField(max_length=30)
     date = models.DateField()
-    user1_score = models.PositiveSmallIntegerField()
-    user2_score = models.PositiveSmallIntegerField()
-    user1_status = models.IntegerField(choices=Status.choices, default=Status.WIN)
-    user2_status = models.IntegerField(choices=Status.choices, default=Status.WIN)
+    user_score = models.PositiveSmallIntegerField()
+    opponent_score = models.PositiveSmallIntegerField()
+    status = models.IntegerField(choices=Status.choices, default=Status.WIN)
 
     class Meta:
         db_table = 'matches'
 
     @classmethod
-    def create_match(cls, user1, user2, date, user1_score, user2_score, user1_status, user2_status):
-        match = cls(user1=user1, user2=user2, date=date, user1_score=user1_score, user2_score=user2_score, user1_status=user1_status, user2_status=user2_status)
+    def create_match(cls, user, date, user_score, opponent_score, status, user_name, opponent_name):
+        match = cls(user=user, date=date, user_score=user_score, opponent_score=opponent_score, status=status, user_name=user_name, opponent_name=opponent_name)
         match.save()
-        user1.matches_number = user1.matches_number + 1
-        if user1_status == Status.WIN:
-            user1.matches_win = user1.matches_win + 1
+        user.matches_number = user.matches_number + 1
+        if status == Status.WIN:
+            user.matches_win = user.matches_win + 1
         else:
-            user1.matches_lose = user1.matches_lose + 1
-        user1.winrate = (user1.matches_win / user1.matches_number) * 100
-        user1.goal_scored = user1.goal_score + user1_score
-        user1.goal_conceded = user1.goal_conded + user2_score
-        user1.save()
-
-        user2.matches_number = user2.matches_number + 1
-        if user2_status is Status.WIN:
-            user2.matches_win = user2.matches_win + 1
-        else:
-            user2.matches_lose = user2.matches_lose + 1
-        user2.winrate = (user2.matches_win / user2.matches_number) * 100
-        user2.goal_scored = user2.goal_score + user2_score
-        user2.goal_conceded = user2.goal_conded + user1_score
-        user2.save()
+            user.matches_lose = user.matches_lose + 1
+        user.winrate = (user.matches_win / user.matches_number) * 100
+        user.goal_scored = user.goal_scored + user_score
+        user.goal_conceded = user.goal_conceded + opponent_score
+        user.save()

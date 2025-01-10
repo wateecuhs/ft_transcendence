@@ -68,7 +68,7 @@ function simulateRound() {
     const tournamentButton = document.createElement('button');
     tournamentButton.textContent = 'Simulate Button';
     winContent.appendChild(tournamentButton);
-    
+
     tournamentButton.addEventListener('click', simulateRound);
   }
 }
@@ -81,10 +81,36 @@ document.addEventListener("DOMContentLoaded", function() {
   const tournamentButton = document.createElement('button');
   tournamentButton.textContent = 'Simulate Button';
   winContent.appendChild(tournamentButton);
-  
+
   tournamentButton.addEventListener('click', simulateRound);
 
   if (closeButton.addEventListener('click', function() {
     toogleWindowTree();
   }));
 });
+
+async function addPlayerMatchmaking() {
+  const userInfo = await getUserInfo(getTokenCookie());
+  if (!userInfo) {
+    console.error('User not found');
+    return ;
+  }
+  const newPlayer = {
+    author: userInfo.username,
+  };
+  window.mmws.send(JSON.stringify({ type: 'matchmaking.join', data: newPlayer}));
+  //raiseAlert(`${window.dataMap.get('matchmaking-join')}`);
+}
+
+async function removePlayerMatchmaking() {
+  const userInfo = await getUserInfo(getTokenCookie());
+  if (!userInfo) {
+    console.error('User not found');
+    return ;
+  }
+  const newPlayer = {
+    author: userInfo.username,
+  };
+  window.mmws.send(JSON.stringify({ type: 'matchmaking.leave', data: newPlayer}));
+  //raiseAlert(`${window.dataMap.get('matchmaking-leave')}`);
+}

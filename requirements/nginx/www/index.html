@@ -58,6 +58,7 @@
     </div>
 
     <div class="login-42">
+      <div class="flag-icon-login" id="language-flag-login" alt="Language Flag" onclick="toogleLanguageChoicesLogin()"></div>
       <button class="button-login-42" id="button-login-42">Login 42</button>
     </div>
 
@@ -79,6 +80,23 @@
       <input type="text" id="2fa-input" class="input-login-page" placeholder="Code">
       <button class="button-login-page" id="2fa-button">Validate</button>
     </div>
+  </div>
+
+  <div class="language-choices-login">
+    <ul>
+      <li>
+        <div class="flag-icon-login" id="france-flag-login" alt="France Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="england-flag-login" alt="England Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="portugal-flag-login" alt="Portugal Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="russia-flag-login" alt="Russia Flag"></div>
+      </li>
+    </ul>
   </div>
 
   </div>
@@ -127,7 +145,7 @@
           <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()" id="desktop">Desktop</button>
         </li>
         <li>
-          <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()" id="account">Account</button>
+          <button class="menu-btn work-desk-btn" id="account">Account</button>
         </li>
         <li id="settings">Settings</li>
         <li>
@@ -238,23 +256,49 @@
       </div>
 
       <div class="account-page" id="account-page-2" style="display: none">
-        <div class="user-friends-title" id="user-friends"> User friends </div>
+        <div class="user-stat-title" id="user-stats"> User Match History </div>
 
-        <ul class="friends-list">
-          <li class="friend-item">
-            <span class="friend-name">user2:</span>
-            <button>See profile</button>
+        <ul class="match-history">
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
           </li>
-          <li class="friend-item">
-            <span class="friend-name">user3:</span>
-            <button>See profile</button>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
           </li>
-          <li class="friend-item">
-            <span class="friend-name">user4:</span>
-            <button>See profile</button>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
+          </li>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
+          </li>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
           </li>
         </ul>
-
       </div>
 
       <div class="number-pages">1/4</div>
@@ -483,6 +527,8 @@
             <button id="ready-button" class="button">Join</button>
             <button id="quit-button" class="button">Quit</button>
           </div>
+
+          <div id="tournament-status-id"></div>
         </div>
       </div>
     </div>
@@ -502,10 +548,6 @@
 
   <div class="window fullscreen" id="PongGame" style="display: none">
     <div class="window-header">
-      <div class="arrow-buttons">
-        <button class="left-arrow">&lt;</button>
-        <button class="right-arrow">&gt;</button>
-      </div>
       <div class="header-title" id="game">Game</div>
       <button class="close-button">X</button>
     </div>
@@ -526,6 +568,7 @@
           <li><button id="local-button">Local multiplayer</button></li>
           <li><button id="create-room">Create room</button></li>
           <li><button id="join-room">Join room</button></li>
+          <li><button id="launch-matchmaking">Launch matchmaking</button></li>
         </ul>
       </div>
     </div>
@@ -602,6 +645,7 @@
       window.oldPage = "login";
       window.currentPage = "login";
       window.dict = 'en-dict.txt';
+      window.matchmaking = true;
 
       fetch(window.dict)
         .then(response => response.text())
@@ -680,6 +724,11 @@
           document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
           document.getElementById('start-button').textContent = window.dataMap.get('start-button');
           document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+          if (window.matchmaking) {
+            document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
+          } else {
+            document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
+          }
           updateTime();
           setInterval(updateTime, 1000);
         })
