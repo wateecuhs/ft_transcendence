@@ -15,7 +15,7 @@ async function loadMessageHistory() {
             displayChatMessage(message.data);
           });
         } else console.log('load message history: no data');
-      } else console.log('load message history: response is not ok');
+      } else console.error('load message history: response is not ok');
   } catch (error) {
     console.error(error);
   }
@@ -46,9 +46,10 @@ function initWebSocket() {
       updateUserFriend();
     }
     else if (message.type === "status.update") {
-      console.log(message.data);
       handle_status_update(message.data);
-      console.log('status update');
+    }
+    else if (message.type === "match.invite") {
+      handle_chat_invite(message);
     }
     else {
       console.log(message.type);
@@ -112,7 +113,7 @@ async function updateUserFriend(username) {
           if (isRefreshed) {
             return updateUserFriend(username);
           }
-          console.log(errorData.message);
+          console.error(errorData.message);
           return;
         } else {
           console.error('Error: Failed to fetch friends', response.status);
@@ -240,7 +241,47 @@ function displayPrivateMessage(data) {
     target: data.target,
     content: data.content,
     created_at: data.created_at,
-    is_author: data.is_author
+    is_author: data.is_author,
+    room_code: null,
+  });
+}
+
+function displayInviteMessage(data) {
+  console.log('Invite message:', data);
+  const chatMessages = document.querySelector('#msnWindow .chat-messages');
+  const messageDiv = document.createElement('div');
+  messageDiv.classList.add('message');
+
+  const prefix = data.is_author ? '[To] ' : '[From] ';
+  const who = data.is_author ? data.target : data.author;
+
+  messageDiv.textContent = `${prefix} ${who} invite you to match: `
+
+  const button = document.createElement('button');
+  button.textContent = 'Accept';
+  button.classList.add('accept-button');
+  button.addEventListener('click', function() {
+    console.log('Game');
+    let game = new PongWindow('remote', data.room_code);
+    game.run();
+  });
+
+  messageDiv.appendChild(button);
+  chatMessages.appendChild(messageDiv);
+
+  const timestampSpan = document.createElement('span');
+  timestampSpan.classList.add('timestamp');
+  timestampSpan.textContent = data.created_at;
+  messageDiv.appendChild(timestampSpan);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  addMessageToConversation(data.target, {
+    author: data.author,
+    target: data.target,
+    content: data.content,
+    created_at: data.created_at,
+    is_author: data.is_author,
+    room_code: data.room_code
   });
 }
 
@@ -281,7 +322,6 @@ function addMessageToConversation(friend, message) {
   if (!conversations[friend]) {
     conversations[friend] = [];
   }
-  console.log('push with ' + friend);
   conversations[friend].push(message);
 }
 
@@ -289,18 +329,41 @@ function loadPrivateHistory(friend) {
   if (!conversations || !conversations[friend]) return ;
 
   for (const data of conversations[friend]) {
-    const chatMessages = document.querySelector('#msnWindow .chat-messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message');
-    const prefix = data.is_author ? '[To] ' : '[From] ';
-    const who = data.is_author ? data.target : data.author;
-    messageDiv.textContent = prefix + who + ': ' + data.content;
-    chatMessages.appendChild(messageDiv);
-    const timestampSpan = document.createElement('span');
-    timestampSpan.classList.add('timestamp');
-    timestampSpan.textContent = data.created_at;
-    messageDiv.appendChild(timestampSpan);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (data.room_code != null) {
+      const chatMessages = document.querySelector('#msnWindow .chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      const prefix = data.is_author ? '[To] ' : '[From] ';
+      const who = data.is_author ? data.target : data.author;
+      messageDiv.textContent = `${prefix} ${who} invite you to match: `
+      chatMessages.appendChild(messageDiv);
+      const button = document.createElement('button');
+      button.textContent = 'Accept';
+      button.classList.add('accept-button');
+      button.addEventListener('click', function() {
+        let game = new PongWindow('remote', data.room_code);
+        game.run();
+      });
+
+      const timestampSpan = document.createElement('span');
+      timestampSpan.classList.add('timestamp');
+      timestampSpan.textContent = data.created_at;
+      messageDiv.appendChild(timestampSpan);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    } else {
+      const chatMessages = document.querySelector('#msnWindow .chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      const prefix = data.is_author ? '[To] ' : '[From] ';
+      const who = data.is_author ? data.target : data.author;
+      messageDiv.textContent = prefix + who + ': ' + data.content;
+      chatMessages.appendChild(messageDiv);
+      const timestampSpan = document.createElement('span');
+      timestampSpan.classList.add('timestamp');
+      timestampSpan.textContent = data.created_at;
+      messageDiv.appendChild(timestampSpan);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
   }
 }
 

@@ -20,7 +20,6 @@ while True:
                 key, value = entry.split("=", 1)
                 headers[key] = value
             r = requests.get(f"https://localhost:8443/{path}/", verify=False, data=data, headers=headers)
-            print(r.json())
         case "POST":
             path = input("Enter the path :\nex: chat/messages\n")
             data ={}
@@ -38,8 +37,5 @@ while True:
                 key, value = entry.split("=", 1)
                 headers[key] = value
             r = requests.post(f"https://localhost:8443/{path}/", verify=False, data=data, headers=headers)
-            print(r.json())
         case "exit":
             break
-        case _:
-            print("cmd can only be 'get', 'post', or 'exit'")

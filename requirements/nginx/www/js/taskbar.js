@@ -75,7 +75,9 @@ function toogleLanguageChoices() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -184,7 +186,9 @@ function toogleLanguageChoices() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -293,7 +297,9 @@ function toogleLanguageChoices() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -402,7 +408,9 @@ function toogleLanguageChoices() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -538,7 +546,9 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -647,7 +657,9 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -756,7 +768,9 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -865,7 +879,9 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('account-window').textContent = window.dataMap.get('account-window');
             document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
             document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-            document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+            const userFriends = document.getElementById('user-friends');
+            if (userFriends != null)
+              userFriends.textContent = window.dataMap.get('user-friends');
             document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
             document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
             document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');

@@ -39,7 +39,6 @@ function openFileSelector() {
                 if (response.ok) {
                     const data = await response.json();
                     if (data.message === 'Success') {
-                        console.log('YO LE RAP TA MERE');
                         updateUserInfo();
                     } else {
                         raiseAlert(data.message);

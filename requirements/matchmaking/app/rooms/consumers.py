@@ -50,7 +50,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             event = json.loads(text_data)
-            print(event, flush=True)
             handler_map = {
                 MessageType.Tournament.CREATE: self._handle_tournament_create,
                 MessageType.Tournament.JOIN: self._handle_tournament_join,
@@ -311,7 +310,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def _handle_tournament_update(self, event):
         try:
             data = event.get("data", {})
-            print(f"data {data}", flush=True)
 
             if await sync_to_async(get_user_playing_tournaments)(data["player_1"]) != await sync_to_async(get_user_playing_tournaments)(data["player_2"]):
                 await self.error("Players are not in the same tournament")
@@ -323,7 +321,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 return
 
             if tournament.round == Tournament.Round.FIRST:
-                for i in range(len(tournament.matches[0]["matches"])): 
+                for i in range(len(tournament.matches[0]["matches"])):
                     if set([data["player_1"], data["player_2"]]) == set([tournament.matches[0]["matches"][i]["player1"], tournament.matches[0]["matches"][i]["player2"]]):
                         tournament.matches[0]["matches"][i]["status"] = tournament.Status.FINISHED
                         tournament.matches[0]["matches"][i]["winner"] = data["player_1"] if data["score"][0] > data["score"][1] else data["player_2"]
@@ -359,7 +357,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
                 if all(game["status"] == Tournament.Status.FINISHED for game in tournament.matches[1]["matches"]):
                     tournament.status = Tournament.Status.FINISHED
-            
+
             await sync_to_async(tournament.save)()
 
             await self.channel_layer.group_send(
@@ -431,9 +429,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             tournament_name = event["data"]["name"]
             tournament = await sync_to_async(Tournament.objects.filter(status=Tournament.Status.PENDING).get)(name=tournament_name)
-            print(tournament.owner, self.user_id, flush=True)
             if UUID(self.user_id) == tournament.owner and len(tournament.players) >= 4:
-                print("Owner", flush=True)
                 await self._handle_tournament_start(event)
         except Tournament.DoesNotExist:
             await self.error("Tournament not found")
@@ -484,7 +480,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=message)
         except json.JSONDecodeError as e:
             await self.error(f"Invalid JSON format. ({e})")
-    
+
 
 def get_user_owned(user_id):
     return list(Tournament.objects.filter(owner=user_id).filter(status=Tournament.Status.PENDING))

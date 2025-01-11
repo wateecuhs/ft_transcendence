@@ -30,7 +30,6 @@ class FriendsView(APIView):
                 return Response("Invalid token", status=403)
             username = r.json()["username"]
             user, created = cmod.User.objects.get_or_create(username=username)
-            print([str(username) for username in user.get_friends()], flush=True)
             return Response([str(username) for username in user.get_friends()])
         except cmod.User.DoesNotExist:
             return Response("User not found", status=404)

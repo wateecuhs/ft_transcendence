@@ -152,8 +152,6 @@ class Room:
             # self.ball.MAX_VELOCITY *= 1.025
 
     async def game_over(self):
-        # print("Game Over", flush=True)
-        # redis_client = redis.Redis(host='match-redis', port=6379, db=0)
         if self.score[0] == 3:
             if len(self.players) == 2:
                 self.winner = self.players[0].user["username"]
@@ -192,5 +190,3 @@ class Room:
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.ball.reset()
         self.score = [0, 0]
-
-

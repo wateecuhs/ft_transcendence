@@ -47,6 +47,7 @@ class PongWindow {
 
 	open() {
 		const pongWindow = document.getElementById('PongGame');
+		const gameOverButton = document.querySelector('.game-over-button');
 
 		if (pongWindow.style.display === 'none') {
 			pongWindow.style.display = 'flex';
@@ -55,8 +56,17 @@ class PongWindow {
 			pongWindow.style.display = 'none';
 			this.close();
 		}
+
 		pongWindow.querySelector('.close-button').addEventListener('click', () => {
 			pongWindow.style.display = 'none';
+			window.createRoom = false;
+			this.close();
+		});
+
+		gameOverButton.addEventListener('click', () => {
+			document.querySelector('.all-game-over').style.display = 'none';
+			pongWindow.style.display = 'none';
+			window.createRoom = false;
 			this.close();
 		});
 	}

@@ -13,7 +13,6 @@ userWindow.querySelector('.close-button').addEventListener('click', function() {
 
 async function updateUser() {
 	try {
-		console.log('Here');
 
 			const accountWin = document.getElementById("accountWindow");
 			const fullNameText = accountWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent.trim();
@@ -41,7 +40,7 @@ async function updateUser() {
 					return ;
 				}
 			} catch (error) {
-				console.log(error);
+				console.error(error);
 				return ;
 			}
 
@@ -118,7 +117,6 @@ async function updateUser() {
 								field_txt = window.dataMap.get('profile-password');
 								messages_txt = window.dataMap.get('different-pwd');
 							}
-							console.log(messages);
 							errorMessage += `${field_txt}: ${messages_txt}\n`;
 							if (Array.isArray(messages) && messages.includes("Password too short")) {
 								errorMessage = window.dataMap.get('too-short-pwd');

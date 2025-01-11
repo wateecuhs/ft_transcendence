@@ -57,7 +57,7 @@ async function getUserInfo(accessToken) {
           return await getUserInfo(new_token);
         }
       } else {
-        console.log(errorData.message);
+        console.error(errorData.message);
       }
       return null;
     }
@@ -160,7 +160,7 @@ async function getMatchesHistory() {
         if (isRefreshed) {
           return await getMatchesHistory();
         } else {
-          console.log(errorData.message);
+          console.error(errorData.message);
         }
       }
       return null;
@@ -254,20 +254,17 @@ async function getRefreshToken() {
       method: 'GET',
     });
 
+    const data = await response.json();
     if (response.ok) {
-      const data = await response.json();
       if (data.message === 'Success') {
-        document.cookie = `access_token=${data.access_token}; path=/`;
-        console.log('Token has been successfully refresh');
+        document.cookie = `access_token=${data.access_token}; path=/; SameSite=None; Secure`;
         return true;
       } else {
         raiseAlert('In getRefreshToken: ' + data.message);
       }
-    } else {
-      raiseAlert('In getRefreshToken: ' + data.message);
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   return false;
 }

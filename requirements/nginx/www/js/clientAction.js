@@ -34,7 +34,12 @@ function toogleClientAction(event, friend) {
       }
 
       if (li.id === "client-invite") {
-        
+        window.ws.send(JSON.stringify({
+          type: "chat_message",
+          data: {
+            message: `/invite ${friend}`
+          }
+        }));
       }
     });
   });

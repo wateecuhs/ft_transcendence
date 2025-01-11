@@ -38,11 +38,8 @@ function initMMWebSocket() {
       };
       displayChatMessage(data);
       showPopUp(window.dataMap.get('start-tournament'));
-      console.log("Starting tournament");
       showTournamentDetails(message.data);
-      console.log("Post showTournamentDetails");
       sendPlayersToRooms(message.data);
-      console.log("Post sendPlayersToRooms2");
     }
     else if (message.type === "tournament.delete") {
       showTournamentDetails(message.data);
@@ -63,6 +60,10 @@ function initMMWebSocket() {
     }
     else if (message.type === "matchmaking.start") {
       //showPopUp(window.dataMap.get('matchmaking-start'));
+      const optionWin = document.getElementById('game-option');
+      const buttonMathmaking = optionWin.querySelector('#launch-matchmaking');
+      buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
+      window.matchmaking = true;
       let game = new PongWindow("remote", message.data.room_code);
       game.run();
     }

@@ -41,7 +41,7 @@ function SignIn() {
 		  const data = await response.json();
 
 		  if (data.message === 'success') {
-			document.cookie = `access_token=${data.access_token}; path=/`;
+			document.cookie = `access_token=${data.access_token}; path=/; SameSite=None; Secure`;
 			const userInfo = await getUserInfo(data.access_token);
 
 			if (userInfo) {
@@ -85,7 +85,9 @@ function SignIn() {
 					document.getElementById('account-window').textContent = window.dataMap.get('account-window');
 					document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
 					document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-					document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+					const userFriends = document.getElementById('user-friends');
+					if (userFriends != null)
+						userFriends.textContent = window.dataMap.get('user-friends');
 					document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
 					document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
 					document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -246,7 +248,7 @@ function SignIn() {
 		  if (data.message === 'success') {
 				raiseAlert(window.dataMap.get('register-success'));
 				displayRegister();
-				document.cookie = `access_token=${data.access_token}; path=/`;
+				document.cookie = `access_token=${data.access_token}; path=/; SameSite=None; Secure`;
 			} else {
 				raiseAlert('Signup: ' + data.message);
 			}
@@ -288,7 +290,6 @@ function SignIn() {
 				if (Array.isArray(messages) && messages.includes("The username can only contain alphanumeric characters or underscores.")) {
 					messages_txt = window.dataMap.get('alphanumeric-username');
 				}
-				console.log(messages);
 				errorMessage += `${field_txt}: ${messages_txt}\n`;
 				if (Array.isArray(messages) && messages.includes("Password too short")) {
 					errorMessage = window.dataMap.get('too-short-pwd');
@@ -382,7 +383,7 @@ async function SignIn42() {
 							const userInfo = await getUserInfo(data.access_token);
 
 							if (userInfo) {
-									document.cookie = `access_token=${data.access_token}; path=/`;
+								document.cookie = `access_token=${data.access_token}; path=/; SameSite=None; Secure`;
 									localStorage.setItem(userInfo.username, JSON.stringify(userInfo));
 
 									window.dict = `${userInfo.language}-dict.txt`;
@@ -418,7 +419,9 @@ async function SignIn42() {
 										document.getElementById('account-window').textContent = window.dataMap.get('account-window');
 										document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
 										document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-										document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+										const userFriends = document.getElementById('user-friends');
+										if (userFriends != null)
+											userFriends.textContent = window.dataMap.get('user-friends');
 										document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
 										document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
 										document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -566,7 +569,9 @@ async function can_sign_in() {
 					document.getElementById('account-window').textContent = window.dataMap.get('account-window');
 					document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
 					document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-					document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+					const userFriends = document.getElementById('user-friends');
+					if (userFriends != null)
+						userFriends.textContent = window.dataMap.get('user-friends');
 					document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
 					document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
 					document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -647,7 +652,7 @@ async function can_sign_in() {
 			}
 		}
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	}
 }
 
@@ -717,7 +722,9 @@ async function verify2FA() {
 					document.getElementById('account-window').textContent = window.dataMap.get('account-window');
 					document.getElementById('update-profile').textContent = window.dataMap.get('update-profile');
 					document.getElementById('user-stats').textContent = window.dataMap.get('user-stats');
-					document.getElementById('user-friends').textContent = window.dataMap.get('user-friends');
+					const userFriends = document.getElementById('user-friends');
+					if (userFriends != null)
+						userFriends.textContent = window.dataMap.get('user-friends');
 					document.getElementById('profile-account').textContent = window.dataMap.get('profile-account');
 					document.getElementById('profile-alias').placeholder = window.dataMap.get('profile-alias');
 					document.getElementById('profile-email').placeholder = window.dataMap.get('profile-email');
@@ -809,11 +816,11 @@ async function verify2FA() {
 					return await verify2FA();
 				}
 			} else {
-				console.log(errorData.message);
+				console.error(errorData.message);
 			}
 		}
 	} catch(error) {
-		console.log(error);
+		console.error(error);
 	}
 }
 

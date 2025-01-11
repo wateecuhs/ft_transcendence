@@ -11,8 +11,6 @@ function triggerGameOverWindows(message) {
         window.classList.add('show');
       }, index * 100);
     });
-  } else {
-    gameOver.style.display = 'none';
   }
 }
 

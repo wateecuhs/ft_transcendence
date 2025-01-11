@@ -168,7 +168,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if await sync_to_async(get_relationship_status)(self.user, splitted_message[1]) != cmod.Relationship.Status.ACCEPTED or splitted_message[1] == self.user:
                 await self.error(f"You can't invite {splitted_message[1]}.")
                 return
-
+            room_code = os.urandom(4).hex()
             target = splitted_message[1]
             await self.channel_layer.group_send(
                 f"user.{target}",
@@ -177,7 +177,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "data": {
                         "author": self.user,
                         "target": target,
-                        "room_code": os.urandom(4).hex(),
+                        "room_code": room_code,
                     },
                 },
             )
@@ -188,7 +188,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "data": {
                         "author": self.user,
                         "target": target,
-                        "room_code": os.urandom(4).hex(),
+                        "room_code": room_code,
                     },
                 },
             )

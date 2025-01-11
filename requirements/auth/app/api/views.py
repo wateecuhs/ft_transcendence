@@ -62,7 +62,7 @@ class LoginAPI(APIView):
 			return JsonResponse({'message': 'failed : cannot create access token'}, status=400)
 		encoded_refresh_jwt = CreateRefreshToken(request, username)
 		response = JsonResponse({"message": "success", "access_token": encoded_access_jwt})
-		response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/')
+		response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/', samesite='None')
 		return response
 
 '''
@@ -285,7 +285,7 @@ class ConfirmToken(APIView):
             return JsonResponse({'message': 'failed : cannot create access token'}, status=400)
         encoded_refresh_jwt = CreateRefreshToken(request, username)
         response = JsonResponse({"message": "Success", "access_token": encoded_access_jwt})
-        response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/')
+        response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=6000000, secure=True, path='/', samesite='None')
         return response
 
 

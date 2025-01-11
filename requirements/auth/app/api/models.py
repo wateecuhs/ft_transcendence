@@ -131,7 +131,6 @@ class CustomUser(AbstractUser):
     @classmethod
     def set_email(cls, user, newEmail):
         user.email = newEmail
-        print(f"set email {user.email}")
         user.save()
 
     @classmethod

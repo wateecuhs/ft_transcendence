@@ -32,7 +32,6 @@ accountWindow.querySelector('.left-arrow').addEventListener('click', function() 
 });
 
 async function toogleAccountWindow() {
-  console.log('toogleAccountWindow');
   updateMatchHistory();
   const work_desk = accountWindow;
 

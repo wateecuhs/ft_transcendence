@@ -32,7 +32,7 @@ async function activate_2fa() {
 				}
 			}
 		} catch(error) {
-			console.log(error);
+			console.error(error);
 		}
 		return ;
 	}
@@ -112,7 +112,7 @@ async function validate_2fa() {
 			}
 		}
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 	}
 }
 

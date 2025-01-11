@@ -68,7 +68,6 @@ let currentIndex = 0;
 let historyStack = [];
 
 function navigateToPage(pageName) {
-  console.log(`Navigate to ${pageName}`);
   if (historyStack.length > 0 && historyStack[currentIndex - 1].page === pageName) {
     return ;
   }
@@ -80,12 +79,8 @@ function navigateToPage(pageName) {
 }
 
 window.addEventListener('popstate', function (event) {
-  console.log('Popstate event triggered');
-  console.log('Current URL:', window.location.href);
-  console.log('Event state:', JSON.stringify(event.state));
 
   if (!event.state || !event.state.page) {
-    //console.log('No valid state found');
     quitDesk();
     return;
   }
@@ -93,27 +88,20 @@ window.addEventListener('popstate', function (event) {
   const currentPage = event.state.page;
   const goingBack = event.state.index < currentIndex;
 
-  console.log(`Going ${goingBack ? 'Back' : 'Forward'} to page: ${currentPage}`);
 
   currentIndex = event.state.index;
 
   handlePageTransition(currentPage, goingBack);
-  console.log('Updated history stack:', JSON.stringify(historyStack));
-  console.log(`currentIndex = ${currentIndex}`);
 });
 
 function handlePageTransition(pageName, isBack) {
-  console.log('handlePageTransition called with:', { pageName, isBack });
-    
+
   if (isBack) {
-      console.log('Going Back');
       let previousPageIndex = currentIndex;
 
       let previousPage = historyStack[previousPageIndex]?.page || "login";
-      console.log(`current = ${pageName} and previous = ${previousPage}`);
       switchPage(previousPage);
   } else {
-      console.log('Going Forward');
       switchPage(pageName);
   }
 }

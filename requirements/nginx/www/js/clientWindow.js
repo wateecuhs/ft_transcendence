@@ -73,7 +73,7 @@ async function getClientInfo(username) {
           return await getClientInfo(username);
         }
       } else {
-        console.log(errorData.message);
+        console.error(errorData.message);
       }
       return null;
     }

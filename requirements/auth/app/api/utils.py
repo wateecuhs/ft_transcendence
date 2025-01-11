@@ -10,11 +10,9 @@ CreateAccessToken take an username. Create, stock in DB and return an encoded_ac
 '''
 
 def CreateAccessToken(request, username):
-	print(f"create access token {username}", flush=True)
 	user = CustomUser.get_user_by_name(username)
 	if not user:
 		return None
-	print("coucou", flush=True)
 	exp_access = datetime.now() + timedelta(seconds=60)
 	iat = datetime.now()
 	payload = {
@@ -114,7 +112,6 @@ def decode_and_save_base64_image(base64_image, file_name):
         raise ValueError("Invalid base64 image data")
 
 def save_match(player1, player2, player1_status, player2_status, player1_score, player2_score):
-	print(f"Saving match between {player1} and {player2}", flush=True)
 	user1 = CustomUser.get_user_by_name(player1)
 	user2 = CustomUser.get_user_by_name(player2)
 	Match.create_match(user=user1, date="2025-01-01", status=player1_status, user_score=player1_score, opponent_score=player2_score, user_name=player1, opponent_name=player2)

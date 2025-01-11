@@ -73,10 +73,10 @@ async function joinTournament() {
         });
       }
     } else {
-      console.log(response);
+      console.error(response);
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -102,10 +102,10 @@ async function quitTournament() {
         });
       }
     } else {
-      console.log(response);
+      console.error(response);
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -186,7 +186,6 @@ function sendPlayersToRooms(tournament) {
         }
       });
     } else if (round.round === "FINAL") {
-      console.log('FINAL');
       const matches = round.matches;
         matches.forEach(match => {
           const dataMatch = {
@@ -273,4 +272,3 @@ function firstRoundResults(tournament) {
     }
   });
 }
-

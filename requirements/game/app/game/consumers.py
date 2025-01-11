@@ -26,10 +26,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.room = rooms[self.room_name]
 
         self.user = self.scope.get("user")
-        if self.user:
-            print(f"User connected: {self.user['username']} (ID: {self.user['id']})", flush=True)
-        else:
-            print("Anonymous user connected", flush=True)
 
         if not await self.room.add_player(self):
             await self.close()
@@ -61,7 +57,6 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         command = json.loads(text_data)
         if command.get('type') == 'disconnect':
-            print("Disconnected", flush=True)
             await self.room.remove_player(self)
             if len(self.room.players) == 0:
                 self.room.game_loop.cancel()

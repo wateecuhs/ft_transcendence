@@ -33,12 +33,12 @@ async function showTournamentResults(query) {
         filteredTournaments.forEach(tournament => {
           const li = document.createElement('li');
           li.textContent = `${tournament.name} (Max: 4 joueurs)`;
-          
+
           li.addEventListener('click', function() {
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
             showTournamentDetails(tournament);
           });
-          
+
           tournamentResultsList.appendChild(li);
         });
       } else {
@@ -47,10 +47,10 @@ async function showTournamentResults(query) {
         tournamentResultsList.appendChild(noResultsItem);
       }
     } else {
-      console.log('Error: response is not ok in winBook');
+      console.error('Error: response is not ok in winBook');
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -67,16 +67,15 @@ async function showAllTournaments() {
     if (response.ok) {
       const tournaments = await response.json();
       if (tournaments.length > 0) {
-        console.log("tournaments", tournaments);
         tournaments.forEach(tournament => {
           const li = document.createElement('li');
           li.textContent = `${tournament.name} (Max: 4 joueurs)`;
-    
+
           li.addEventListener('click', function() {
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
             showTournamentDetails(tournament);
           });
-    
+
           tournamentResultsList.appendChild(li);
         });
       } else {
@@ -86,10 +85,9 @@ async function showAllTournaments() {
         tournamentResultsList.appendChild(noResultsItem);
       }
     } else {
-      console.log('Error: response is not ok in winbook');
+      console.error('Error: response is not ok in winbook');
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
-

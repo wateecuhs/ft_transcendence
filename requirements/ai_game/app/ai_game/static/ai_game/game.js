@@ -30,7 +30,6 @@ socket.onerror = function(error) {
 };
 
 socket.onmessage = function(event) {
-    console.log('Received message:', event.data);
     const gameState = JSON.parse(event.data);
     drawGame(gameState);
 };
