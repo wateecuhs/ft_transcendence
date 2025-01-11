@@ -14,7 +14,7 @@ class TournamentSerializer(serializers.ModelSerializer):
         if len(value) < 3:
             raise serializers.ValidationError("Name must be at least 3 characters long")
         if len(value) > 20:
-            raise serializers.ValidationError("Name must be at most 50 characters long")
+            raise serializers.ValidationError("Name must be at most 20 characters long")
         return value
 
     def validate(self, attrs):

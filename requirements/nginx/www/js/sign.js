@@ -137,7 +137,11 @@ function SignIn() {
 						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
 					  } else {
 						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
-					  }
+					}
+					document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+					document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 				});
 
 				let langageUrl = null;
@@ -475,8 +479,11 @@ async function SignIn42() {
 											document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
 										  } else {
 											document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
-										  }
-									});
+										}
+										document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+										document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+										document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+										document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');									});
 
 									let langageUrl = null;
 									if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
@@ -627,8 +634,11 @@ async function can_sign_in() {
 						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
 					  } else {
 						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
-					  }
-				});
+					}
+					document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+					document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');				});
 
 				let langageUrl = null;
 				if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
@@ -772,10 +782,13 @@ async function verify2FA() {
 					document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
 					if (window.matchmaking) {
 						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
-					  } else {
+					} else {
 						document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
-					  }
-				});
+					}
+					document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+					document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');				});
 
 				let langageUrl = null;
 				if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';

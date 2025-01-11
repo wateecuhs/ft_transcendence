@@ -20,7 +20,7 @@ function game_option_button() {
 
       if (buttonId === 'ai-button') {
         if (window.matchmaking === false) {
-          raiseAlert('You are already in matchmaking, please stop matchmaking first.');
+          raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
         let game_ai = new PongWindow('ai', 0);
@@ -28,31 +28,18 @@ function game_option_button() {
       }
       else if (buttonId === 'local-button') {
         if (window.matchmaking === false) {
-          raiseAlert('You are already in matchmaking, please stop matchmaking first.');
+          raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
         let game_local = new PongWindow('local', 0);
         game_local.run();
       }
-      else if (buttonId === 'create-room') {
-        if (window.matchmaking === false) {
-          raiseAlert('You are already in matchmaking, please stop matchmaking first.');
-          return ;
-        }
-        let game_remote = new PongWindow('remote', 0);
-        raiseAlert('Room created: ' + game_remote.roomNumber);
-        window.createRoom = true;
-        game_remote.run();
-      }
       else if (buttonId === 'join-room') {
         if (window.matchmaking === false) {
-          raiseAlert('You are already in matchmaking, please stop matchmaking first.');
+          raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
-        let roomNumber = prompt('Enter room number:');
-        if (!roomNumber) return;
-        let game = new PongWindow('remote', roomNumber);
-        game.run();
+        toogleJoinRoom();
       }
       else if (buttonId === 'launch-matchmaking') {
         if (window.createRoom === true) {
@@ -76,6 +63,39 @@ function game_option_button() {
   });
 }
 
+function toogleJoinRoom() {
+  const joinRoom = document.getElementById('window-join-room');
+  if (joinRoom.style.display === 'none') {
+    joinRoom.style.display = 'flex';
+    joinRoom.style.position = 'absolute';
+    joinRoom.style.top = `${window.innerHeight / 2 - joinRoom.offsetHeight / 2}px`;
+    joinRoom.style.left = `${window.innerWidth / 2 - joinRoom.offsetWidth / 2}px`;
+  } else {
+    joinRoom.style.display = 'none';
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   game_option_button();
+
+  const joinRoomInput = document.getElementById('join-input-id');
+  const joinRoomButton = document.getElementById('join-room-button-id');
+
+  document.getElementById('window-join-room').querySelector('.close-button').addEventListener('click', function() {
+    toogleJoinRoom();
+  });
+
+  joinRoomButton.addEventListener('click', function() {
+    if (window.matchmaking === false) {
+      raiseAlert(window.dataMap.get('already-match'));
+      return ;
+    }
+    let roomNumber = joinRoomInput.value;
+    if (!roomNumber) {
+      raiseAlert(window.dataMap.get('enter-room-number'));
+      return ;
+    }
+    let game = new PongWindow('remote', roomNumber);
+    game.run();
+  });
 });

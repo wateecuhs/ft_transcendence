@@ -127,6 +127,10 @@ function toogleLanguageChoices() {
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+            document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+            document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+            document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+            document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
             raiseAlert("Langue changé en Français");
           });
 
@@ -238,6 +242,10 @@ function toogleLanguageChoices() {
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+            document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+            document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+            document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+            document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
             raiseAlert("Language changed to English");
           });
 
@@ -349,6 +357,10 @@ function toogleLanguageChoices() {
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+            document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+            document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+            document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+            document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
             raiseAlert("Idioma alterado para português");
           });
 
@@ -460,6 +472,10 @@ function toogleLanguageChoices() {
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+            document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+            document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+            document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+            document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
           });
 
           const flagIcon = document.querySelector('.flag-icon');
@@ -598,6 +614,10 @@ function toogleLanguageChoicesLogin() {
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+            document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+            document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+            document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+            document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
             raiseAlert("Langue changé en Français");
           });
 
@@ -709,6 +729,10 @@ function toogleLanguageChoicesLogin() {
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+            document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+            document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+            document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+            document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
             raiseAlert("Language changed to English");
           });
 
@@ -820,6 +844,10 @@ function toogleLanguageChoicesLogin() {
             if (noTournament != null)
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
+            document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+            document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+            document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+            document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
             raiseAlert("Idioma alterado para português");
           });
 
@@ -932,6 +960,10 @@ function toogleLanguageChoicesLogin() {
               noTournament.textContent = window.dataMap.get('no-tournament');
             document.getElementById('client-invite').textContent = window.dataMap.get('client-invite');
           });
+          document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
+          document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
+          document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
+          document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {

@@ -71,7 +71,14 @@ function initMMWebSocket() {
       //showPopUp(window.dataMap.get('matchmaking-leave'));
     }
     else if (message.type === "error") {
-      raiseAlert(message.message);
+      errorMessage = message.message.split(':')[1];
+      if (errorMessage === ' Name Must Be At Least 3 Characters Long')
+        errorMessage = window.dataMap.get('too-short-name');
+      else if (errorMessage === ' Ensure This Field Has No More Than 20 Characters.')
+        errorMessage = window.dataMap.get('too-long-name');
+      else if (errorMessage === ' Name Must Be Alphanumeric')
+        errorMessage = window.dataMap.get('alphanumeric-name');
+      raiseAlert(errorMessage);
     }
     else {
       if (message.message === 'You already have an active tournament.') {
