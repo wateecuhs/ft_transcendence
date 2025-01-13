@@ -78,11 +78,12 @@ function initMMWebSocket() {
         errorMessage = window.dataMap.get('too-long-name');
       else if (errorMessage === ' Name Must Be Alphanumeric')
         errorMessage = window.dataMap.get('alphanumeric-name');
+      if (message.message === 'You already have an active tournament.') {
+        errorMessage = window.dataMap.get('already-tournament');
       raiseAlert(errorMessage);
     }
     else {
-      if (message.message === 'You already have an active tournament.') {
-        raiseAlert(window.dataMap.get('already-tournament'));
+        console.error(message);
       }
     }
   }

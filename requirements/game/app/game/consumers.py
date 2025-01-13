@@ -53,6 +53,17 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
         await self.room.remove_player(self)
 
+        if len(self.room.players) == 1:
+            game_state = await self.room.game_over()
+            game_state["winner"] = self.room.players[0].user["username"]
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    "type": "game_update",
+                    "message": json.dumps(game_state)
+                }
+            )
+
         if len(self.room.players) == 0:
             self.room.game_loop.cancel()
             if self.room_name in rooms:

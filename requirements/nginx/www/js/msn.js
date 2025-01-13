@@ -108,12 +108,12 @@ async function updateUserFriend(username) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        if (errorData.message === 'Invalid token') {
+        if (errorData === 'Invalid token') {
           const isRefreshed = await getRefreshToken();
           if (isRefreshed) {
             return updateUserFriend(username);
           }
-          console.error(errorData.message);
+          console.error(errorData);
           return;
         } else {
           console.error('Error: Failed to fetch friends', response.status);

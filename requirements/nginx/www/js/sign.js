@@ -142,6 +142,7 @@ function SignIn() {
 					document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
 					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
 					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
 				});
 
 				let langageUrl = null;
@@ -293,6 +294,9 @@ function SignIn() {
 				}
 				if (Array.isArray(messages) && messages.includes("The username can only contain alphanumeric characters or underscores.")) {
 					messages_txt = window.dataMap.get('alphanumeric-username');
+				}
+				if (Array.isArray(messages) && messages.includes("You can't use 42 email to create an account. Please use 42 connection.")) {
+					messages_txt = window.dataMap.get('no-42-email');
 				}
 				errorMessage += `${field_txt}: ${messages_txt}\n`;
 				if (Array.isArray(messages) && messages.includes("Password too short")) {
@@ -483,7 +487,9 @@ async function SignIn42() {
 										document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
 										document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
 										document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
-										document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');									});
+										document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+										document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+									});
 
 									let langageUrl = null;
 									if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
@@ -638,7 +644,9 @@ async function can_sign_in() {
 					document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
 					document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
 					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
-					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');				});
+					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+				});
 
 				let langageUrl = null;
 				if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';
@@ -788,7 +796,9 @@ async function verify2FA() {
 					document.getElementById('join-room-title').textContent = window.dataMap.get('join-room-title');
 					document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
 					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
-					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');				});
+					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+				});
 
 				let langageUrl = null;
 				if (userInfo.language === 'fr') langageUrl = '../img/france_flag.png';

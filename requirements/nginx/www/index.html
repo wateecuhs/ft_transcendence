@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bureau Windows 98</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/desktop.css">
     <link rel="stylesheet" href="css/desktop-icons.css">
     <link rel="stylesheet" href="css/taskbar.css">
@@ -360,7 +360,7 @@
       </div>
 
       <div class="account-page" id="account-page-1" style="display: none;">
-        <div class="user-stat-title" id="friend"> User statistic </div>
+        <div class="user-stat-title" id="friend-stat"> User statistic </div>
 
         <ul>
           <li>Number of matches: 8</li>
@@ -574,22 +574,20 @@
     </div>
   </div>
 
-  <div class="window" id="window-join-room" style="display: none;">
-
-    <div class="window-header">
-
+  <div class="window container-fluid p-0" id="window-join-room" style="display: none;">
+    <div class="window-header d-flex align-items-center justify-content-between p-2 bg-light border-bottom">
       <div class="arrow-buttons">
-        <button class="left-arrow"> &lt </button>
-        <button class="right-arrow"> &gt </button>
+        <button class="left-arrow btn btn-sm btn-outline-secondary custom-btn"> &lt; </button>
+        <button class="right-arrow btn btn-sm btn-outline-secondary custom-btn"> &gt; </button>
       </div>
-      <div class="header-title" id="join-room-title">Join Room</div>
-      <button class="close-button">X</button>
+      <div class="header-title" id="join-room-title" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Join Room</div>
+      <button class="close-button btn btn-sm btn-outline-danger custom-btn">X</button>
     </div>
 
-    <div class="window-content">
-      <p id="join-room-text">Enter your Room Code</p>
-      <input type="text" id="join-input-id" class="input-join-room" placeholder="Room Code">
-      <button id="join-room-button-id">Validate</button>
+    <div class="window-content d-flex flex-column p-3" style="background-color: #dcdcdc; border: 2px solid #808080; box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;">
+      <p id="join-room-text" class="text-center mb-3" style="font-size: 14px; font-weight: bold; color: #000;">Enter your Room Code</p>
+      <input type="text" id="join-input-id" class="form-control mb-3 custom-input" placeholder="Room Code" style="box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;">
+      <button id="join-room-button-id" class="btn btn-primary custom-btn">Validate</button>
     </div>
   </div>
 
@@ -755,6 +753,7 @@
           document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
           document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
           document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+          document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
           updateTime();
           setInterval(updateTime, 1000);
         })
@@ -762,6 +761,7 @@
     }
   </script>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/explorerWindow.js"></script>
   <script src="js/accountWindow.js"></script>
   <script src="/js/start_menu.js"></script>
