@@ -1,7 +1,15 @@
 import asyncio
 import random
+from redis.asyncio import Redis
 import redis
 import json
+from channels.db import database_sync_to_async
+from core.asgi import pool
+
+@database_sync_to_async
+def publish_to_redis(data):
+    with Redis(connection_pool=pool) as redis_client:
+        return redis_client.publish('game_results', json.dumps(data))
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -96,7 +104,7 @@ class Room:
             self.handle_collision()
             self.update_score()
 
-            if self.score[0] == 3 or self.score[1] == 3:
+            if self.score[0] == 1 or self.score[1] == 1:
                 return await self.game_over()
 
             game_state = {
@@ -152,7 +160,8 @@ class Room:
             # self.ball.MAX_VELOCITY *= 1.025
 
     async def game_over(self):
-        if self.score[0] == 3:
+        print("game over", flush=True)
+        if self.score[0] == 1:
             if len(self.players) == 2:
                 self.winner = self.players[0].user["username"]
             else:
@@ -171,18 +180,47 @@ class Room:
             "score": self.score,
             "winner": self.winner
         }
-        # print("still here", flush=True)
-        # if self.name != "room_local":
-        #     redis_client.publish('game_results', json.dumps({
-        #         "room_name": self.name,
-        #         "player_1": self.players[0].user["username"],
-        #         "player_2": self.players[1].user["username"],
-        #         "player_1_win": True if self.score[0] == 3 else False,
-        #         "player_2_win": True if self.score[1] == 3 else False,
-        #         "score": self.score
-        #     }))
-        # await self.publish_results()
-        # print("but not here", flush=True)
+        if self.name != "room_local":
+            try:
+                print(f"players {self.players[0].user} and {self.players[1].user}", flush=True)
+                print(f"score {self.score}", flush=True)
+                data = {
+                        "room_name": self.name,
+                        "player_1": self.players[0].user["username"],
+                        "player_2": self.players[1].user["username"],
+                        "player_1_win": True if self.score[0] == 1 else False,
+                        "player_2_win": True if self.score[1] == 1 else False,
+                        "score": self.score
+                    }
+                redis_client = Redis(connection_pool=pool)
+                publish_result = await asyncio.wait_for(
+                    redis_client.publish('game_results', json.dumps(data)),
+                    timeout=5.0  # 5 seconds timeout
+                )
+                print(f"Published with result: {publish_result}", flush=True)
+                await redis_client.close()
+            except asyncio.TimeoutError:
+                print("Redis publish operation timed out", flush=True)
+            except Exception as e:
+                print(f"Unexpected error: {e}", flush=True)
+            # async with Redis(connection_pool=pool) as redis_client:
+            #     publish_result = await redis_client.publish('game_results', json.dumps({
+            #         "room_name": self.name,
+            #         "player_1": self.players[0].user["username"],
+            #         "player_2": self.players[1].user["username"],
+            #         "player_1_win": True if self.score[0] == 1 else False,
+            #         "player_2_win": True if self.score[1] == 1 else False,
+            #         "score": self.score
+            #     }))
+            #     print(f"Published with result: {publish_result}", flush=True)
+
+            except redis.RedisError as e:
+                print(f"Redis error occurred: {e}", flush=True)
+            except Exception as e:
+                print(f"Unexpected error: {e}", flush=True)
+        else:
+            print(f"not publishing results {self.name}", flush=True)
+        print("but not here", flush=True)
         return game_state
 
     def reset(self):

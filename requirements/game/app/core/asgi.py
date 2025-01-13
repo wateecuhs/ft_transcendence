@@ -6,6 +6,8 @@ It exposes the ASGI callable as a module-level variable named ``application``.
 For more information on this file, see
 https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
+from redis.asyncio import ConnectionPool
+pool = ConnectionPool(host='match-redis', port=6379, db=0)
 
 import os
 import socketio
