@@ -116,3 +116,5 @@ join-input-id=Code de salle
 too-short-name=Le nom doit contenir au moins 3 caractères.
 too-long-name=Le nom doit contenir au maximum 20 caractères.
 alphanumeric-name=Le nom doit être alphanumérique.
+no-42-email=Vous ne pouvez pas utiliser un e-mail 42 pour un compte classique. Veuillez utiliser la connexion 42.
+friend-stat=Statistiques Utilisateur

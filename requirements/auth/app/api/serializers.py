@@ -45,6 +45,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 	def validate_email(self, value):
 		if CustomUser.objects.filter(email=value).exists():
 			raise ValidationError(message="This email is already taken.")
+		email42 = value.split('@')
+		if email42[1].startswith('student.42'):
+			raise ValidationError(message="You can't use 42 email to create an account. Please use 42 connection.")
 		return value
 
 	def validate(self, data):
@@ -102,6 +105,13 @@ class EditAccountSerializer(serializers.ModelSerializer):
 		if not user:
 			raise serializers.ValidationError("User context is required for validation.")
 
+		new_email = data.get('new_email')
+		if new_email:
+			if CustomUser.objects.filter(email=new_email).exists():
+				raise EmailAlreadyExist(message="This email is already taken.")
+			test_new_email = new_email.split('@')
+			if test_new_email[1].startswith('student.42'):
+				raise ValidationError(message="You can't use 42 email to create an account. Please use 42 connection.")
 		old_password = data.get('old_password')
 		new_password = data.get('new_password')
 		confirmation_password = data.get('confirmation_password')

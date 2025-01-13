@@ -279,6 +279,10 @@ class ConfirmToken(APIView):
         access_token = response.json()['access_token']
         response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}).json()
         username = response['login']
+        add_username = 0
+        while (CustomUser.get_user_by_name(username)):
+            username = response['login'] + str(add_username)
+            add_username += 1
         CustomUser.add_user(username=username, avatar_path=response['image']['versions']['small'], avatar=response['image']['versions']['small'], tournament_id=None, email=response['email'])
         encoded_access_jwt = CreateAccessToken(request, username)
         if encoded_access_jwt is None:

@@ -117,3 +117,5 @@ join-input-id=Room Code
 too-short-name=Name Must Be At Least 3 Characters Long
 too-long-name=Name Must Be At Most 20 Characters Long
 alphanumeric-name=Name must be alphanumeric
+no-42-email=You cannot use a 42 email for a regular account. Please use the 42 connection.
+friend-stat=User Statistics

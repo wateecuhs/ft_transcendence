@@ -131,6 +131,7 @@ function toogleLanguageChoices() {
             document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+            document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
             raiseAlert("Langue changé en Français");
           });
 
@@ -145,6 +146,7 @@ function toogleLanguageChoices() {
           }
 
           updateUserInfo();
+          updateUserStat();
         const requestData = {
             language: 'fr',
           };
@@ -246,6 +248,7 @@ function toogleLanguageChoices() {
             document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+            document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
             raiseAlert("Language changed to English");
           });
 
@@ -260,6 +263,7 @@ function toogleLanguageChoices() {
           }
 
           updateUserInfo();
+          updateUserStat();
         const requestData = {
             language: 'en',
           };
@@ -361,6 +365,7 @@ function toogleLanguageChoices() {
             document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+            document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
             raiseAlert("Idioma alterado para português");
           });
 
@@ -375,6 +380,7 @@ function toogleLanguageChoices() {
           }
 
           updateUserInfo();
+          updateUserStat();
         const requestData = {
             language: 'pt',
           };
@@ -476,6 +482,7 @@ function toogleLanguageChoices() {
             document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+            document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
           });
 
           const flagIcon = document.querySelector('.flag-icon');
@@ -489,6 +496,7 @@ function toogleLanguageChoices() {
           }
 
           updateUserInfo();
+          updateUserStat();
         const requestData = {
           language: 'ru',
         };
@@ -618,6 +626,7 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+            document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
             raiseAlert("Langue changé en Français");
           });
 
@@ -733,6 +742,7 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+            document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
             raiseAlert("Language changed to English");
           });
 
@@ -848,6 +858,7 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+            document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
             raiseAlert("Idioma alterado para português");
           });
 
@@ -964,6 +975,7 @@ function toogleLanguageChoicesLogin() {
           document.getElementById('join-room-text').textContent = window.dataMap.get('join-room-text');
           document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
           document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
+          document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
 
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {

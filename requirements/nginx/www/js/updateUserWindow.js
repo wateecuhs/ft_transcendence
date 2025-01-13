@@ -87,7 +87,7 @@ async function updateUser() {
 							if (field === 'new_password') {
 								field_txt = window.dataMap.get('sign-up-password');
 							}
-			  			if (field === 'confirmation_password') {
+							if (field === 'confirmation_password') {
 								field_txt = window.dataMap.get('sign-up-confirm-password');
 							}
 							if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
@@ -96,12 +96,12 @@ async function updateUser() {
 							if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
 								messages_txt = window.dataMap.get('max-characters-username-error');
 							}
-			  			if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
+							if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
 								messages_txt = window.dataMap.get('username-taken');
 							}
 							if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
 								messages_txt = window.dataMap.get('email-taken');
-			  			}
+							}
 							if (Array.isArray(messages) && messages.includes("Enter a valid email address.")) {
 								messages_txt = window.dataMap.get('valid-email');
 							}
@@ -116,6 +116,14 @@ async function updateUser() {
 							if (Array.isArray(messages) && messages.includes('New password and Confirm New Password are different')) {
 								field_txt = window.dataMap.get('profile-password');
 								messages_txt = window.dataMap.get('different-pwd');
+							}
+							if (Array.isArray(messages) && messages.includes("You can't use 42 email to create an account. Please use 42 connection.")) {
+								messages_txt = window.dataMap.get('no-42-email');
+								field_txt = window.dataMap.get('sign-up-email');
+							}
+							if (Array.isArray(messages) && messages.includes("This email is already taken.")) {
+								messages_txt = window.dataMap.get('email-taken');
+								field_txt = window.dataMap.get('sign-up-email');
 							}
 							errorMessage += `${field_txt}: ${messages_txt}\n`;
 							if (Array.isArray(messages) && messages.includes("Password too short")) {
