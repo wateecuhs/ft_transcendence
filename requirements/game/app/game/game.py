@@ -104,7 +104,7 @@ class Room:
             self.handle_collision()
             self.update_score()
 
-            if self.score[0] == 1 or self.score[1] == 1:
+            if self.score[0] == 3 or self.score[1] == 3:
                 return await self.game_over()
 
             game_state = {
@@ -153,25 +153,18 @@ class Room:
         if self.ball.x < 0:
             self.score[1] += 1
             self.ball.reset()
-            # self.ball.MAX_VELOCITY *= 1.025
         elif self.ball.x > WIN_WIDTH:
             self.score[0] += 1
             self.ball.reset()
-            # self.ball.MAX_VELOCITY *= 1.025
 
-    async def game_over(self):
-        print("game over", flush=True)
-        if self.score[0] == 1:
+    async def game_over(self, winner=None):
+        if winner is None:
             if len(self.players) == 2:
-                self.winner = self.players[0].user["username"]
+                self.winner = self.players[0].user["username"] if self.score[0] > self.score[1] else self.players[1].user["username"]
             else:
-                self.winner = "Player 1"
+                self.winner = "Player 1" if self.score[0] > self.score[1] else "Player 2"
         else:
-            if len(self.players) == 2:
-                self.winner = self.players[1].user["username"]
-            else:
-                self.winner = "Player 2"
-
+            self.winner = winner
         game_state = {
             "type": "game_over",
             "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
@@ -182,45 +175,25 @@ class Room:
         }
         if self.name != "room_local":
             try:
-                print(f"players {self.players[0].user} and {self.players[1].user}", flush=True)
-                print(f"score {self.score}", flush=True)
                 data = {
                         "room_name": self.name,
                         "player_1": self.players[0].user["username"],
                         "player_2": self.players[1].user["username"],
-                        "player_1_win": True if self.score[0] == 1 else False,
-                        "player_2_win": True if self.score[1] == 1 else False,
-                        "score": self.score
+                        "player_1_win": True if self.winner == self.players[0].user["username"] else False,
+                        "player_2_win": True if self.winner == self.players[1].user["username"] else False,
+                        "score": self.score,
+                        "winner": self.winner
                     }
                 redis_client = Redis(connection_pool=pool)
-                publish_result = await asyncio.wait_for(
+                await asyncio.wait_for(
                     redis_client.publish('game_results', json.dumps(data)),
-                    timeout=5.0  # 5 seconds timeout
+                    timeout=5.0
                 )
-                print(f"Published with result: {publish_result}", flush=True)
                 await redis_client.close()
             except asyncio.TimeoutError:
                 print("Redis publish operation timed out", flush=True)
             except Exception as e:
                 print(f"Unexpected error: {e}", flush=True)
-            # async with Redis(connection_pool=pool) as redis_client:
-            #     publish_result = await redis_client.publish('game_results', json.dumps({
-            #         "room_name": self.name,
-            #         "player_1": self.players[0].user["username"],
-            #         "player_2": self.players[1].user["username"],
-            #         "player_1_win": True if self.score[0] == 1 else False,
-            #         "player_2_win": True if self.score[1] == 1 else False,
-            #         "score": self.score
-            #     }))
-            #     print(f"Published with result: {publish_result}", flush=True)
-
-            except redis.RedisError as e:
-                print(f"Redis error occurred: {e}", flush=True)
-            except Exception as e:
-                print(f"Unexpected error: {e}", flush=True)
-        else:
-            print(f"not publishing results {self.name}", flush=True)
-        print("but not here", flush=True)
         return game_state
 
     def reset(self):

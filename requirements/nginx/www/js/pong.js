@@ -52,9 +52,6 @@ class PongWindow {
 		if (pongWindow.style.display === 'none') {
 			pongWindow.style.display = 'flex';
 			history.pushState({ page: "pong" }, "", "#pong");
-		} else {
-			pongWindow.style.display = 'none';
-			this.close();
 		}
 
 		pongWindow.querySelector('.close-button').addEventListener('click', () => {
@@ -108,6 +105,7 @@ class PongWindow {
 		this.socket.onopen = () => {
 			console.log('WebSocket connection established');
 			};
+
 		this.socket.onclose = async (event) => {
 			if (event.code === 3000) {
 				console.log('WebSocket connection closed, code:', event.code);
@@ -115,7 +113,7 @@ class PongWindow {
 					const isRefreshed = await getRefreshToken();
 					if (isRefreshed) {
 						this.socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + this.roomName);
-						this.run2();
+						this.run();
 					}
 				}
 				catch (error) {
@@ -136,76 +134,7 @@ class PongWindow {
 			if (gameState.type === 'handler') {
 				return;
 			}
-			// console.log(gameState);
 			if (gameState.type === 'game_over') {
-				// console.log('Game Over! Player ' + gameState.winner + ' wins!');
-				this.gameOver = true;
-				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
-				this.close();
-				return;
-			}
-			this.drawGame(gameState);
-		};
-	}
-
-	run2() {
-
-		window.addEventListener('popstate', (event) => {
-			const currentPage = window.location.hash;
-
-			if (currentPage === "#pong") {
-				this.open();
-			}
-		});
-
-		document.addEventListener('keydown', this.handleKeyDown);
-		document.addEventListener('keyup', this.handleKeyUp);
-
-		setInterval(() => {
-			if (Object.keys(this.commandBuffer).length > 0) {
-				this.socket.send(JSON.stringify(this.commandBuffer));
-				this.commandBuffer = {};
-			}
-		}, 16); // Send commands every 16ms (60fps)
-
-		window.addEventListener('resize', this.resizeCanvas);
-		this.resizeCanvas();
-
-		this.socket.onopen = () => {
-			console.log('WebSocket connection established');
-			this.run();
-			};
-		this.socket.onclose = async (event) => {
-			if (event.code === 3000) {
-				console.log('WebSocket connection closed, code:', event.code);
-				try {
-					const isRefreshed = await getRefreshToken();
-					if (isRefreshed) {
-						this.socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + this.roomName);
-						this.run2();
-					}
-				}
-				catch (error) {
-					console.error('Failed during token refresh or reconnection:', error);
-					this.close();
-				}
-			}
-		};
-
-		this.socket.onerror = (error) => {
-			console.error('WebSocket error:', error);
-		};
-
-		this.socket.onmessage = (event) => {
-			if (this.gameOver) return;
-
-			const gameState = JSON.parse(event.data);
-			if (gameState.type === 'handler') {
-				return;
-			}
-			// console.log(gameState);
-			if (gameState.type === 'game_over') {
-				// console.log('Game Over! Player ' + gameState.winner + ' wins!');
 				this.gameOver = true;
 				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
 				this.close();

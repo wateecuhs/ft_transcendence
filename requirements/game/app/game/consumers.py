@@ -51,11 +51,11 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         print(f"Disconnecting {self.user['username']} with code {code}", flush=True)
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
-        await self.room.remove_player(self)
 
-        if len(self.room.players) == 1:
-            game_state = await self.room.game_over()
-            game_state["winner"] = self.room.players[0].user["username"]
+        if len(self.room.players) == 2:
+            winner  = self.room.players[0].user["username"] if self.room.players[0] != self else self.room.players[1].user["username"]
+            game_state = await self.room.game_over(winner=winner)
+            await self.room.remove_player(self)
             await self.channel_layer.group_send(
                 self.room_name,
                 {
@@ -147,14 +147,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                     continue
 
             game_state = await self.room.update_game_state()
-            # print(f"cur gamestate {game_state.get('type')}, {type(game_state.get('type'))}", flush=True)
-            # if game_state.get("type") == "game_over":
-            #     print("HERE", flush=True)
-            #     await self.publish_results()
-            #     print(f"{self.players[0].user['username']} vs {self.players[1].user['username']} game over", flush=True)
-            # else:
-            #     print("not here", flush=True)
-
             await self.channel_layer.group_send(
                 self.room_name,
                 {

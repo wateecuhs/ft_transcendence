@@ -324,7 +324,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 for i in range(len(tournament.matches[0]["matches"])):
                     if set([data["player_1"], data["player_2"]]) == set([tournament.matches[0]["matches"][i]["player1"], tournament.matches[0]["matches"][i]["player2"]]):
                         tournament.matches[0]["matches"][i]["status"] = tournament.Status.FINISHED
-                        tournament.matches[0]["matches"][i]["winner"] = data["player_1"] if data["score"][0] > data["score"][1] else data["player_2"]
+                        tournament.matches[0]["matches"][i]["winner"] = data["winner"]
                         tournament.matches[0]["matches"][i]["score"] = data["score"]
                         break
 
@@ -351,7 +351,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 for i in range(len(tournament.matches[1]["matches"])):
                     if set([data["player_1"], data["player_2"]]) == set([tournament.matches[1]["matches"][i]["player1"], tournament.matches[1]["matches"][i]["player2"]]):
                         tournament.matches[1]["matches"][i]["status"] = tournament.Status.FINISHED
-                        tournament.matches[1]["matches"][i]["winner"] = data["player_1"] if data["score"][0] > data["score"][1] else data["player_2"]
+                        tournament.matches[1]["matches"][i]["winner"] = data["winner"]
                         tournament.matches[1]["matches"][i]["score"] = data["score"]
                         break
 
