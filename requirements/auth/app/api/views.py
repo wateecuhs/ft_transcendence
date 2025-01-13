@@ -11,7 +11,7 @@ from django.conf import settings
 from .forms import  BadPasswordError, ConfirmationError
 from .models import CustomUser, Match
 from django.core.serializers.json import DjangoJSONEncoder
-from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, AddMatchSerializer, CodeSerializer, Serializer2FA, LanguageSerializer
+from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, CodeSerializer, Serializer2FA, LanguageSerializer
 from .utils import get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
 from django.shortcuts import redirect
 
@@ -101,7 +101,7 @@ class UserInfo(APIView):
 			if 'new_email' in serializer.validated_data and serializer.validated_data['new_email'] is not None and serializer.validated_data['new_email'] != "":
 				CustomUser.set_email(user, serializer.validated_data['new_email'])
 
-			if 'new_alias' in serializer.validated_data and serializer.validated_data['new_alias'] is not '':
+			if 'new_alias' in serializer.validated_data and serializer.validated_data['new_alias'] != "":
 				CustomUser.set_alias(user, serializer.validated_data['new_alias'])
 
 			if 'new_pp' in serializer.validated_data and serializer.validated_data['new_pp'] is not None:
@@ -127,7 +127,7 @@ class UserInfo(APIView):
 				user.is_42_pp = False
 				user.save()
 
-			if 'new_password' in serializer.validated_data and serializer.validated_data['new_password'] is not '':
+			if 'new_password' in serializer.validated_data and serializer.validated_data['new_password'] != "":
 				new_password = serializer.validated_data['new_password']
 				CustomUser.set_new_password(user, new_password)
 
@@ -346,46 +346,12 @@ class MatchHistory(APIView):
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
 			user_matches = user.match_history.all()
-			matches_data = list(user_matches.values("user_name", "opponent_name", "status", "user_score", "opponent_score", "date"))
+			matches_data = list(user_matches.values("user_name", "opponent_name", "user_win", "user_score", "opponent_score", "date"))
 			response = {
 				"message": "Success",
 				"matches": matches_data
 			}
 			return JsonResponse(response)
-		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
-		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
-
-	def put(self, request):
-		serializer = AddMatchSerializer(data=request.data)
-		if not serializer.is_valid():
-			errors = serializer.errors
-			return JsonResponse({"message": f"failed : serializer is not valid", "errors": errors}, status=400)
-		try:
-			authorization_header = request.headers.get('Authorization')
-			if authorization_header is None:
-				return JsonResponse({"message": "failed : authorization header missing"})
-			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access token in header'})
-			encoded_access_jwt = authorization_header.split(" ", 1)[1]
-			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
-			payload = decodeAccessToken(request, encoded_access_jwt)
-			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
-			user1_name = payload.get("username")
-			if not (user1_name):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
-			user1 = CustomUser.get_user_by_name(user1_name)
-			if not (user1):
-				return JsonResponse({'message': 'failed : user not found'}, status=404)
-			user2_name = serializer.validated_data['user2_name']
-			user2 = CustomUser.get_user_by_name(user2_name)
-			if user2 is None :
-				return JsonResponse({"message": "failed : User not found"})
-			Match.create_match(user1=user1, user2=user2, date=serializer.validated_data['date'], user1_score=serializer.validated_data['user1_score'], user2_score=serializer.validated_data['user2_score'], user1_status=serializer.validated_data['user1_status'], user2_status=serializer.validated_data['user2_status'])
-			return JsonResponse({"message": "Success"})
 		except jwt.InvalidTokenError:
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
 		except jwt.ExpiredSignatureError:

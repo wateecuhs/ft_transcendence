@@ -151,10 +151,6 @@ class CustomUser(AbstractUser):
         user.access_token = token
 
 
-class   Status(models.IntegerChoices):
-       WIN = 1, "WIN"
-       LOSE = 2, "LOSE"
-
 class   Match(models.Model):
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
@@ -163,17 +159,17 @@ class   Match(models.Model):
     date = models.DateField()
     user_score = models.PositiveSmallIntegerField()
     opponent_score = models.PositiveSmallIntegerField()
-    status = models.IntegerField(choices=Status.choices, default=Status.WIN)
+    user_win = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'matches'
 
     @classmethod
-    def create_match(cls, user, date, user_score, opponent_score, status, user_name, opponent_name):
-        match = cls(user=user, date=date, user_score=user_score, opponent_score=opponent_score, status=status, user_name=user_name, opponent_name=opponent_name)
+    def create_match(cls, user, date, user_score, opponent_score, user_win, user_name, opponent_name):
+        match = cls(user=user, date=date, user_score=user_score, opponent_score=opponent_score, user_win=user_win, user_name=user_name, opponent_name=opponent_name)
         match.save()
         user.matches_number = user.matches_number + 1
-        if status == Status.WIN:
+        if user_win == True:
             user.matches_win = user.matches_win + 1
         else:
             user.matches_lose = user.matches_lose + 1

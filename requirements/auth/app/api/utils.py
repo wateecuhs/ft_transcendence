@@ -111,8 +111,8 @@ def decode_and_save_base64_image(base64_image, file_name):
     else:
         raise ValueError("Invalid base64 image data")
 
-def save_match(player1, player2, player1_status, player2_status, player1_score, player2_score):
+def save_match(player1, player2, user1_win, user2_win, player1_score, player2_score):
 	user1 = CustomUser.get_user_by_name(player1)
 	user2 = CustomUser.get_user_by_name(player2)
-	Match.create_match(user=user1, date="2025-01-01", status=player1_status, user_score=player1_score, opponent_score=player2_score, user_name=player1, opponent_name=player2)
-	Match.create_match(user=user2, date="2025-01-01", status=player2_status, user_score=player2_score, opponent_score=player1_score, user_name=player2, opponent_name=player1)
+	Match.create_match(user=user1, date="2025-01-01", user_win=user1_win, user_score=player1_score, opponent_score=player2_score, user_name=player1, opponent_name=player2)
+	Match.create_match(user=user2, date="2025-01-01", user_win=user2_win, user_score=player2_score, opponent_score=player1_score, user_name=player2, opponent_name=player1)
