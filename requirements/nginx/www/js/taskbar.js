@@ -387,7 +387,7 @@ function toogleLanguageChoices() {
             body: JSON.stringify(requestData),
           });
       } else if (divFlag.id === 'russia-flag') {
-        window.dict = 'rs-dict.txt';
+        window.dict = 'ru-dict.txt';
         fetch(window.dict)
           .then(response => response.text())
           .then(text => {
@@ -874,7 +874,7 @@ function toogleLanguageChoicesLogin() {
             body: JSON.stringify(requestData),
           });
       } else if (divFlag.id === 'russia-flag-login') {
-        window.dict = 'rs-dict.txt';
+        window.dict = 'ru-dict.txt';
         fetch(window.dict)
           .then(response => response.text())
           .then(text => {
