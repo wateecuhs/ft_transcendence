@@ -134,13 +134,13 @@ class PongWindow {
 			if (gameState.type === 'handler') {
 				return;
 			}
+			this.drawGame(gameState);
 			if (gameState.type === 'game_over') {
 				this.gameOver = true;
 				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
 				this.close();
 				return;
 			}
-			this.drawGame(gameState);
 		};
 	}
 
