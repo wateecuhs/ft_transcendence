@@ -6,6 +6,7 @@ function toggleWinbookWindow() {
     winbook.style.top = `${window.innerHeight / 2 - winbook.offsetHeight / 2}px`;
     winbook.style.left = `${window.innerWidth / 2 - winbook.offsetWidth / 2}px`;
     navigateToPage('winbook');
+    showAllTournaments();
   } else {
     winbook.style.display = 'none';
   }
@@ -20,7 +21,6 @@ function initMMWebSocket() {
     const message = JSON.parse(event.data);
 
     if (message.type === "tournament.join") {
-      raiseAlert(`${window.dataMap.get('tournament-ready')} ${message.data.name}`);
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.create") {

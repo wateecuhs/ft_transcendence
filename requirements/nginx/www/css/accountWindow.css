@@ -79,6 +79,7 @@
 #accountWindow .user-img {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px;
   background-color: #e0e0e0;
   border: 1px solid #b0b0b0;
@@ -89,7 +90,6 @@
 #accountWindow .user-img img {
   width: 50px;
   height: 50px;
-  margin-right: 10px;
 }
 
 #accountWindow .user-img img:hover {
@@ -101,7 +101,11 @@
 #accountWindow .user-img span {
   font-weight: bold;
   font-size: 16px;
-  margin-left: 40px;
+  margin-left: 14px;
+}
+
+#accountWindow .user2FA-span {
+  margin-left: auto;
 }
 
 /* Page 2*/

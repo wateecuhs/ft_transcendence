@@ -93,7 +93,7 @@ class EditAccountSerializer(serializers.ModelSerializer):
 		model = CustomUser
 		fields = ['new_alias', 'new_email', 'new_pp', 'old_password', 'new_password', 'confirmation_password']
 
-	new_alias = serializers.CharField(label='New Alias', max_length=30, min_length=2, required=False, allow_blank=True)
+	new_alias = serializers.CharField(label='New Alias', max_length=20, min_length=2, required=False, allow_blank=True)
 	new_email = serializers.EmailField(label='New Email', required=False, allow_blank=True)
 	new_pp = serializers.CharField(label='New Profile Picture', required=False, allow_blank=True)
 	old_password = serializers.CharField(label='Old Password', required=False, allow_blank=True)

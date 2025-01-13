@@ -14,8 +14,9 @@ function showTournamentDetails(tournament) {
     return ;
   }
   if (tournament.players) {
-    tournament.players.forEach(player => {
+    tournament.players.forEach(async (player) => {
       const li = document.createElement('li');
+      player = await getUserAlias(player);
       li.textContent = player;
       playerListElement.appendChild(li);
     });
@@ -125,7 +126,7 @@ function resetWinBook() {
 }
 
 
-function sendPlayersToRooms(tournament) {
+async function sendPlayersToRooms(tournament) {
   const winBookWindow = document.getElementById("winBook");
   const tournamentContent = winBookWindow.querySelector('#tournament-status-id');
   const readyButton = winBookWindow.querySelector('#ready-button');
@@ -137,11 +138,11 @@ function sendPlayersToRooms(tournament) {
   const rounds = tournament.rounds;
   tournamentContent.innerHTML = '';
 
-  rounds.forEach(round => {
+  rounds.forEach( async (round) => {
     if (round.round === "FIRST") {
         const matches = round.matches;
         let i = 1;
-        matches.forEach(match => {
+        matches.forEach( async (match) => {
           const dataMatch = {
             room_code: match.room_code,
             player1: match.player1,
@@ -151,10 +152,13 @@ function sendPlayersToRooms(tournament) {
             winner: match.winner
           };
 
+          const alias_1 = await getUserAlias(dataMatch.player1);
+          const alias_2 = await getUserAlias(dataMatch.player2);
+
           const newData = document.createElement('div');
 
           const matchVs = document.createElement('div');
-          matchVs.textContent = `Match ${i} : ${dataMatch.player1} vs ${dataMatch.player2}`;
+          matchVs.textContent = `Match ${i} : ${alias_1} vs ${alias_2}`;
 
           const matchScore = document.createElement('div');
           matchScore.textContent = `Score : ${dataMatch.score[0]} - ${dataMatch.score[1]}`;

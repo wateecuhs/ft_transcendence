@@ -8,12 +8,9 @@ icons.forEach(icon => {
     const iconName = iconElement ? iconElement.textContent.trim() : '';
 
     if (iconName === 'Msn') toggleMsnWindow();
-
-    if (iconName === 'Winbook') toggleWinbookWindow();
-
-    if (iconName === 'Pong') toogleGameOptionWindow();
-
-    if (iconName === window.dataMap.get('trash')) toogleTrashBin();
+    else if (iconName === 'Winbook') toggleWinbookWindow();
+    else if (iconName === 'Pong') toogleGameOptionWindow();
+    else if (iconName === window.dataMap.get('trash')) toogleTrashBin();
   });
 
   let offsetX, offsetY;
@@ -95,25 +92,37 @@ document.addEventListener('DOMContentLoaded', () => {
   organizeIcons(icons, gridSize);
 });
 
+window.addEventListener('resize', () => {
+  const icons = document.querySelectorAll('.desktop-icons .icon');
+  const gridSize = 128;
+  organizeIcons(icons, gridSize);
+});
+
 function organizeIcons(icons, gridSize) {
   const container = document.querySelector('.desktop-icons');
   const paddingLeft = parseInt(window.getComputedStyle(container).paddingLeft);
   const paddingTop = parseInt(window.getComputedStyle(container).paddingTop);
 
-  let currentX = paddingLeft;
-  let currentY = paddingTop;
-  const containerWidth = container.clientWidth;
+  const containerHeight = container.clientHeight;
+
+  const iconsPerColumn = Math.floor((containerHeight - paddingTop * 2) / gridSize);
+
+  let currentRow = 0;
 
   icons.forEach(icon => {
     icon.style.position = 'absolute';
-    icon.style.left = `${currentX}px`;
-    icon.style.top = `${currentY}px`;
 
-    currentX += gridSize;
+    const xPos = paddingLeft;
 
-    if (currentX + gridSize > containerWidth - paddingLeft) {
-      currentX = paddingLeft;
-      currentY += gridSize;
+    const yPos = paddingTop + currentRow * gridSize;
+
+    icon.style.left = `${xPos}px`;
+    icon.style.top = `${yPos}px`;
+
+    currentRow++;
+
+    if (currentRow >= iconsPerColumn) {
+      return;
     }
   });
 }

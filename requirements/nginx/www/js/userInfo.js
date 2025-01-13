@@ -289,3 +289,32 @@ async function updateUserStat() {
     console.error(error);
   }
 }
+
+async function getUserAlias(username) {
+  try {
+    const response = await fetch(`https://${window.location.host}/auth/user/${username}/`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getTokenCookie()}`,
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.message === 'Success') {
+        return data.alias;
+      }
+    } else {
+      const errorData = await response.json();
+      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+        const isRefreshed = await getRefreshToken();
+        if (isRefreshed) {
+          return await getUserAlias(username);
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

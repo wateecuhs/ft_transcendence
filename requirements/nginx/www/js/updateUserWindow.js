@@ -93,7 +93,7 @@ async function updateUser() {
 							if (Array.isArray(messages) && messages.includes("Ensure this field has at least 2 characters.")) {
 								messages_txt = window.dataMap.get('min-characters-error');
 							}
-							if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 30 characters.")) {
+							if (Array.isArray(messages) && messages.includes("Ensure this field has no more than 20 characters.")) {
 								messages_txt = window.dataMap.get('max-characters-username-error');
 							}
 							if (Array.isArray(messages) && messages.includes("This username is already taken.")) {
