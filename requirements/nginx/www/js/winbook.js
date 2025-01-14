@@ -34,8 +34,13 @@ function initMMWebSocket() {
       const data = {
         author: 'WinBook Corporation',
         content: 'A Tournament is now starting !',
-        created_at: new Date().toISOString()
+        created_at: new Date().toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit'
+        })
       };
+
       displayChatMessage(data);
       showPopUp(window.dataMap.get('start-tournament'));
       sendPlayersToRooms(message.data);
@@ -76,14 +81,13 @@ function initMMWebSocket() {
         errorMessage = window.dataMap.get('too-long-name');
       else if (errorMessage === ' Name Must Be Alphanumeric')
         errorMessage = window.dataMap.get('alphanumeric-name');
-      if (message.message === 'You already have an active tournament.') {
+      if (message.message === 'You already have an active tournament.')
         errorMessage = window.dataMap.get('already-tournament');
       raiseAlert(errorMessage);
     }
     else {
-        console.error(message);
+        console.error(message.type);
       }
-    }
   }
 
   window.mmws.onclose = function(event) {

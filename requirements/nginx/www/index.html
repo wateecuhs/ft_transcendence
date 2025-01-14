@@ -257,7 +257,7 @@
       </div>
 
       <div class="account-page" id="account-page-2" style="display: none">
-        <div class="user-stat-title" id="user-stats"> User Match History </div>
+        <div class="user-stat-title" id="user-history"> User Match History </div>
 
         <ul class="match-history">
           <li>
@@ -431,10 +431,6 @@
 
   <div class="window" id="msnWindow" style="display: none">
     <div class="window-header">
-      <div class="arrow-buttons">
-        <button class="left-arrow"> &lt </button>
-        <button class="right-arrow"> &gt </button>
-      </div>
       <div class="header-title">MSN</div>
       <button class="close-button">X</button>
     </div>
@@ -461,7 +457,7 @@
             <div class="send-container">
               <button class="send-button" id="send">Send</button>
               <span>
-                <button class="info-button-cmd" onclick="toogleInformationWindow()">Info</button>
+                <button class="info-button-cmd" onclick="toogleInformationWindow()" id="help">Help</button>
               </span>
             </div>
           </div>
@@ -489,10 +485,6 @@
 
   <div class="window" id="winBook" style="display: none">
     <div class="window-header">
-      <div class="arrow-buttons">
-        <button class="left-arrow">&lt</button>
-        <button class="right-arrow">&gt</button>
-      </div>
       <div class="header-title" id="winbook-title">Winbook - Inscription Tournoi Pong</div>
       <button class="close-button">X</button>
     </div>
@@ -775,6 +767,7 @@
           document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
           document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
           document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+          document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
           const trashExplorer = document.getElementById('trash-explorer');
           if (trashExplorer)
             trashExplorer.textContent = window.dataMap.get('trash');
@@ -782,6 +775,7 @@
           if (desktopExplorer)
             desktopExplorer.textContent = window.dataMap.get('desktop');
           document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
+          document.getElementById('help').textContent = window.dataMap.get('help');
           updateTime();
           setInterval(updateTime, 1000);
         })

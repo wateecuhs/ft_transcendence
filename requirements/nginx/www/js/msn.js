@@ -52,7 +52,6 @@ function initWebSocket() {
       handle_chat_invite(message);
     }
     else {
-      console.log(message.type);
       console.log(message.data);
     }
   }
@@ -252,13 +251,13 @@ function displayInviteMessage(data) {
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message');
 
-  const prefix = data.is_author ? '[To] ' : '[From] ';
-  const who = data.is_author ? data.target : data.author;
+  const who = data.author;
+  const target = data.target;
 
-  messageDiv.textContent = `${prefix} ${who} invites you to a match: `
+  messageDiv.textContent = `${who} ${window.dataMap.get('invites')} ${target} ${window.dataMap.get('to-match')}`
 
   const button = document.createElement('button');
-  button.textContent = 'Accept';
+  button.textContent = window.dataMap.get('ready-button');
   button.classList.add('accept-button');
   button.addEventListener('click', function() {
     console.log('Game');
@@ -369,7 +368,6 @@ function loadPrivateHistory(friend) {
 
 function toogleInformationWindow() {
   const informationWindow = document.getElementById('information-window');
-  const closeBtn = informationWindow.querySelector('.close-button');
 
   if (informationWindow.style.display === 'none') {
     informationWindow.style.display = (informationWindow.style.display == 'none') ? 'block' : 'none';
