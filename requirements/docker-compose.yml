@@ -28,6 +28,9 @@ services:
       - chat
       - auth
       - matchmaking
+    volumes:
+      - ./nginx/www:/var/www/html
+      - ./nginx/www/:/requirements/nginx/www/
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -113,6 +116,8 @@ services:
       auth-db:
         condition: service_healthy
     restart: unless-stopped
+    volumes:
+      - ./nginx/www/:/requirements/nginx/www/
     logging:
       driver: "json-file"
       options:
@@ -218,7 +223,7 @@ services:
     expose:
       - "8003"
     depends_on:
-      ai_game_redis:
+      ai_game-redis:
         condition: service_healthy
     environment:
       - REDIS_HOST=ai_game-redis
@@ -230,8 +235,8 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  ai_game_redis:
-    container_name: ai_game_redis
+  ai_game-redis:
+    container_name: ai_game-redis
     image: redis:6
     networks:
       - ai_game

@@ -35,7 +35,6 @@ def listen_to_game_results():
                 player2_status = game_result['player_2_win']
                 player1_score = game_result['score'][0]
                 player2_score = game_result['score'][1]
-                print(f"WIN WIN WIN {player1_status} {player2_status}", flush=True)
                 save_match(player1=player1, player2=player2, user1_win=player1_status, user2_win=player2_status, player1_score=player1_score, player2_score=player2_score)
 
 Thread(target=listen_to_game_results, daemon=True).start()

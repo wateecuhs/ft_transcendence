@@ -257,7 +257,7 @@ function firstRoundResults(tournament) {
             player2: match.player2,
             score: match.score
           };
-          newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${dataMatch.player1}</b> vs <b>${dataMatch.player2}</b>`;
+          newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${dataMatch.player1}</b> vs <b>${dataMatch.player2}</b>: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
           tournamentContent.appendChild(newData);
           i += 1;
         }
