@@ -70,7 +70,7 @@ class Bot:
 
     def get_genome(self):
         local_dir = os.path.dirname(__file__)
-        genome_path = os.path.join(local_dir, 'bots', 'new1.pkl')
+        genome_path = os.path.join(local_dir, 'bots', 'hard-gen50_2.pkl')
         with open(genome_path, 'rb') as f:
             genome = pickle.load(f)
         return genome
