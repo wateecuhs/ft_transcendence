@@ -38,7 +38,6 @@ function initMMWebSocket() {
       };
       displayChatMessage(data);
       showPopUp(window.dataMap.get('start-tournament'));
-      showTournamentDetails(message.data);
       sendPlayersToRooms(message.data);
     }
     else if (message.type === "tournament.delete") {
@@ -59,7 +58,6 @@ function initMMWebSocket() {
       }
     }
     else if (message.type === "matchmaking.start") {
-      //showPopUp(window.dataMap.get('matchmaking-start'));
       const optionWin = document.getElementById('game-option');
       const buttonMathmaking = optionWin.querySelector('#launch-matchmaking');
       buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
@@ -125,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const winSearchInput = winBookWindow.querySelector('#search-tournament');
   const searchButton = winBookWindow.querySelector('#search-button');
+  const createTournamentInput = winBookWindow.querySelector('#create-tournament-name');
   const createTournamentButton = document.querySelector('#create-tournament-button');
 
   createTournamentButton.addEventListener('click', createTournament);
@@ -133,6 +132,12 @@ document.addEventListener("DOMContentLoaded", () => {
   winSearchInput.addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
       searchButton.click();
+    }
+  });
+
+  createTournamentInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      createTournamentButton.click();
     }
   });
 

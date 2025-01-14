@@ -12,11 +12,11 @@ function openFileSelector() {
         reader.onload = async function (event) {
         const accountWin = document.getElementById("accountWindow");
         const fullNameText = accountWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent.trim();
-        const userNameText = fullNameText.replace("Name: ", "").trim();
+        const userNameText = fullNameText.replace(`${window.dataMap.get("account-name")}: `, "").trim();
         const storedUserInfo = localStorage.getItem(userNameText);
 
             if (!storedUserInfo) {
-                alert("Erreur : Impossible de récupérer l'utilisateur.");
+                raiseAlert("Error : user not found.");
                 return;
             }
 
@@ -55,7 +55,11 @@ function openFileSelector() {
                       }
                 }
             } catch (error) {
-                console.error('Failed to parse JSON response:', error);
+                if (error.message.startsWith("Unexpected")) {
+                    raiseAlert(window.dataMap.get('too-big-img'));
+                }
+                else
+                    console.error('Failed to parse JSON response:', error);
             }
         };
 

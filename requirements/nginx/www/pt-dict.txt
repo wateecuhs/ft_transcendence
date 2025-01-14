@@ -119,3 +119,4 @@ too-long-name=O nome deve ter no máximo 20 caracteres.
 alphanumeric-name=O nome deve ser alfanumérico.
 no-42-email=Você não pode usar um e-mail 42 para uma conta comum. Por favor, use a conexão 42.
 friend-stat=Estatísticas do Usuário
+too-big-img=Esta imagem é muito grande

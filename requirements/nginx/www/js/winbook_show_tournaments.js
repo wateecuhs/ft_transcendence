@@ -36,6 +36,7 @@ async function showTournamentResults(query) {
 
           li.addEventListener('click', function() {
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+            resetWinBook();
             showTournamentDetails(tournament);
           });
 

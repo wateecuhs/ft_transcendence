@@ -128,7 +128,7 @@ function resetWinBook() {
 
 async function sendPlayersToRooms(tournament) {
   const winBookWindow = document.getElementById("winBook");
-  const tournamentContent = winBookWindow.querySelector('#tournament-status-id');
+  const tournamentContent = winBookWindow.querySelector('#tournament-score-id');
   const readyButton = winBookWindow.querySelector('#ready-button');
   const quitButton = document.querySelector('#quit-button');
 
@@ -239,16 +239,15 @@ async function sendPlayersToRooms(tournament) {
   });
 }
 
-
 function firstRoundResults(tournament) {
   const winBookWindow = document.getElementById("winBook");
-  const tournamentContent = winBookWindow.querySelector('#tournament-pane-id');
+  const tournamentContent = winBookWindow.querySelector('#tournament-score-id');
   const rounds = tournament.rounds;
+  tournamentContent.innerHTML = '';
 
+  let i = 1;
   rounds.forEach(round => {
-    if (round.round === "FIRST") {
       const matches = round.matches;
-      let i = 1;
       matches.forEach(match => {
         const newData = document.createElement('div');
         if (match.status === "FINISHED") {
@@ -258,7 +257,7 @@ function firstRoundResults(tournament) {
             player2: match.player2,
             score: match.score
           };
-          newData.textContent = `Match ${i} : ${dataMatch.player1} vs ${dataMatch.player2} -> ${dataMatch.score[0]}-${dataMatch.score[1]}`;
+          newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${dataMatch.player1}</b> vs <b>${dataMatch.player2}</b>`;
           tournamentContent.appendChild(newData);
           i += 1;
         }
@@ -268,11 +267,11 @@ function firstRoundResults(tournament) {
             player1: match.player1,
             player2: match.player2
           };
-          newData.textContent = `Match ${i} : ${dataMatch.player1} vs ${dataMatch.player2}`;
+          newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${dataMatch.player1}</b> vs <b>${dataMatch.player2}</b>`;
+
           tournamentContent.appendChild(newData);
           i += 1;
         }
       });
-    }
   });
 }

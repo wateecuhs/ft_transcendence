@@ -35,6 +35,13 @@ function displayDeskInconsInWindow() {
     textSpan.className = 'list-text';
     textSpan.textContent = textElement.textContent;
 
+    if (textElement.textContent.trim() === window.dataMap.get('trash')) {
+      textSpan.id = 'trash-explorer';
+    }
+    if (textElement.textContent.trim() === window.dataMap.get('desktop')) {
+      textSpan.id = 'desktop-explorer';
+    }
+
     const listItem = document.createElement('li');
     const ListItemButton = document.createElement('button');
     listItem.classList.add('list-item');

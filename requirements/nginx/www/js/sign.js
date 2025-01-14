@@ -143,6 +143,12 @@ function SignIn() {
 					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
 					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+					const trashExplorer = document.getElementById('trash-explorer');
+          if (trashExplorer)
+            trashExplorer.textContent = window.dataMap.get('trash');
+          const desktopExplorer = document.getElementById('desktop-explorer');
+          if (desktopExplorer)
+            desktopExplorer.textContent = window.dataMap.get('desktop');
 				});
 
 				let langageUrl = null;
@@ -489,6 +495,12 @@ async function SignIn42() {
 										document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
 										document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 										document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+										const trashExplorer = document.getElementById('trash-explorer');
+										if (trashExplorer)
+											trashExplorer.textContent = window.dataMap.get('trash');
+										const desktopExplorer = document.getElementById('desktop-explorer');
+										if (desktopExplorer)
+											desktopExplorer.textContent = window.dataMap.get('desktop');
 									});
 
 									let langageUrl = null;
@@ -646,6 +658,12 @@ async function can_sign_in() {
 					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
 					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+					const trashExplorer = document.getElementById('trash-explorer');
+          if (trashExplorer)
+            trashExplorer.textContent = window.dataMap.get('trash');
+          const desktopExplorer = document.getElementById('desktop-explorer');
+          if (desktopExplorer)
+            desktopExplorer.textContent = window.dataMap.get('desktop');
 				});
 
 				let langageUrl = null;
@@ -798,6 +816,12 @@ async function verify2FA() {
 					document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
 					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+					const trashExplorer = document.getElementById('trash-explorer');
+          if (trashExplorer)
+            trashExplorer.textContent = window.dataMap.get('trash');
+          const desktopExplorer = document.getElementById('desktop-explorer');
+          if (desktopExplorer)
+            desktopExplorer.textContent = window.dataMap.get('desktop');
 				});
 
 				let langageUrl = null;
