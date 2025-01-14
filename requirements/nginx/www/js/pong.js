@@ -1,5 +1,5 @@
 class PongWindow {
-	constructor(type, roomNumber) {
+	constructor(type, roomNumber = 0) {
 		this.commandBuffer = {};
 		this.gameOver = false;
 		this.type = type;

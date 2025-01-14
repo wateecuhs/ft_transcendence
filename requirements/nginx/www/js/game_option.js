@@ -23,7 +23,7 @@ function game_option_button() {
           raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
-        let game_ai = new PongWindow('ai', 0);
+        let game_ai = new PongWindow('ai');
         game_ai.run();
       }
       else if (buttonId === 'local-button') {
@@ -31,7 +31,7 @@ function game_option_button() {
           raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
-        let game_local = new PongWindow('local', 0);
+        let game_local = new PongWindow('local');
         game_local.run();
       }
       else if (buttonId === 'join-room') {
