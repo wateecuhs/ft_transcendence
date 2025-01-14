@@ -8,13 +8,12 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
 import os
-from api.utils import save_match
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transcendence.settings')
-
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "transcendence.settings")
 
 from django.core.asgi import get_asgi_application
 django_asgi_app = get_asgi_application()
 
+from api.utils import save_match
 from threading import Thread
 import redis
 import json

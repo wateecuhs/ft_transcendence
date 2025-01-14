@@ -28,22 +28,36 @@ services:
       - chat
       - auth
       - matchmaking
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   chat:
     build: ./chat
     env_file:
       - ./conf/.env-chat
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     networks:
       - chat
       - peas
     depends_on:
       chat-db:
         condition: service_healthy
+      chat-redis:
+        condition: service_healthy
     environment:
       - REDIS_HOST=chat-redis
       - REDIS_PORT=6379
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   chat-redis:
     container_name: chat-redis
@@ -52,12 +66,23 @@ services:
       - chat
     volumes:
       - chat-redis-volume:/data
-    command:
-      redis-server --save 60 1 --loglevel warning
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   chat-db:
     image: postgres:14
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - chat-db-volume:/var/lib/postgresql/data
     env_file:
@@ -69,23 +94,34 @@ services:
       interval: 1s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   auth:
     build: ./auth
     env_file:
       - ./conf/.env-auth
-    ports:
-      - "8001:8001"
+    expose:
+      - "8001"
     networks:
       - peas
       - auth
     depends_on:
       auth-db:
         condition: service_healthy
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   auth-db:
     image: postgres:14
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - auth-db-volume:/var/lib/postgresql/data
     env_file:
@@ -97,7 +133,11 @@ services:
       interval: 1s
       timeout: 5s
       retries: 5
-
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   matchmaking:
     build: ./matchmaking
@@ -106,18 +146,26 @@ services:
     networks:
       - peas
       - matchmaking
-    ports:
-      - "8002:8002"
+    expose:
+      - "8002"
     depends_on:
       chat-db:
+        condition: service_healthy
+      matchmaking-redis:
         condition: service_healthy
     environment:
       - REDIS_HOST=matchmaking-redis
       - REDIS_PORT=6379
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   matchmaking-db:
     image: postgres:14
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - matchmaking-db-volume:/var/lib/postgresql/data
     env_file:
@@ -130,6 +178,11 @@ services:
       interval: 1s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   matchmaking-redis:
     container_name: matchmaking-redis
@@ -138,9 +191,19 @@ services:
       - matchmaking
     volumes:
       - matchmaking-redis-volume:/data
-    command:
-      redis-server --save 60 1 --loglevel warning
-
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   ai_game:
     container_name: ai_game
@@ -152,11 +215,20 @@ services:
       - ai_game
     volumes:
       - ./ai_game/app:/app/
-    ports:
-      - "8003:8003"
+    expose:
+      - "8003"
+    depends_on:
+      ai_game_redis:
+        condition: service_healthy
     environment:
       - REDIS_HOST=ai_game-redis
       - REDIS_PORT=6379
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   ai_game_redis:
     container_name: ai_game_redis
@@ -165,8 +237,19 @@ services:
       - ai_game
     volumes:
       - ai_game-redis-volume:/data
-    command:
-      redis-server --save 60 1 --loglevel warning
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   game:
     container_name: game
@@ -178,11 +261,20 @@ services:
       - game
     volumes:
       - ./game/app:/app/
-    ports:
-      - "8004:8004"
+    expose:
+      - "8004"
+    depends_on:
+      game-redis:
+        condition: service_healthy
     environment:
       - REDIS_HOST=game-redis
       - REDIS_PORT=6379
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   game-redis:
     container_name: game-redis
@@ -191,8 +283,42 @@ services:
       - game
     volumes:
       - game-redis-volume:/data
-    command:
-      redis-server --save 60 1 --loglevel warning
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  match-redis:
+    container_name: match-redis
+    image: redis:6
+    networks:
+      - game
+      - matchmaking
+      - auth
+    volumes:
+      - match-redis-volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   chat-db-volume: {}
@@ -203,3 +329,4 @@ volumes:
   game-redis-volume: {}
   matchmaking-redis-volume: {}
   ai_game-redis-volume: {}
+  match-redis-volume: {}
