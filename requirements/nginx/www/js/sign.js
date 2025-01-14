@@ -126,7 +126,6 @@ function SignIn() {
 					document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
 					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
 					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
 					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
 					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
 					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -144,11 +143,12 @@ function SignIn() {
 					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
 					const trashExplorer = document.getElementById('trash-explorer');
-          if (trashExplorer)
-            trashExplorer.textContent = window.dataMap.get('trash');
-          const desktopExplorer = document.getElementById('desktop-explorer');
-          if (desktopExplorer)
-            desktopExplorer.textContent = window.dataMap.get('desktop');
+					if (trashExplorer)
+						trashExplorer.textContent = window.dataMap.get('trash');
+					const desktopExplorer = document.getElementById('desktop-explorer');
+					if (desktopExplorer)
+						desktopExplorer.textContent = window.dataMap.get('desktop');
+					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 				});
 
 				let langageUrl = null;
@@ -476,7 +476,6 @@ async function SignIn42() {
 										document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
 										document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
 										document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-										document.getElementById('create-room').textContent = window.dataMap.get('create-room');
 										document.getElementById('join-room').textContent = window.dataMap.get('join-room');
 										document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
 										document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -501,6 +500,7 @@ async function SignIn42() {
 										const desktopExplorer = document.getElementById('desktop-explorer');
 										if (desktopExplorer)
 											desktopExplorer.textContent = window.dataMap.get('desktop');
+										document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 									});
 
 									let langageUrl = null;
@@ -637,10 +637,7 @@ async function can_sign_in() {
 					document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
 					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
 					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
-
 					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
-
 					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
 					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
 					document.getElementById('start-button').textContent = window.dataMap.get('start-button');
@@ -659,11 +656,12 @@ async function can_sign_in() {
 					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
 					const trashExplorer = document.getElementById('trash-explorer');
-          if (trashExplorer)
-            trashExplorer.textContent = window.dataMap.get('trash');
-          const desktopExplorer = document.getElementById('desktop-explorer');
-          if (desktopExplorer)
-            desktopExplorer.textContent = window.dataMap.get('desktop');
+					if (trashExplorer)
+						trashExplorer.textContent = window.dataMap.get('trash');
+					const desktopExplorer = document.getElementById('desktop-explorer');
+					if (desktopExplorer)
+						desktopExplorer.textContent = window.dataMap.get('desktop');
+					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 				});
 
 				let langageUrl = null;
@@ -799,7 +797,6 @@ async function verify2FA() {
 					document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
 					document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
 					document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-					document.getElementById('create-room').textContent = window.dataMap.get('create-room');
 					document.getElementById('join-room').textContent = window.dataMap.get('join-room');
 					document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
 					document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -817,11 +814,12 @@ async function verify2FA() {
 					document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
 					document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
 					const trashExplorer = document.getElementById('trash-explorer');
-          if (trashExplorer)
-            trashExplorer.textContent = window.dataMap.get('trash');
-          const desktopExplorer = document.getElementById('desktop-explorer');
-          if (desktopExplorer)
-            desktopExplorer.textContent = window.dataMap.get('desktop');
+					if (trashExplorer)
+						trashExplorer.textContent = window.dataMap.get('trash');
+					const desktopExplorer = document.getElementById('desktop-explorer');
+					if (desktopExplorer)
+						desktopExplorer.textContent = window.dataMap.get('desktop');
+					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 				});
 
 				let langageUrl = null;

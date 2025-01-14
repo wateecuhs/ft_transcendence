@@ -144,7 +144,7 @@ class UserInfo(APIView):
 		except ConfirmationError as e:
 			JsonResponse({"message": f"failed : {e.messages}"}, status=401)
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -182,7 +182,7 @@ class UserInfo(APIView):
 								"is_2FA": user.is_2FA,
                 "language": user.language})
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -353,7 +353,7 @@ class MatchHistory(APIView):
 			}
 			return JsonResponse(response)
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -416,7 +416,7 @@ class	UserStat(APIView):
 								"goal_scored": user.goal_scored,
 								"goal_conceded": user.goal_conceded})
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -498,7 +498,7 @@ class Activate2FA(APIView):
 			return JsonResponse({'message': 'Success', 'qrcode_path': user.qrcode_path})
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -536,7 +536,7 @@ class Activate2FA(APIView):
 				return JsonResponse({'message': 'failed : wrong 2FA code'}, status=401)
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -574,7 +574,7 @@ class Verify2FA(APIView):
 				return JsonResponse({'message': 'failed : wrong 2FA code'}, status=401)
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -604,7 +604,7 @@ class Desactivate2FA(APIView):
 			return JsonResponse({'message': 'Success'})
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
 
@@ -642,6 +642,6 @@ class ChangeLanguage(APIView):
 			return JsonResponse({'message': 'Success'})
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=400)
+			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)

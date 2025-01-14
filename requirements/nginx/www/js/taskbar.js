@@ -118,7 +118,6 @@ function toogleLanguageChoices() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -143,8 +142,9 @@ function toogleLanguageChoices() {
             const desktopExplorer = document.getElementById('desktop-explorer');
             if (desktopExplorer)
               desktopExplorer.textContent = window.dataMap.get('desktop');
+            document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           });
-          
+
           const flagIcon = document.querySelector('.flag-icon');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/france_flag.png')";
@@ -154,7 +154,7 @@ function toogleLanguageChoices() {
             flagIcon.style.width = "32px";
             flagIcon.style.height = "32px";
           }
-          
+
           raiseAlert("Langue changée vers le Français");
           updateUserInfo();
           updateUserStat();
@@ -246,7 +246,6 @@ function toogleLanguageChoices() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -271,8 +270,9 @@ function toogleLanguageChoices() {
             const desktopExplorer = document.getElementById('desktop-explorer');
             if (desktopExplorer)
               desktopExplorer.textContent = window.dataMap.get('desktop');
+            document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           });
-          
+
           const flagIcon = document.querySelector('.flag-icon');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/uk_flag.png')";
@@ -282,7 +282,7 @@ function toogleLanguageChoices() {
             flagIcon.style.width = "32px";
             flagIcon.style.height = "32px";
           }
-          
+
           raiseAlert("Language changed to English");
           updateUserInfo();
           updateUserStat();
@@ -374,7 +374,6 @@ function toogleLanguageChoices() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -399,8 +398,9 @@ function toogleLanguageChoices() {
             const desktopExplorer = document.getElementById('desktop-explorer');
             if (desktopExplorer)
               desktopExplorer.textContent = window.dataMap.get('desktop');
+            document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           });
-          
+
           const flagIcon = document.querySelector('.flag-icon');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/portugal_flag.png')";
@@ -410,7 +410,7 @@ function toogleLanguageChoices() {
             flagIcon.style.width = "32px";
             flagIcon.style.height = "32px";
           }
-          
+
           raiseAlert("Idioma alterado para português");
           updateUserInfo();
           updateUserStat();
@@ -502,7 +502,6 @@ function toogleLanguageChoices() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -527,8 +526,9 @@ function toogleLanguageChoices() {
             const desktopExplorer = document.getElementById('desktop-explorer');
             if (desktopExplorer)
               desktopExplorer.textContent = window.dataMap.get('desktop');
+            document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           });
-          
+
           const flagIcon = document.querySelector('.flag-icon');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/russia_flag.png')";
@@ -538,7 +538,7 @@ function toogleLanguageChoices() {
             flagIcon.style.width = "32px";
             flagIcon.style.height = "32px";
           }
-          
+
           raiseAlert("Язык изменен на русский");
           updateUserInfo();
           updateUserStat();
@@ -658,7 +658,6 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -683,8 +682,9 @@ function toogleLanguageChoicesLogin() {
             const desktopExplorer = document.getElementById('desktop-explorer');
             if (desktopExplorer)
               desktopExplorer.textContent = window.dataMap.get('desktop');
+            document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           });
-          
+
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/france_flag.png')";
@@ -785,7 +785,6 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -810,8 +809,9 @@ function toogleLanguageChoicesLogin() {
             const desktopExplorer = document.getElementById('desktop-explorer');
             if (desktopExplorer)
               desktopExplorer.textContent = window.dataMap.get('desktop');
+            document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           });
-          
+
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/uk_flag.png')";
@@ -821,7 +821,7 @@ function toogleLanguageChoicesLogin() {
             flagIcon.style.width = "32px";
             flagIcon.style.height = "32px";
           }
-          
+
           raiseAlert("Language changed to English");
           updateUserInfo();
         const requestData = {
@@ -912,7 +912,6 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -937,8 +936,9 @@ function toogleLanguageChoicesLogin() {
             const desktopExplorer = document.getElementById('desktop-explorer');
             if (desktopExplorer)
               desktopExplorer.textContent = window.dataMap.get('desktop');
+            document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           });
-          
+
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/portugal_flag.png')";
@@ -1038,7 +1038,6 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('choose-option').textContent = window.dataMap.get('choose-option');
             document.getElementById('ai-button').textContent = window.dataMap.get('ai-button');
             document.getElementById('local-button').textContent = window.dataMap.get('local-button');
-            document.getElementById('create-room').textContent = window.dataMap.get('create-room');
             document.getElementById('join-room').textContent = window.dataMap.get('join-room');
             document.getElementById('game-over-txt').textContent = window.dataMap.get('game-over-txt');
             document.getElementById('game-over-quit').textContent = window.dataMap.get('game-over-quit');
@@ -1064,7 +1063,8 @@ function toogleLanguageChoicesLogin() {
           const desktopExplorer = document.getElementById('desktop-explorer');
           if (desktopExplorer)
             desktopExplorer.textContent = window.dataMap.get('desktop');
-          
+          document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
+
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {
             flagIcon.style.background = "url('../img/russia_flag.png')";
