@@ -255,7 +255,7 @@ function displayInviteMessage(data) {
   const prefix = data.is_author ? '[To] ' : '[From] ';
   const who = data.is_author ? data.target : data.author;
 
-  messageDiv.textContent = `${prefix} ${who} invite you to match: `
+  messageDiv.textContent = `${prefix} ${who} invites you to a match: `
 
   const button = document.createElement('button');
   button.textContent = 'Accept';
@@ -335,7 +335,7 @@ function loadPrivateHistory(friend) {
       messageDiv.classList.add('message');
       const prefix = data.is_author ? '[To] ' : '[From] ';
       const who = data.is_author ? data.target : data.author;
-      messageDiv.textContent = `${prefix} ${who} invite you to match: `
+      messageDiv.textContent = `${prefix} ${who} invites you to a match: `
       chatMessages.appendChild(messageDiv);
       const button = document.createElement('button');
       button.textContent = 'Accept';

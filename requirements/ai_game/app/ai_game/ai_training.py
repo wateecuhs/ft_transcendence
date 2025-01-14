@@ -49,11 +49,11 @@ class GameInstance:
 		ai2 = neat.nn.FeedForwardNetwork.create(genome2, config)
 
 		while True:
-			if self.loops_done >= 60:
-				self.update_bots()
-				self.loops_done = 0
-			else:
-				self.predict()
+			# if self.loops_done >= 60:
+			self.update_bots()
+				# self.loops_done = 0
+			# else:
+				# self.predict()
 
 			# output1 = ai1.activate((self.paddle_left.y, self.ball.y, abs(self.paddle_left.x - self.ball.x)))
 			output1 = ai1.activate((self.paddle_left_y, self.ball_y, abs(self.paddle_left_x - self.ball_x), self.ball_dx, self.ball_dy))
@@ -104,7 +104,7 @@ def train_ai(genomes, config):
 			game_instance.eval_genomes(genome1, genome2, config)
 
 def run_neat(config):
-	# pop = neat.Checkpointer.restore_checkpoint(os.path.join(os.path.dirname(__file__), 'training_checkpoints', 'generation-49'))
+	# pop = neat.Checkpointer.restore_checkpoint(os.path.join(os.path.dirname(__file__), 'training_checkpoints', 'generation-74'))
 	pop = neat.Population(config)
 	pop.add_reporter(neat.StdOutReporter(True))
 	stats = neat.StatisticsReporter()
