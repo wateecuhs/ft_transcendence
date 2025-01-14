@@ -53,8 +53,8 @@ class Ball:
         self.dy *= 0.5
 
 class Bot:
-    def __init__(self, difficulty):
-        self.genome = self.get_genome(difficulty)
+    def __init__(self):
+        self.genome = self.get_genome()
         local_dir = os.path.dirname(__file__)
         config_path = os.path.join(local_dir, 'config.txt')
         self.config = neat.config.Config(neat.DefaultGenome, neat.DefaultReproduction,
@@ -68,19 +68,11 @@ class Bot:
         self.ball_dx = 0
         self.ball_dy = 0
 
-    def get_genome(self, difficulty):
+    def get_genome(self):
         local_dir = os.path.dirname(__file__)
-
-        # if difficulty == "easy":
-        #     genome_path = os.path.join(local_dir, 'bots', 'easy-gen30.pkl')
-        # elif difficulty == "medium":
-        #     genome_path = os.path.join(local_dir, 'bots', 'normal-gen50.pkl')
-        if difficulty == "hard":
-            genome_path = os.path.join(local_dir, 'bots', 'hard-gen50_2.pkl')
-
+        genome_path = os.path.join(local_dir, 'bots', 'new1.pkl')
         with open(genome_path, 'rb') as f:
             genome = pickle.load(f)
-
         return genome
 
     def update(self, paddle_y, ball_y, ball_x, ball_dx, ball_dy):
@@ -125,7 +117,7 @@ class Room:
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.ball = Ball(WIN_WIDTH // 2, WIN_HEIGHT // 2, BALL_RADIUS)
-        self.bot = Bot("hard")                         # Change difficulty from frontend
+        self.bot = Bot()
         self.score = [0, 0]
         self.players = []
         self.keys_pressed = {
@@ -225,9 +217,9 @@ class Room:
 
     def game_over(self):
         if self.score[0] == 5:
-            self.winner = "Player 1"
+            self.winner = "1"
         else:
-            self.winner = "Player 2"
+            self.winner = "2"
 
         game_state = {
             "type": "game_over",
