@@ -371,7 +371,21 @@ async function SignIn42() {
 	}
 
 	login42.addEventListener('click', async function () {
-			location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443&response_type=code';
+		try {
+			const response = await fetch('/auth/redirect/', {
+				method: 'GET'
+			});
+			if (response.ok) {
+				const data = await response.json();
+				if (data.message === 'Success')
+					location.href = data.link;
+			} else {
+				console.error('Network error:', response);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+			//location.href = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2Flocalhost%3A8443&response_type=code';
 	});
 
 	const urlParams = new URLSearchParams(window.location.search);
