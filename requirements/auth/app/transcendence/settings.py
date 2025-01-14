@@ -24,7 +24,7 @@ BASE_DIR = "/requirements/"
 SECRET_KEY = 'django-insecure-&^v)k6mhvvz&w4wd)+^++kyn-cs+d4t+skf@f@72t=sdmjt%6m'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "*"

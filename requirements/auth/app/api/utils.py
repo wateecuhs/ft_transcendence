@@ -13,7 +13,7 @@ def CreateAccessToken(request, username):
 	user = CustomUser.get_user_by_name(username)
 	if not user:
 		return None
-	exp_access = datetime.now() + timedelta(seconds=10)
+	exp_access = datetime.now() + timedelta(minutes=30)
 	iat = datetime.now()
 	payload = {
 		"username": username,
