@@ -209,7 +209,7 @@ async function updateMatchHistory() {
 
       const matchStatus = document.createElement('div');
       matchStatus.classList.add('match-status');
-      const statusVal = match.status === 1 ? 'Win' : 'Lose';
+      const statusVal = match.user_win === true ? 'Win' : 'Lose';
       matchStatus.textContent = `Status: ${statusVal }`;
 
       const matchSeparator = document.createElement('div');

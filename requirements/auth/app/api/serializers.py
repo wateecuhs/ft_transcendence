@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Status, Match
+from .models import CustomUser, Match
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
@@ -141,15 +141,6 @@ class EditAccountSerializer(serializers.ModelSerializer):
 class	ChangeRoomSerializer(serializers.Serializer):
 	room_id = serializers.UUIDField(label='Room Id')
 
-
-class	AddMatchSerializer(serializers.ModelSerializer):
-	user1_name = serializers.CharField(required=True)
-	user2_name = serializers.CharField(required=True)
-	user1_score = serializers.IntegerField(required=True)
-	user2_score = serializers.IntegerField(required=True)
-	user1_status = serializers.ChoiceField(required=True, choices=Status.choices)
-	user2_status = serializers.ChoiceField(required=True, choices=Status.choices)
-	date = serializers.DateField(required=True)
 
 class CodeSerializer(serializers.Serializer):
 	code = serializers.CharField(required=True)
