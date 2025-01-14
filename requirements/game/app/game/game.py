@@ -1,7 +1,6 @@
 import asyncio
 import random
 from redis.asyncio import Redis
-import redis
 import json
 from channels.db import database_sync_to_async
 from core.asgi import pool
@@ -87,7 +86,6 @@ class Room:
             self.players.remove(player)
 
     def move_paddles(self):
-        # async with self.lock:
         if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
             self.paddle_left.move(True)
         if self.keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
@@ -116,12 +114,12 @@ class Room:
         return game_state
 
     def handle_collision(self):
-        # Wall collision
+        # wall collision
         if self.ball.y - self.ball.radius < 0 or self.ball.y + self.ball.radius > WIN_HEIGHT:
             self.ball.dy = -self.ball.dy
             return
 
-        # Paddle collision
+        # paddle collision
         if self.ball.dx < 0:
             if (self.paddle_left.y - self.ball.radius <= self.ball.y <= self.paddle_left.y + self.paddle_left.height and
                 self.ball.x - self.ball.radius <= self.paddle_left.x + self.paddle_left.width):
@@ -162,7 +160,7 @@ class Room:
             if len(self.players) == 2:
                 self.winner = self.players[0].user["username"] if self.score[0] > self.score[1] else self.players[1].user["username"]
             else:
-                self.winner = "Player 1" if self.score[0] > self.score[1] else "Player 2"
+                self.winner = "1" if self.score[0] > self.score[1] else "2"
         else:
             self.winner = winner
         game_state = {

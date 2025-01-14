@@ -93,7 +93,6 @@ class Bot:
     def predict(self, paddle_y):
         self.paddle_y = paddle_y
 
-        # for _ in range(10):
         if self.ball_y - BALL_RADIUS < 0 or self.ball_y + BALL_RADIUS > WIN_HEIGHT:
             self.ball_dy = -self.ball_dy
 
@@ -152,7 +151,6 @@ class Room:
             self.players.remove(player)
 
     def move_paddles(self):
-        # async with self.lock:
         if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
             self.paddle_left.move(True)
         if self.keys_pressed["move_left_down"] and self.paddle_left.y + self.paddle_left.height + self.paddle_left.SPEED < WIN_HEIGHT:
@@ -182,12 +180,12 @@ class Room:
         return game_state
 
     def handle_collision(self):
-        # Wall collision
+        # wall collision
         if self.ball.y - self.ball.radius < 0 or self.ball.y + self.ball.radius > WIN_HEIGHT:
             self.ball.dy = -self.ball.dy
             return
 
-        # Paddle collision
+        # paddle collision
         if self.ball.dx < 0:
             if (self.paddle_left.y - self.ball.radius <= self.ball.y <= self.paddle_left.y + self.paddle_left.height and
                 self.ball.x - self.ball.radius <= self.paddle_left.x + self.paddle_left.width):
@@ -245,7 +243,7 @@ class Room:
         self.keys_pressed["move_right_up"] = False
         self.keys_pressed["move_right_down"] = False
 
-        # Bot gets updated once per second
+        # bot gets updated once per second
         delta_time = time.time() - self.prev_time
         if delta_time >= 1:
             self.bot.update(self.paddle_right.y, self.ball.y, self.ball.x, self.ball.dx, self.ball.dy)
@@ -263,7 +261,7 @@ class Room:
         elif decision == 2:
             self.keys_pressed["move_right_down"] = True
 
-    # Used for training purposes
+    # used for training purposes
     def loop(self):
         if self.keys_pressed["move_left_up"] and self.paddle_left.y - self.paddle_left.SPEED > 0:
             self.paddle_left.move(True)
@@ -282,7 +280,7 @@ class Room:
 
         return game_info
 
-    # Can be used for training purposes, currently not used
+    # can be used for training purposes, currently not used
     def reset(self):
         self.paddle_left = Paddle(10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)
         self.paddle_right = Paddle(WIN_WIDTH - PADDLE_WIDTH - 10, WIN_HEIGHT // 2 - PADDLE_HEIGHT // 2, PADDLE_WIDTH, PADDLE_HEIGHT)

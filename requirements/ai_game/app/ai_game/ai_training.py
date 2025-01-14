@@ -2,7 +2,6 @@ from game import Room
 import neat
 import os
 import pickle
-import time
 
 WIN_WIDTH = 800
 WIN_HEIGHT = 600
@@ -13,11 +12,7 @@ FPS = 60
 class GameInstance:
 	def __init__(self, room_name, config):
 		self.game = Room('ai')
-		# self.paddle_left = self.game.paddle_left
-		# self.paddle_right = self.game.paddle_right
-		# self.ball = self.game.ball
 		self.key_pressed = self.game.keys_pressed
-		# self.prev_time = time.time()
 		self.paddle_left_x = self.game.paddle_left.x
 		self.paddle_left_y = self.game.paddle_left.y
 		self.paddle_right_x = self.game.paddle_right.x
@@ -54,13 +49,9 @@ class GameInstance:
 		ai2 = neat.nn.FeedForwardNetwork.create(genome2, config)
 
 		while True:
-			# time_passed = time.time() - self.prev_time
-			# if time_passed >= 1:
 			if self.loops_done >= 60:
-				# self.game.ball.MAX_VELOCITY *= 1.05
 				self.update_bots()
 				self.loops_done = 0
-				# self.prev_time = time.time()
 			else:
 				self.predict()
 

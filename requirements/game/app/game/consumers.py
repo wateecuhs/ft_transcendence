@@ -70,11 +70,6 @@ class GameConsumer(AsyncWebsocketConsumer):
                 del rooms[self.room_name]
 
     async def receive(self, text_data):
-        # data = json.loads(text_data)
-        # user = self.scope.get("user")
-        # if user:
-        #     data["user"] = {"id": user["id"], "username": user["username"]}
-
         command = json.loads(text_data)
         if command.get('type') == 'disconnect':
             await self.room.remove_player(self)
