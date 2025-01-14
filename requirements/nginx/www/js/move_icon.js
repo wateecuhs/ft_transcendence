@@ -56,7 +56,7 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert, #game-option, #tree-matchmaking, #clientWindow, #pop-up-message, #client-action, #trash-bin, #winBook, #window-join-room');
+const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert, #game-option, #tree-matchmaking, #clientWindow, #pop-up-message, #client-action, #trash-bin, #winBook, #window-join-room, #information-window');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');

@@ -1,5 +1,5 @@
 #msnWindow {
-  width: 600px;
+  width: 610px;
   height: 500px;
   border: 2px solid #000;
   background-color: #e0e0e0;
@@ -9,7 +9,7 @@
   box-sizing: border-box;
   font-family: "MS Sans Serif", Arial, sans-serif;
   font-size: 16px;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 #msnWindow .window-header {
@@ -220,11 +220,28 @@
   font-size: 14px;
 }
 
+#msnWindow .info-button-cmd {
+  padding: 6px 10px;
+  background-color: #dcdcdc;
+  border: 1px solid #808080;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
+  cursor: pointer;
+  font-size: 14px;
+}
+
 #msnWindow .send-button:hover {
   background-color: #b8b8b8;
 }
 
+#msnWindow .info-button-cmd:hover {
+  background-color: #b8b8b8;
+}
+
 #msnWindow .send-button:active {
+  background-color: #dcdcdc;
+}
+
+#msnWindow .info-button-cmd:active {
   background-color: #dcdcdc;
 }
 
@@ -257,4 +274,12 @@
 
 #msnWindow .info-friend:hover {
   cursor: pointer;
+}
+
+#msnWindow .send-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }

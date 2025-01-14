@@ -265,7 +265,8 @@ class ConfirmToken(APIView):
         token_url = 'https://api.intra.42.fr/oauth/token'
         client_id = os.getenv('CLIENT_ID')
         client_secret = os.getenv('CLIENT_SECRET')
-        redirect_uri = 'https://localhost:8443'
+        host = os.getenv('HOST_MACHINE')
+        redirect_uri = 'https://' + host + ':8443'
         params = {
             'grant_type': 'authorization_code',
             'client_id': client_id,
@@ -645,3 +646,11 @@ class ChangeLanguage(APIView):
 			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+
+class Redirect42(APIView):
+    def get(self, request):
+        host = os.getenv('HOST_MACHINE')
+        if not host:
+            return JsonResponse({'message': 'failed : host not found'}, status=400)
+        link = 'https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8f558fa017dd0199841b4f9f6f35bb6dbe31e92375f37af4993b088964ae26f1&redirect_uri=https%3A%2F%2F' + host + '%3A8443&response_type=code'
+        return JsonResponse({'message': 'Success', 'link': link}, status=200)

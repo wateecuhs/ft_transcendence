@@ -367,7 +367,28 @@ function loadPrivateHistory(friend) {
   }
 }
 
+function toogleInformationWindow() {
+  const informationWindow = document.getElementById('information-window');
+  const closeBtn = informationWindow.querySelector('.close-button');
+
+  if (informationWindow.style.display === 'none') {
+    informationWindow.style.display = (informationWindow.style.display == 'none') ? 'block' : 'none';
+    informationWindow.style.position = 'absolute';
+    informationWindow.style.top = `${window.innerHeight / 2 - informationWindow.offsetHeight / 2}px`;
+    informationWindow.style.left = `${window.innerWidth / 2 - informationWindow.offsetWidth / 2}px`;
+  } else {
+    informationWindow.style.display = 'none';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   setupSendMessage();
   searchFriends();
+
+  const informationWindow = document.getElementById('information-window');
+  const closeBtn = informationWindow.querySelector('.close-button');
+
+  closeBtn.addEventListener('click', function() {
+    informationWindow.style.display = 'none';
+  });
 });

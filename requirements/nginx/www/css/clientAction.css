@@ -8,7 +8,7 @@
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
   font-family: "MS Sans Serif", Arial, sans-serif;
-  z-index: 1000;
+  z-index: 2000;
 }
 
 #client-action .window-header {

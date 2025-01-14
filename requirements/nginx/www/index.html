@@ -27,6 +27,7 @@
     <link rel=stylesheet href="css/game-over.css">
     <link rel="stylesheet" href="css/tree_matchmaking.css">
     <link rel="stylesheet" href="css/trash_bin.css">
+    <link rel="stylesheet" href="css/information_window.css">
 </head>
 <body class="desktop">
 
@@ -457,7 +458,12 @@
           <div class="chat-messages"></div>
           <div class="input-container">
             <input type="text" class="chat-input" id="type-message" placeholder="Type a message" />
-            <button class="send-button" id="send">Send</button>
+            <div class="send-container">
+              <button class="send-button" id="send">Send</button>
+              <span>
+                <button class="info-button-cmd" onclick="toogleInformationWindow()">Info</button>
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -651,6 +657,23 @@
 
     <div class="window-content">
 
+    </div>
+  </div>
+
+  <div class="window" id="information-window" style="display: none;">
+    <div class="window-header">
+      <div class="header-title" id="information-title">Chat Command</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <div class="window-content">
+      <ul>
+        <li>/invite [user] </li>
+        <li>/accept [user]</li>
+        <li>/add [user]</li>
+        <li>/remove [user]</li>
+        <li>/block [user]</li>
+      </ul>
     </div>
   </div>
 

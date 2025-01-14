@@ -33,6 +33,8 @@ accountWindow.querySelector('.left-arrow').addEventListener('click', function() 
 
 async function toogleAccountWindow() {
   updateMatchHistory();
+  updateUserStat();
+
   const work_desk = accountWindow;
 
   work_desk.style.display = (work_desk.style.display == 'none') ? 'block' : 'none';
