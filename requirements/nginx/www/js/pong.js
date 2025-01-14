@@ -137,7 +137,7 @@ class PongWindow {
 			this.drawGame(gameState);
 			if (gameState.type === 'game_over') {
 				this.gameOver = true;
-				triggerGameOverWindows('Game Over! Player ' + gameState.winner + ' wins!');
+				triggerGameOverWindows(window.dataMap.get('game-over-player') + gameState.winner + window.dataMap.get('game-over-win'));
 				this.close();
 				return;
 			}
