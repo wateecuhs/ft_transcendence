@@ -483,6 +483,7 @@ function toogleLanguageChoices() {
             document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
             document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
             document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+            raiseAlert("Язык изменен на русский");
           });
 
           const flagIcon = document.querySelector('.flag-icon');
@@ -976,6 +977,7 @@ function toogleLanguageChoicesLogin() {
           document.getElementById('join-input-id').placeholder = window.dataMap.get('join-input-id');
           document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
           document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
+          raiseAlert("Язык изменен на русский");
 
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {
