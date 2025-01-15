@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .serializers import MessageSerializer
+from .models import User
 from rest_framework.exceptions import ValidationError
 from asgiref.sync import sync_to_async
 from .enums import MessageType
@@ -52,6 +53,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.close(code=3000)
             return
         self.user = str(self.scope["user"])
+
 
         logger.info(f"[{self.user}] Connected.")
 

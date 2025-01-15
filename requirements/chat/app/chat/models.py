@@ -72,7 +72,6 @@ class User(models.Model):
     class Status(models.TextChoices):
         ONLINE = "ON", "Online"
         OFFLINE = "OFF", "Offline"
-        PLAYING = "PLAYING", "Playing"
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     username = models.CharField(max_length=100, unique=True)
