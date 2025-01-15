@@ -51,7 +51,7 @@ function initMMWebSocket() {
       showTournamentDetails(message.data);
     }
     else if (message.type === "tournament.update") {
-      firstRoundResults(message.data);
+      //firstRoundResults(message.data);
       if (message.data.rounds.length === 2 && message.data.rounds[1].matches[0].status !== "FINISHED") {
         if (message.data.author === message.data.rounds[1].matches[0].player1 || message.data.author === message.data.rounds[1].matches[0].player2) {
           showPopUp("Hurry up ! You are in the next round !");

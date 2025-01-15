@@ -6,8 +6,11 @@ from .models import Tournament
 
 class TournamentsView(APIView):
     def get(self, request: Request):
-        tournaments = Tournament.objects.filter(status=Tournament.Status.PENDING)
+        tournaments = Tournament.objects.filter(status__in=[Tournament.Status.PENDING, Tournament.Status.PLAYING, Tournament.Status.FINISHED])
         if not tournaments.exists():
             return Response([])
         serializer = TournamentSerializer(tournaments, many=True)
+        data = serializer.data
+        for tournament in data:
+            tournament['rounds'] = tournament['matches']
         return Response(serializer.data)

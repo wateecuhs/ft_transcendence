@@ -32,7 +32,11 @@ async function showTournamentResults(query) {
       if (filteredTournaments.length > 0) {
         filteredTournaments.forEach(tournament => function() {
           const li = document.createElement('li');
-          li.textContent = `${tournament.name} (Max: 4 joueurs)`;
+          console.log(tournament);
+          if (tournament.status === 'FINISHED')
+            li.textContent = `${tournament.name} (Max: 4 joueurs) | FINISHED`;
+          else
+            li.textContent = `${tournament.name} (Max: 4 joueurs)`;
 
           li.addEventListener('click', function() {
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
@@ -76,7 +80,11 @@ async function showAllTournaments() {
       if (tournaments.length > 0) {
         tournaments.forEach(tournament => {
           const li = document.createElement('li');
-          li.textContent = `${tournament.name} (Max: 4 joueurs)`;
+          console.log(tournament);
+          if (tournament.status === 'FINISHED')
+            li.textContent = `${tournament.name} (Max: 4 joueurs) | FINISHED`;
+          else
+            li.textContent = `${tournament.name} (Max: 4 joueurs)`;
 
           li.addEventListener('click', function() {
             resetWinBook();

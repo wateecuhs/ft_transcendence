@@ -25,6 +25,18 @@ function showTournamentDetails(tournament) {
     li.textContent = 'No Player in tournament';
     playerListElement.appendChild(li);
   }
+
+  const readyButton = winBookWindow.querySelector('#ready-button');
+  const quitButton = document.querySelector('#quit-button');
+
+  if (tournament.status === "PLAYING" || tournament.status === "FINISHED") {
+    readyButton.style.display = 'none';
+    quitButton.style.display = 'none';
+    firstRoundResults(tournament);
+  } else {
+    readyButton.style.display = 'flex';
+    quitButton.style.display = 'flex';
+  }
 }
 
 function createTournament() {

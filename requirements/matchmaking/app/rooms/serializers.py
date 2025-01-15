@@ -4,7 +4,7 @@ from .models import Tournament
 class TournamentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tournament
-        fields = ['id', 'status', 'created_at', 'name', 'owner', 'players', 'round']
+        fields = ['id', 'status', 'created_at', 'name', 'owner', 'players', 'round', 'matches']
 
     def validate_name(self, value):
         if not value.isalnum():
