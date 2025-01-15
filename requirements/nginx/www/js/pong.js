@@ -47,8 +47,11 @@ class PongWindow {
 
 	open() {
 		const pongWindow = document.getElementById('PongGame');
+		const gameOver = document.querySelector('.all-game-over');
 		const gameOverButton = document.querySelector('.game-over-button');
-
+		
+		gameOver.style.display = 'none';
+		
 		if (pongWindow.style.display === 'none') {
 			pongWindow.style.display = 'flex';
 			history.pushState({ page: "pong" }, "", "#pong");

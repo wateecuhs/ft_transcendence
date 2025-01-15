@@ -1,6 +1,8 @@
 function toogleGameOptionWindow() {
   const optionWin = document.getElementById('game-option');
   if (optionWin.style.display === 'none') {
+    setWindowIndex();
+    optionWin.style.zIndex = 3000;
     optionWin.style.display = 'flex';
     optionWin.style.position = 'absolute';
     optionWin.style.top = `${window.innerHeight / 2 - optionWin.offsetHeight / 2}px`;
@@ -23,6 +25,7 @@ function game_option_button() {
           raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
+        optionWin.style.display = 'none';
         let game_ai = new PongWindow('ai');
         game_ai.run();
       }
@@ -31,6 +34,7 @@ function game_option_button() {
           raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
+        optionWin.style.display = 'none';
         let game_local = new PongWindow('local');
         game_local.run();
       }
@@ -39,6 +43,7 @@ function game_option_button() {
           raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
+        optionWin.style.display = 'none';
         toogleJoinRoom();
       }
       else if (buttonId === 'launch-matchmaking') {

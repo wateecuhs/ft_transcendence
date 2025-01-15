@@ -185,7 +185,7 @@ async function updateMatchHistory() {
 
       const noMatch = document.createElement('div');
       noMatch.classList.add('no-match');
-      noMatch.textContent = 'No match history available.';
+      noMatch.textContent = window.dataMap.get('no-match-history');
       matchElement.appendChild(noMatch);
       matchesList.appendChild(matchElement);
       return ;
@@ -197,7 +197,7 @@ async function updateMatchHistory() {
 
       const matchDate = document.createElement('div');
       matchDate.classList.add('match-date');
-      matchDate.textContent = `--- Match ${match.date} ---`;
+      matchDate.textContent = `--- ${window.dataMap.get('match-history-match')} ${match.date} ---`;
 
       const matchVersus = document.createElement('div');
       matchVersus.classList.add('match-versus');
@@ -205,12 +205,12 @@ async function updateMatchHistory() {
 
       const matchScore = document.createElement('div');
       matchScore.classList.add('match-score');
-      matchScore.textContent = `Score ${match.user_score} - ${match.opponent_score}`;
+      matchScore.textContent = `${window.dataMap.get('score')} ${match.user_score} - ${match.opponent_score}`;
 
       const matchStatus = document.createElement('div');
       matchStatus.classList.add('match-status');
       const statusVal = match.user_win === true ? 'Win' : 'Lose';
-      matchStatus.textContent = `Status: ${statusVal }`;
+      matchStatus.textContent = `${window.dataMap.get('status')}: ${statusVal }`;
 
       const matchSeparator = document.createElement('div');
       matchSeparator.classList.add('match-details');
@@ -230,7 +230,7 @@ async function updateMatchHistory() {
 
     const noMatch = document.createElement('div');
     noMatch.classList.add('no-match');
-    noMatch.textContent = 'No match history available.';
+    noMatch.textContent = window.dataMap.get('no-match-history');
     matchElement.appendChild(noMatch);
     return ;
   }
