@@ -124,7 +124,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def _handle_tournament_create(self, event):
         try:
             existing_active = await sync_to_async(Tournament.objects.filter)(
-                Q(owner=self.user_id) &
+                Q(players__contains=self.username) &
                 Q(status__in=[Tournament.Status.PENDING, Tournament.Status.PLAYING])
             )
             if await sync_to_async(existing_active.count)():

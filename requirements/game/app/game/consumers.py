@@ -51,11 +51,15 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         print(f"Disconnecting {self.user['username']} with code {code}", flush=True)
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
-
+        print("Players in room", [player.user for player in self.room.players], flush=True)
         if len(self.room.players) == 2:
+            print("Game over because of a disconnection", flush=True)
             winner  = self.room.players[0].user["username"] if self.room.players[0] != self else self.room.players[1].user["username"]
+            print("Winner is", winner, flush=True)
             game_state = await self.room.game_over(winner=winner)
+            print("Game state", game_state, flush=True)
             await self.room.remove_player(self)
+            print("Players in room", [player.user for player in self.room.players], flush=True)
             await self.channel_layer.group_send(
                 self.room_name,
                 {

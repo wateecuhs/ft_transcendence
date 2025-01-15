@@ -30,7 +30,6 @@ services:
       - matchmaking
     volumes:
       - ./nginx/www:/var/www/html
-      - ./nginx/www/:/requirements/nginx/www/
     restart: unless-stopped
     logging:
       driver: "json-file"
