@@ -56,7 +56,21 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow, #updateUserWindow, #activate-2fa, #window-alert, #game-option, #tree-matchmaking, #clientWindow, #pop-up-message, #client-action, #trash-bin, #winBook, #window-join-room, #information-window');
+const windows = document.querySelectorAll('#explorerWindow, \
+#accountWindow, \
+#msnWindow, \
+#updateUserWindow, \
+#activate-2fa, \
+#window-alert, \
+#game-option, \
+#tree-matchmaking, \
+#clientWindow, \
+#pop-up-message, \
+#client-action, \
+#trash-bin, \
+#winBook, \
+#window-join-room, \
+#information-window');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');
@@ -64,6 +78,9 @@ windows.forEach(window => {
 
     header.addEventListener('mousedown', function(e) {
         e.preventDefault();
+
+        setWindowIndex();
+        window.style.zIndex = 3000;
 
         offsetX = e.clientX - window.getBoundingClientRect().left;
         offsetY = e.clientY - window.getBoundingClientRect().top;
@@ -133,7 +150,6 @@ function setWindowIndex() {
   #msnWindow, \
   #updateUserWindow, \
   #activate-2fa, \
-  #window-alert, \
   #game-option, \
   #tree-matchmaking, \
   #clientWindow, \
@@ -145,6 +161,6 @@ function setWindowIndex() {
   #information-window');
 
   windows.forEach(window => {
-    window.style.zIndex = 2000;
+      window.style.zIndex = 2000;
   });
 }

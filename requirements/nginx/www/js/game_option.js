@@ -83,6 +83,7 @@ function toogleJoinRoom() {
 document.addEventListener("DOMContentLoaded", function() {
   game_option_button();
 
+  const joinRoom = document.getElementById('window-join-room');
   const joinRoomInput = document.getElementById('join-input-id');
   const joinRoomButton = document.getElementById('join-room-button-id');
 
@@ -100,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
       raiseAlert(window.dataMap.get('enter-room-number'));
       return ;
     }
+    joinRoom.style.display = 'none';
     let game = new PongWindow('remote', roomNumber);
     game.run();
   });

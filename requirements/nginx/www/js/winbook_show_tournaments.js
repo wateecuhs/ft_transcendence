@@ -30,12 +30,18 @@ async function showTournamentResults(query) {
       tournamentResultsList.innerHTML = '';
 
       if (filteredTournaments.length > 0) {
-        filteredTournaments.forEach(tournament => {
+        filteredTournaments.forEach(tournament => function() {
           const li = document.createElement('li');
           li.textContent = `${tournament.name} (Max: 4 joueurs)`;
 
           li.addEventListener('click', function() {
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+            const tournamentContent = document.getElementById('tournament-score-id');
+            if (tournamentContent) {
+              tournamentContent.innerHTML = '';
+            } else {
+              console.error("Element 'tournament-score-id' introuvable.");
+            }
             resetWinBook();
             showTournamentDetails(tournament);
           });
@@ -73,6 +79,7 @@ async function showAllTournaments() {
           li.textContent = `${tournament.name} (Max: 4 joueurs)`;
 
           li.addEventListener('click', function() {
+            resetWinBook();
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
             showTournamentDetails(tournament);
           });
