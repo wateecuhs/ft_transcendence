@@ -12,8 +12,8 @@ import socketio
 import ai_game.routing
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.sessions import SessionMiddlewareStack
-
 from django.core.asgi import get_asgi_application
+from core.middleware import TokenAuthMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
@@ -24,9 +24,11 @@ socket_app = socketio.ASGIApp(sio)
 
 application = ProtocolTypeRouter(
     {
-        "websocket": SessionMiddlewareStack(
-            URLRouter( 
-                ai_game.routing.websocket_urlpatterns
+        "websocket": TokenAuthMiddleware(
+            SessionMiddlewareStack(
+                URLRouter( 
+                    ai_game.routing.websocket_urlpatterns
+                )
             )
         ),
         "http": get_asgi_application(),
