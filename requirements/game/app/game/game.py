@@ -169,7 +169,7 @@ class Room:
     async def game_over(self, winner=None):
         if winner is None:
             if len(self.players) == 2:
-                self.winner = self.players[0].user["username"] if self.score[0] > self.score[1] else self.players[1].user["username"]
+                self.winner = self.players[0].user["alias"] if self.score[0] > self.score[1] else self.players[1].user["alias"]
             else:
                 self.winner = "1" if self.score[0] > self.score[1] else "2"
         else:
@@ -184,7 +184,7 @@ class Room:
                 "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                 "score": self.score,
-                "players": [player.user["username"] for player in self.players],
+                "players": [player.user["alias"] for player in self.players],
                 "winner": self.winner
             }
             try:

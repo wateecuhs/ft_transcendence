@@ -19,5 +19,5 @@ class TokenAuthMiddleware(BaseMiddleware):
             scope["user"] = None
             return await super().__call__(scope, receive, send)
         user_data = r.json()
-        scope["user"] = {"id": user_data["id"], "username": user_data["username"]}
+        scope["user"] = {"id": user_data["id"], "username": user_data["username"], "alias": user_data["alias"]}
         return await super().__call__(scope, receive, send)
