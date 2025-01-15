@@ -34,9 +34,9 @@ async function showTournamentResults(query) {
           const li = document.createElement('li');
           console.log(tournament);
           if (tournament.status === 'FINISHED')
-            li.textContent = `${tournament.name} (Max: 4 joueurs) | FINISHED`;
+            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')} | ${window.dataMap.get('finished')}`;
           else
-            li.textContent = `${tournament.name} (Max: 4 joueurs)`;
+            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')}`;
 
           li.addEventListener('click', function() {
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
@@ -82,9 +82,9 @@ async function showAllTournaments() {
           const li = document.createElement('li');
           console.log(tournament);
           if (tournament.status === 'FINISHED')
-            li.textContent = `${tournament.name} (Max: 4 joueurs) | FINISHED`;
+            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')} | ${window.dataMap.get('finished')}`;
           else
-            li.textContent = `${tournament.name} (Max: 4 joueurs)`;
+            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')}`;
 
           li.addEventListener('click', function() {
             resetWinBook();

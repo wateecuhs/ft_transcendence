@@ -14,6 +14,9 @@ from django.core.serializers.json import DjangoJSONEncoder
 from .serializers import RegisterSerializer, LoginSerializer, EditAccountSerializer, ChangeRoomSerializer, CodeSerializer, Serializer2FA, LanguageSerializer
 from .utils import get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
 from django.shortcuts import redirect
+import logging
+
+logger = logging.getLogger(__name__)
 
 """
 register take a POST request of the CustomUserSerializer. The function verify that all fields are valid
