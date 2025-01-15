@@ -140,14 +140,12 @@ async function updateClientsTab(friends) {
     const li = document.createElement('li');
     li.classList.add("li-friend");
 
-    client = await getClientInfo(friend);
-
     const statusDot = document.createElement('span');
     statusDot.classList.add("status-dot");
-    statusDot.style.backgroundColor = 'red';
+    statusDot.style.backgroundColor = friend.status == "on" ? "green" : 'red';
 
     const nameSpan = document.createElement('span');
-    nameSpan.textContent = friend;
+    nameSpan.textContent = friend.username;
     nameSpan.classList.add("friend-name");
 
     const span = document.createElement('span');
