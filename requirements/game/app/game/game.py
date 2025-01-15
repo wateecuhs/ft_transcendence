@@ -176,6 +176,8 @@ class Room:
             self.winner = winner
 
         if "room_local" not in self.name:
+            print("Publishing results to Redis", flush=True)
+            print(f"Winner: {self.winner}", flush=True)
             game_state = {
                 "type": "game_over",
                 "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},

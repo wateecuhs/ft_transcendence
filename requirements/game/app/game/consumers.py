@@ -144,5 +144,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "message": json.dumps(game_state)
                 }
             )
-
+            if game_state.get("type") == "game_over":
+                self.room.players.clear()
+                break
             await asyncio.sleep(1 / FPS)

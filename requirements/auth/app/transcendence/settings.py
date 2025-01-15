@@ -144,4 +144,4 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 AUTH_USER_MODEL = 'api.CustomUser'
 
-NGINX_STATIC_ROOT = "/requirements/nginx/www"
+NGINX_STATIC_ROOT = "/var/www/html"
