@@ -105,12 +105,23 @@ class Room:
             if self.score[0] == 3 or self.score[1] == 3:
                 return await self.game_over()
 
-            game_state = {
-                "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
-                "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
-                "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
-                "score": self.score
-            }
+            if "room_local" in self.name:
+                game_state = {
+                    "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
+                    "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
+                    "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
+                    "score": self.score,
+                    "players": ["", ""]
+                }
+            else:
+                game_state = {
+                    "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
+                    "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
+                    "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
+                    "score": self.score,
+                    "players": [player.user["username"] for player in self.players]
+                }
+
         return game_state
 
     def handle_collision(self):
@@ -163,15 +174,17 @@ class Room:
                 self.winner = "1" if self.score[0] > self.score[1] else "2"
         else:
             self.winner = winner
-        game_state = {
-            "type": "game_over",
-            "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
-            "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
-            "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
-            "score": self.score,
-            "winner": self.winner
-        }
-        if self.name != "room_local":
+
+        if "room_local" not in self.name:
+            game_state = {
+                "type": "game_over",
+                "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
+                "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
+                "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
+                "score": self.score,
+                "players": [player.user["username"] for player in self.players],
+                "winner": self.winner
+            }
             try:
                 data = {
                         "room_name": self.name,
@@ -192,6 +205,17 @@ class Room:
                 print("Redis publish operation timed out", flush=True)
             except Exception as e:
                 print(f"Unexpected error: {e}", flush=True)
+        else:
+            game_state = {
+                "type": "game_over",
+                "paddle_left": {"x": self.paddle_left.x, "y": self.paddle_left.y},
+                "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
+                "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
+                "score": self.score,
+                "players": ["", ""],
+                "winner": self.winner
+            }
+
         return game_state
 
     def reset(self):

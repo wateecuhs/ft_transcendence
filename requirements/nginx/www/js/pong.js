@@ -227,13 +227,23 @@ class PongWindow {
     }
 
 	drawScore(state) {
-        this.ctx.font = `${this.canvas.width * 0.05}px Arial`;
+        this.ctx.font = `${this.canvas.width * 0.04}px Arial`;
         this.ctx.fillStyle = "white";
-        this.ctx.fillText(state.score[0], this.canvas.width / 4, this.canvas.height * 0.1);
-        this.ctx.fillText(state.score[1], this.canvas.width * 3 / 4, this.canvas.height * 0.1);
-        this.ctx.strokeText(state.score[0], this.canvas.width / 4, this.canvas.height * 0.1);
-        this.ctx.strokeText(state.score[1], this.canvas.width * 3 / 4, this.canvas.height * 0.1);
+        this.ctx.fillText(state.score[0], this.canvas.width / 4, this.canvas.height * 0.13);
+        this.ctx.fillText(state.score[1], this.canvas.width * 3 / 4, this.canvas.height * 0.13);
+        this.ctx.strokeText(state.score[0], this.canvas.width / 4, this.canvas.height * 0.13);
+        this.ctx.strokeText(state.score[1], this.canvas.width * 3 / 4, this.canvas.height * 0.13);
     }
+
+	drawPlayerNames(state) {
+		this.ctx.font = `${this.canvas.width * 0.025}px Arial`;
+		this.ctx.fillStyle = "white";
+		this.ctx.textAlign = 'center';
+		this.ctx.fillText(state.players[0], this.canvas.width / 4, this.canvas.height * 0.055);
+		this.ctx.fillText(state.players[1], this.canvas.width * 3 / 4, this.canvas.height * 0.055);
+		this.ctx.strokeText(state.players[0], this.canvas.width / 4, this.canvas.height * 0.055);
+		this.ctx.strokeText(state.players[1], this.canvas.width * 3 / 4, this.canvas.height * 0.055);
+	}
 
 	drawGame(state) {
 		this.ctx.fillStyle = 'blue';
@@ -243,5 +253,6 @@ class PongWindow {
 		this.drawPaddles(state);
 		this.drawBall(state);
 		this.drawScore(state);
+		this.drawPlayerNames(state);
 	}
 }
