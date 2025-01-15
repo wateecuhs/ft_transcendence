@@ -35,6 +35,10 @@ function toogleClientWindow(friend) {
   updateClientInfo(friend);
   const work_desk = clientWindow;
 
+  if (work_desk.style.display === 'none') {
+    setWindowIndex();
+    work_desk.style.zIndex = 3000;
+  }
   work_desk.style.display = (work_desk.style.display == 'none') ? 'block' : 'none';
   work_desk.style.position = 'absolute';
   work_desk.style.top = `${window.innerHeight / 2 - work_desk.offsetHeight / 2}px`;

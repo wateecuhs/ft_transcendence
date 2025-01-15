@@ -1,6 +1,8 @@
 function toggleWinbookWindow() {
   const winbook = document.getElementById('winBook');
   if (winbook.style.display === 'none') {
+    setWindowIndex();
+    winbook.style.zIndex = 3000;
     winbook.style.display = 'flex';
     winbook.style.position = 'absolute';
     winbook.style.top = `${window.innerHeight / 2 - winbook.offsetHeight / 2}px`;
@@ -34,8 +36,13 @@ function initMMWebSocket() {
       const data = {
         author: 'WinBook Corporation',
         content: 'A Tournament is now starting !',
-        created_at: new Date().toISOString()
+        created_at: new Date().toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit'
+        })
       };
+
       displayChatMessage(data);
       showPopUp(window.dataMap.get('start-tournament'));
       sendPlayersToRooms(message.data);
@@ -62,6 +69,7 @@ function initMMWebSocket() {
       const buttonMathmaking = optionWin.querySelector('#launch-matchmaking');
       buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
       window.matchmaking = true;
+      optionWin.style.display = 'none';
       let game = new PongWindow("remote", message.data.room_code);
       game.run();
     }
@@ -76,14 +84,13 @@ function initMMWebSocket() {
         errorMessage = window.dataMap.get('too-long-name');
       else if (errorMessage === ' Name Must Be Alphanumeric')
         errorMessage = window.dataMap.get('alphanumeric-name');
-      if (message.message === 'You already have an active tournament.') {
+      if (message.message === 'You already have an active tournament.')
         errorMessage = window.dataMap.get('already-tournament');
       raiseAlert(errorMessage);
     }
     else {
-        console.error(message);
+        console.error(message.type);
       }
-    }
   }
 
   window.mmws.onclose = function(event) {

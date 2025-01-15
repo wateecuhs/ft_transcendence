@@ -149,6 +149,8 @@ function SignIn() {
 					if (desktopExplorer)
 						desktopExplorer.textContent = window.dataMap.get('desktop');
 					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
+					document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
+					document.getElementById('help').textContent = window.dataMap.get('help');
 				});
 
 				let langageUrl = null;
@@ -515,6 +517,8 @@ async function SignIn42() {
 										if (desktopExplorer)
 											desktopExplorer.textContent = window.dataMap.get('desktop');
 										document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
+										document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
+										document.getElementById('help').textContent = window.dataMap.get('help');
 									});
 
 									let langageUrl = null;
@@ -676,6 +680,8 @@ async function can_sign_in() {
 					if (desktopExplorer)
 						desktopExplorer.textContent = window.dataMap.get('desktop');
 					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
+					document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
+					document.getElementById('help').textContent = window.dataMap.get('help');
 				});
 
 				let langageUrl = null;
@@ -834,6 +840,8 @@ async function verify2FA() {
 					if (desktopExplorer)
 						desktopExplorer.textContent = window.dataMap.get('desktop');
 					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
+					document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
+					document.getElementById('help').textContent = window.dataMap.get('help');
 				});
 
 				let langageUrl = null;

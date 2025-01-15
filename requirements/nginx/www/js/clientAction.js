@@ -5,6 +5,8 @@ function toogleClientAction(event, friend) {
 
 
   if (client.style.display === 'none') {
+    setWindowIndex();
+    client.style.zIndex = 3000;
     client.style.display = 'flex';
   } else {
     client.style.display = 'none';
@@ -14,7 +16,11 @@ function toogleClientAction(event, friend) {
   client.style.top = `${window.innerHeight / 2 - client.offsetHeight / 2}px`;
   client.style.left = `${window.innerWidth / 2 - client.offsetWidth / 2}px`;
 
-  const clientLi = clientAction.querySelectorAll('li');
+  const clonedClientAction = clientAction.cloneNode(true);
+
+  client.querySelector('.ul-client-action').replaceWith(clonedClientAction);
+
+  const clientLi = clonedClientAction.querySelectorAll('li');
   clientLi.forEach((li) => {
     li.addEventListener('click', function() {
       if (li.id === "client-info") {
