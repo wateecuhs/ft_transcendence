@@ -168,7 +168,7 @@ class Room:
                 "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                 "score": self.score,
-                "players": [self.players[0].user["username"], "Ponginator-9000"]
+                "players": [self.players[0].user["alias"], "Ponginator-9000"]
             }
         return game_state
 
@@ -218,7 +218,7 @@ class Room:
 
     def game_over(self):
         if self.score[0] == 5:
-            self.winner = self.players[0].user["username"]
+            self.winner = self.players[0].user["alias"]
         else:
             self.winner = "Ponginator-9000"
 
@@ -228,7 +228,7 @@ class Room:
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
             "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
             "score": self.score,
-            "players": [self.players[0].user["username"], "Ponginator-9000"],
+            "players": [self.players[0].user["alias"], "Ponginator-9000"],
             "winner": self.winner
         }
         return game_state
