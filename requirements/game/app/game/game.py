@@ -119,7 +119,7 @@ class Room:
                     "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
                     "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                     "score": self.score,
-                    "players": [player.user["username"] for player in self.players]
+                    "players": [player.user["alias"] for player in self.players]
                 }
 
         return game_state
@@ -190,10 +190,10 @@ class Room:
                         "room_name": self.name,
                         "player_1": self.players[0].user["username"],
                         "player_2": self.players[1].user["username"],
-                        "player_1_win": True if self.winner == self.players[0].user["username"] else False,
-                        "player_2_win": True if self.winner == self.players[1].user["username"] else False,
+                        "player_1_win": True if self.winner == self.players[0].user["alias"] else False,
+                        "player_2_win": True if self.winner == self.players[1].user["alias"] else False,
                         "score": self.score,
-                        "winner": self.winner
+                        "winner": self.players[0].user["username"] if self.winner == self.players[0].user["alias"] else self.players[1].user["username"]
                     }
                 redis_client = Redis(connection_pool=pool)
                 await asyncio.wait_for(
