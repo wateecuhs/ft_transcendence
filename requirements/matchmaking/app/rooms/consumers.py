@@ -315,7 +315,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.error("Players are not in the same tournament")
                 return
             tournament = await sync_to_async(get_user_playing_tournaments)(data["player_1"])
-
+            print("TOURNAMENT IS ", tournament, flush=True)
             if tournament.status != Tournament.Status.PLAYING:
                 await self.error("Tournament is not in playing status")
                 return

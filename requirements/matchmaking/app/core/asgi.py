@@ -31,7 +31,6 @@ def listen_to_game_results():
                 continue
             logger.info(f"Game result: {game_result}")
             channel_layer = get_channel_layer()
-            # winner = game_result['player_1'] if game_result['score'][0] > game_result['score'][1] else game_result['player_2']
             async_to_sync(channel_layer.group_send)(
                 f"user.{game_result['winner']}",
                 {

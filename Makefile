@@ -6,10 +6,10 @@ DOCKER_COMPOSE_DEV := docker compose -f $(DOCKER_COMPOSE_DEV_FILE)
 
 .PHONY: up build dev down stop start clean status ps logs volume_clean
 
-all: build
+all: up
 
 up:
-	$(DOCKER_COMPOSE) up -d --abort-on-container-exit
+	$(DOCKER_COMPOSE) up -d --build --remove-orphans
 
 build:
 	$(DOCKER_COMPOSE) up --build

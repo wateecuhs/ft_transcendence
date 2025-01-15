@@ -166,50 +166,10 @@ async function sendPlayersToRooms(tournament) {
   const rounds = tournament.rounds;
   tournamentContent.innerHTML = '';
 
+  firstRoundResults(tournament);
   rounds.forEach( async (round) => {
     if (round.round === "FIRST") {
-        const matches = round.matches;
-        let i = 1;
-        matches.forEach( async (match) => {
-          const dataMatch = {
-            room_code: match.room_code,
-            player1: match.player1,
-            player2: match.player2,
-            score: match.score,
-            status: match.status,
-            winner: match.winner
-          };
-
-          const alias_1 = await getUserAlias(dataMatch.player1);
-          const alias_2 = await getUserAlias(dataMatch.player2);
-
-          const newData = document.createElement('div');
-
-          const matchVs = document.createElement('div');
-          matchVs.textContent = `Match ${i} : ${alias_1} vs ${alias_2}`;
-
-          const matchScore = document.createElement('div');
-          matchScore.textContent = `Score : ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
-
-          const matchStatus = document.createElement('div');
-          matchStatus.textContent = `Status : ${dataMatch.status}`;
-
-          const matchWinner = document.createElement('div');
-          matchWinner.textContent = `Winner : ${dataMatch.winner}`;
-
-          const matchSeparator = document.createElement('div');
-          matchSeparator.textContent = '-----------------------------';
-
-
-          newData.appendChild(matchVs);
-          newData.appendChild(matchScore);
-          newData.appendChild(matchStatus);
-          newData.appendChild(matchWinner);
-          newData.appendChild(matchSeparator);
-
-          tournamentContent.appendChild(newData);
-          i += 1;
-      });
+      const matches = round.matches;
       matches.forEach(match => {
         if ((tournament.author === match.player1 || tournament.author === match.player2)) {
           let game = new PongWindow("remote", match.room_code);
@@ -219,43 +179,6 @@ async function sendPlayersToRooms(tournament) {
       });
     } else if (round.round === "FINAL") {
       const matches = round.matches;
-        matches.forEach(match => {
-          const dataMatch = {
-            room_code: match.room_code,
-            player1: match.player1,
-            player2: match.player2,
-            score: match.score,
-            status: match.status,
-            winner: match.winner
-          };
-
-          const newData = document.createElement('div');
-
-          const matchVs = document.createElement('div');
-          matchVs.textContent = `Match Final : ${dataMatch.player1} vs ${dataMatch.player2}`;
-
-          const matchScore = document.createElement('div');
-          matchScore.textContent = `Score : ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
-
-          const matchStatus = document.createElement('div');
-          matchStatus.textContent = `Status : ${dataMatch.status}`;
-
-          const matchWinner = document.createElement('div');
-          matchWinner.textContent = `Winner : ${dataMatch.winner}`;
-
-          const matchSeparator = document.createElement('div');
-          matchSeparator.textContent = '-----------------------------';
-
-
-          newData.appendChild(matchVs);
-          newData.appendChild(matchScore);
-          newData.appendChild(matchStatus);
-          newData.appendChild(matchWinner);
-          newData.appendChild(matchSeparator);
-
-          tournamentContent.appendChild(newData);
-      });
-
       matches.forEach(match => {
         if ((tournament.author === match.player1 || tournament.author === match.player2)) {
           let game = new PongWindow("remote", match.room_code);

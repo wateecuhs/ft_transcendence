@@ -73,7 +73,7 @@ class PongWindow {
 
 	close() {
 		if (this.socket.readyState === WebSocket.OPEN) {
-			this.socket.send(JSON.stringify({ type: 'disconnect' }));
+			// this.socket.send(JSON.stringify({ type: 'disconnect' }));
 			this.socket.close();
 		}
 		document.removeEventListener('keydown', this.handleKeyDown);
@@ -141,6 +141,7 @@ class PongWindow {
 			if (gameState.type === 'game_over') {
 				this.gameOver = true;
 				triggerGameOverWindows(window.dataMap.get('game-over-player') + gameState.winner + window.dataMap.get('game-over-win'));
+				this.socket.close();
 				this.close();
 				return;
 			}

@@ -62,6 +62,7 @@ function handle_status_update(friendToUpdate) {
 
         if (name.textContent === friendToUpdate.author) {
           const statusDot = friend.querySelector('.status-dot');
+          console.log(`for friend ${friend.author} status is ${friend.status}`);
           statusDot.style.backgroundColor = friendToUpdate.status === "ON" ? 'green' : 'red';
           return ;
         }

@@ -142,7 +142,7 @@ async function updateClientsTab(friends) {
 
     const statusDot = document.createElement('span');
     statusDot.classList.add("status-dot");
-    statusDot.style.backgroundColor = friend.status == "on" ? "green" : 'red';
+    statusDot.style.backgroundColor = friend.status === "ON" ? "green" : 'red';
 
     const nameSpan = document.createElement('span');
     nameSpan.textContent = friend.username;
