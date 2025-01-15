@@ -55,7 +55,7 @@ function openFileSelector() {
                       }
                 }
             } catch (error) {
-                if (error.message.startsWith("Unexpected")) {
+                if (error.message.startsWith("unexpected")) {
                     raiseAlert(window.dataMap.get('too-big-img'));
                 }
                 else
