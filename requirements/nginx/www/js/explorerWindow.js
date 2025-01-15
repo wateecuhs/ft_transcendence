@@ -79,9 +79,24 @@ let currentIndex = 0;
 let historyStack = [];
 
 function navigateToPage(pageName) {
-  if (historyStack.length > 0 && historyStack[currentIndex - 1].page === pageName) {
-    return ;
+  if (pageName === "pong") {
+    if (historyStack.length > 0 && historyStack[currentIndex - 1]?.page === "pong") {
+      history.replaceState({ page: pageName, index: currentIndex }, "", window.location.pathname + `#${pageName}`);
+      historyStack[currentIndex] = { page: pageName, index: currentIndex };
+    } else {
+      currentIndex++;
+      const fullPath = window.location.pathname + `#${pageName}`;
+      history.pushState({ page: pageName, index: currentIndex }, "", fullPath);
+      historyStack.push({ page: pageName, index: currentIndex });
+    }
+    return;
   }
+
+  // Logique normale pour les autres pages
+  if (historyStack.length > 0 && currentIndex > 0 && historyStack[currentIndex - 1].page === pageName) {
+    return;
+  }
+
   currentIndex++;
 
   const fullPath = window.location.pathname + `#${pageName}`;
@@ -119,7 +134,7 @@ function handlePageTransition(pageName, isBack) {
 
 function switchPage(pageName) {
   switch (pageName) {
-    case "pong":
+    case "pong-option":
       toogleGameOptionWindow();
       break;
     case "winbook":
@@ -134,6 +149,9 @@ function switchPage(pageName) {
     case "desktop":
       //history.replaceState({ page: "desktop", index: currentIndex }, "", window.location.pathname + "#login");
       quitDesk();
+      break;
+    case "pong":
+
       break;
     default:
       console.log("Unknown page:", pageName);

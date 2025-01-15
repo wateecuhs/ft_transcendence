@@ -86,9 +86,12 @@ class PongWindow {
 
 		window.addEventListener('popstate', (event) => {
 			const currentPage = window.location.hash;
-
+			const pongWindow = document.getElementById('PongGame');
+			
 			if (currentPage === "#pong") {
-				this.open();
+				pongWindow.style.display = 'none';
+				window.createRoom = false;
+				this.close();
 			}
 		});
 

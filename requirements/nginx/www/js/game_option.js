@@ -7,7 +7,7 @@ function toogleGameOptionWindow() {
     optionWin.style.position = 'absolute';
     optionWin.style.top = `${window.innerHeight / 2 - optionWin.offsetHeight / 2}px`;
     optionWin.style.left = `${window.innerWidth / 2 - optionWin.offsetWidth / 2}px`;
-    navigateToPage("pong");
+    navigateToPage("pong-option");
   } else {
     optionWin.style.display = 'none'
   }
@@ -25,6 +25,7 @@ function game_option_button() {
           raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
+        navigateToPage("pong");
         optionWin.style.display = 'none';
         let game_ai = new PongWindow('ai');
         game_ai.run();
@@ -34,6 +35,7 @@ function game_option_button() {
           raiseAlert(window.dataMap.get('already-match'));
           return ;
         }
+        navigateToPage("pong");
         optionWin.style.display = 'none';
         let game_local = new PongWindow('local');
         game_local.run();
