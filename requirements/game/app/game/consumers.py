@@ -77,11 +77,6 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         command = json.loads(text_data)
         if command.get('type') == 'disconnect':
-            # await self.room.remove_player(self)
-            # if len(self.room.players) == 0:
-            #     self.room.game_loop.cancel()
-            #     del rooms[self.room_name]
-            #     await self.close()
             await self.disconnect(code=3000)
             return
 
