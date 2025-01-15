@@ -67,8 +67,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     "message": json.dumps(game_state)
                 }
             )
-
-        if len(self.room.players) == 0:
+        else:
             self.room.game_loop.cancel()
             if self.room_name in rooms:
                 del rooms[self.room_name]
