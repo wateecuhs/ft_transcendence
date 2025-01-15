@@ -13,7 +13,18 @@ FPS = 60
 rooms = {}
 
 class AIGameConsumer(AsyncWebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+
     async def connect(self):
+        self.user = self.scope.get("user")
+        if not self.user:
+            print("User not authenticated", flush=True)
+            await self.accept()
+            await self.close(code=3000)
+            return
+
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         if self.room_name not in rooms:
             rooms[self.room_name] = Room(self.room_name)
@@ -30,6 +41,9 @@ class AIGameConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
+        if not self.user or not self.room:
+            return
+
         await self.channel_layer.group_discard(self.room_name, self.channel_name)
         await self.room.remove_player(self)
 

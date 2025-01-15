@@ -133,7 +133,7 @@ class Room:
         self.winner = None
 
     async def add_player(self, player):
-        if len(self.players) < 2:
+        if len(self.players) < 1:
             self.players.append(player)
             return True
         return False
@@ -168,6 +168,7 @@ class Room:
                 "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                 "score": self.score,
+                "players": [self.players[0].user["username"], "Robobrain"]
             }
         return game_state
 
@@ -217,9 +218,9 @@ class Room:
 
     def game_over(self):
         if self.score[0] == 5:
-            self.winner = "1"
+            self.winner = self.players[0].user["username"]
         else:
-            self.winner = "2"
+            self.winner = "Robobrain"
 
         game_state = {
             "type": "game_over",
@@ -227,6 +228,7 @@ class Room:
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
             "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
             "score": self.score,
+            "players": [self.players[0].user["username"], "Robobrain"],
             "winner": self.winner
         }
         return game_state
