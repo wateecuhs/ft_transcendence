@@ -168,7 +168,7 @@ class Room:
                 "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
                 "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
                 "score": self.score,
-                "players": [self.players[0].user["username"], "Robobrain"]
+                "players": [self.players[0].user["username"], "Ponginator-9000"]
             }
         return game_state
 
@@ -220,7 +220,7 @@ class Room:
         if self.score[0] == 5:
             self.winner = self.players[0].user["username"]
         else:
-            self.winner = "Robobrain"
+            self.winner = "Ponginator-9000"
 
         game_state = {
             "type": "game_over",
@@ -228,7 +228,7 @@ class Room:
             "paddle_right": {"x": self.paddle_right.x, "y": self.paddle_right.y},
             "ball": {"x": self.ball.x, "y": self.ball.y, "dx" : self.ball.dx, "dy": self.ball.dy},
             "score": self.score,
-            "players": [self.players[0].user["username"], "Robobrain"],
+            "players": [self.players[0].user["username"], "Ponginator-9000"],
             "winner": self.winner
         }
         return game_state
