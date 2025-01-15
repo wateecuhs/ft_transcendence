@@ -9,6 +9,7 @@
 	background-image: url('../img/windows-98-waiting-screen.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-repeat: space;
 	z-index: 2000;
 
 	display: flex;

@@ -45,6 +45,7 @@ function initMMWebSocket() {
 
       displayChatMessage(data);
       showPopUp(window.dataMap.get('start-tournament'));
+      navigateToPage("pong");
       sendPlayersToRooms(message.data);
     }
     else if (message.type === "tournament.delete") {
@@ -69,6 +70,7 @@ function initMMWebSocket() {
       buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
       window.matchmaking = true;
       optionWin.style.display = 'none';
+      navigateToPage("pong");
       let game = new PongWindow("remote", message.data.room_code);
       game.run();
     }

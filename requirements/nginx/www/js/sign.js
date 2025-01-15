@@ -711,8 +711,8 @@ async function can_sign_in() {
 }
 
 function quitDesk() {
-	document.cookie = "access_token=; path=/";
-	document.cookie = "refresh_token=; path=/";
+	document.cookie = "access_token=; path=/; SameSite=None; Secure";
+	document.cookie = "refresh_token=; path=/; SameSite=None; Secure";
 	history.replaceState({}, "", window.location.pathname);
 	slideBack();
 }
