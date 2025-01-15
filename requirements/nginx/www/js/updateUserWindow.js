@@ -1,6 +1,10 @@
 const userWindow = document.getElementById('updateUserWindow');
 
 function displayUserUpdateWindow() {
+	if (userWindow.style.display === 'none') {
+		setWindowIndex();
+		userWindow.style.zIndex = 3000;
+	}
 	userWindow.style.display = (userWindow.style.display == 'none') ? 'block' : 'none';
 	userWindow.style.position = 'absolute';
 	userWindow.style.top = `${window.innerHeight / 2 - userWindow.offsetHeight / 2}px`;

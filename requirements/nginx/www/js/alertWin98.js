@@ -2,6 +2,8 @@ function raiseAlert(message_alert) {
 	const alertWindow = document.getElementById('window-alert');
 
 	if (alertWindow.style.display === 'none') {
+		setWindowIndex();
+		alertWindow.style.zIndex = 3000;
 		alertWindow.style.display = 'flex';
 	}
 

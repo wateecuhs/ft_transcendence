@@ -5,6 +5,10 @@ document.getElementById('explorerWindow').querySelector('.close-button').addEven
 function toogleWorkDesk() {
   const work_desk = document.getElementById('explorerWindow');
 
+  if (work_desk.style.display === 'none') {
+    setWindowIndex();
+    work_desk.style.zIndex = 3000;
+  }
   work_desk.style.display = (work_desk.style.display == 'none') ? 'block' : 'none';
   work_desk.style.position = 'absolute';
   work_desk.style.top = `${window.innerHeight / 2 - work_desk.offsetHeight / 2}px`;

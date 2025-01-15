@@ -1,6 +1,8 @@
 function toggleWinbookWindow() {
   const winbook = document.getElementById('winBook');
   if (winbook.style.display === 'none') {
+    setWindowIndex();
+    winbook.style.zIndex = 3000;
     winbook.style.display = 'flex';
     winbook.style.position = 'absolute';
     winbook.style.top = `${window.innerHeight / 2 - winbook.offsetHeight / 2}px`;
@@ -67,6 +69,7 @@ function initMMWebSocket() {
       const buttonMathmaking = optionWin.querySelector('#launch-matchmaking');
       buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
       window.matchmaking = true;
+      optionWin.style.display = 'none';
       let game = new PongWindow("remote", message.data.room_code);
       game.run();
     }

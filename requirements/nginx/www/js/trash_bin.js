@@ -2,6 +2,8 @@ function toogleTrashBin() {
   const trashBin = document.querySelector('#trash-bin');
 
   if (trashBin.style.display === 'none') {
+    setWindowIndex();
+    trashBin.style.zIndex = 3000;
     trashBin.style.display = 'flex';
     navigateToPage('trash');
   } else {

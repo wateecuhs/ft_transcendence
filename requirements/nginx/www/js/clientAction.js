@@ -5,6 +5,8 @@ function toogleClientAction(event, friend) {
 
 
   if (client.style.display === 'none') {
+    setWindowIndex();
+    client.style.zIndex = 3000;
     client.style.display = 'flex';
   } else {
     client.style.display = 'none';

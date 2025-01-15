@@ -83,6 +83,8 @@ document.getElementById('msnWindow').querySelector('.close-button').addEventList
 function toggleMsnWindow() {
   const msnWindow = document.getElementById('msnWindow');
   if (msnWindow.style.display === 'none') {
+    setWindowIndex();
+    msnWindow.style.zIndex = 3000;
     msnWindow.style.display = 'flex';
     msnWindow.style.position = 'absolute';
     msnWindow.style.top = `${window.innerHeight / 2 - msnWindow.offsetHeight / 2}px`;
@@ -370,7 +372,9 @@ function toogleInformationWindow() {
   const informationWindow = document.getElementById('information-window');
 
   if (informationWindow.style.display === 'none') {
-    informationWindow.style.display = (informationWindow.style.display == 'none') ? 'block' : 'none';
+    setWindowIndex();
+    informationWindow.style.zIndex = 3000;
+    informationWindow.style.display = 'block';
     informationWindow.style.position = 'absolute';
     informationWindow.style.top = `${window.innerHeight / 2 - informationWindow.offsetHeight / 2}px`;
     informationWindow.style.left = `${window.innerWidth / 2 - informationWindow.offsetWidth / 2}px`;
