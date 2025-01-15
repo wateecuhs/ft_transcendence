@@ -32,10 +32,12 @@ function createTournament() {
   const createTournamentNameInput = document.querySelector('#create-tournament-name');
   const tournamentName = createTournamentNameInput.value.trim();
   const readyButton = winBookWindow.querySelector('#ready-button');
+  
   if (!readyButton) {
     console.error("L'élément #ready-button est introuvable !");
     return;
   }
+  
   readyButton.disabled = true;
   readyButton.textContent = window.dataMap.get('joined');
 
@@ -43,9 +45,10 @@ function createTournament() {
     raiseAlert('Veuillez entrer un nom pour le tournoi.', 'error');
     return ;
   }
+  
+  resetWinBook();
 
   const newTournament = { name: tournamentName };
-
   window.mmws.send(JSON.stringify({ type: 'tournament.create', data: newTournament }));
   createTournamentNameInput.value = '';
 }
@@ -111,16 +114,29 @@ async function quitTournament() {
 }
 
 function resetWinBook() {
+  console.log('resetWinBook');
   const winBookWindow = document.getElementById("winBook");
   const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
   const playerListElement = winBookWindow.querySelector('#player-list');
   const readyButton = winBookWindow.querySelector('#ready-button');
+  const quitButton = document.querySelector('#quit-button');
+
+  const tournamentContent = document.getElementById('tournament-score-id');
+  if (tournamentContent) {
+    tournamentContent.innerHTML = '';
+  } else {
+    console.error("Element 'tournament-score-id' introuvable.");
+  }
 
   tournamentNameElement.textContent = 'No Tournament Selected';
   playerListElement.innerHTML = '';
   const li = document.createElement('li');
   li.textContent = 'Empty';
   playerListElement.appendChild(li);
+
+  readyButton.style.display = 'flex';
+  quitButton.style.display = 'flex';
+
   readyButton.disabled = false;
   readyButton.textContent = window.dataMap.get('ready-button');
 }

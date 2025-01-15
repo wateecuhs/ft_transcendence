@@ -1,4 +1,4 @@
-/* Fenêtre plein écran */
+
 .fullscreen {
 	position: fixed;
 	top: 0;
@@ -6,6 +6,9 @@
 	width: 100vw;
 	height: 100vh;
 	background: #1a1919;
+	background-image: url('../img/windows-98-waiting-screen.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 	z-index: 2000;
 
 	display: flex;
@@ -15,13 +18,12 @@
 	font-family: "Tahoma", sans-serif;
 	border: 2px solid #000;
 
-	padding-top: 40px; /* Adjust this value based on the header height */
+	padding-top: 40px;
     box-sizing: border-box;
   }
 
-  /* En-tête de la fenêtre */
   .window-header {
-	background: linear-gradient(#000080, #0000a0);
+	background: linear-gradient(#04045e, #030361);
 	color: #fff;
 	padding: 6px;
 	display: flex;
@@ -48,7 +50,6 @@
 
   .window-header .header-title {
 	font-weight: bold;
-	color: #ffffff;
   }
 
   .window-header .close-button {

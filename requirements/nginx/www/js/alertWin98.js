@@ -3,7 +3,6 @@ function raiseAlert(message_alert) {
 
 	if (alertWindow.style.display === 'none') {
 		setWindowIndex();
-		alertWindow.style.zIndex = 3000;
 		alertWindow.style.display = 'flex';
 	}
 
