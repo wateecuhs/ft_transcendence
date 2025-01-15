@@ -105,6 +105,11 @@ class EditAccountSerializer(serializers.ModelSerializer):
 		if not user:
 			raise serializers.ValidationError("User context is required for validation.")
 
+		new_alias = data.get('new_alias')
+		if new_alias:
+			if CustomUser.objects.filter(alias=new_alias).exists():
+				raise ValidationError(message="This alias is already taken.")
+
 		new_email = data.get('new_email')
 		if new_email:
 			if CustomUser.objects.filter(email=new_email).exists():

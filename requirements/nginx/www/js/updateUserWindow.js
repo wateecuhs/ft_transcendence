@@ -129,6 +129,10 @@ async function updateUser() {
 								messages_txt = window.dataMap.get('email-taken');
 								field_txt = window.dataMap.get('sign-up-email');
 							}
+							if (Array.isArray(messages) && messages.includes("This alias is already taken.")) {
+								messages_txt = window.dataMap.get('alias-taken');
+								field_txt = window.dataMap.get('error-alias');
+							}
 							errorMessage += `${field_txt}: ${messages_txt}\n`;
 							if (Array.isArray(messages) && messages.includes("Password too short")) {
 								errorMessage = window.dataMap.get('too-short-pwd');

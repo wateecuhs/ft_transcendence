@@ -131,3 +131,4 @@ to-match= to a match:
 help=Help
 max-4-player=
 finished=FINISHED
+alias-taken=This alias is already taken

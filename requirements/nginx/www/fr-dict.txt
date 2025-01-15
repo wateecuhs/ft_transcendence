@@ -130,3 +130,4 @@ to-match= à un match:
 help=Aide
 max-4-player=(Max: 4 joueurs)
 finished=FINI
+alias-taken=Cet alias est déjà pris

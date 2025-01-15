@@ -129,3 +129,4 @@ to-match= на матч:
 help=помощь
 max-4-player=(Макс: 4 игрока)
 finished=ЗАВЕРШЕНО
+alias-taken=Этот псевдоним уже занят

@@ -131,3 +131,4 @@ to-match= para uma partida:
 help=Ajuda
 max-4-player=(Máximo: 4 jogadores)
 finished=FINALIZADO
+alias-taken=Este alias já está em uso
