@@ -176,7 +176,7 @@ async function updateClientsTab(friends) {
     img.replaceWith(newImg);
 
     newImg.addEventListener('click', function(event) {
-      toogleClientAction(event, friend);
+      toogleClientAction(event, friend.username);
     });
   }
 }
