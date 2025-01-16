@@ -150,8 +150,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.error("You can't block yourself.")
             return
         else:
-            logger.info(
-                f"Handling block command: {type(target)} and {type(self.user)}")
             logger.info(f"Handling block command: {target} and {self.user}")
 
         if splitted_message[0] == self.BLOCK_CHAT_CMD:
@@ -413,7 +411,10 @@ def unblock_user(sender, target):
 
 def request_user(sender, target):
     rel_status = get_relationship_status(sender, target)
-    if rel_status != cmod.Relationship.Status.NEUTRAL and rel_status is not None or sender == target:
+    if (rel_status != cmod.Relationship.Status.NEUTRAL and rel_status is not None) or sender == target:
+        raise Exception(f"You can't add {target}.")
+    rel_status = get_relationship_status(target, sender)
+    if (rel_status != cmod.Relationship.Status.NEUTRAL and rel_status is not None) or sender == target:
         raise Exception(f"You can't add {target}.")
     relationship, created = cmod.Relationship.objects.get_or_create(
         sender=sender, receiver=target

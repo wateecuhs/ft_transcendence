@@ -42,8 +42,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             if self.username:
                 logger.info(f"[{self.username}] Disconnecting. ({close_code})")
-                await self._handle_matchmaking_leave({"data": {"author": self.username}})
                 await self.leave_tournaments()
+                await self._handle_matchmaking_leave({"data": {"author": self.username}})
         except Exception as e:
             logger.error(f"Disconnection cleanup failed: {e}")
 

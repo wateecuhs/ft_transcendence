@@ -6,7 +6,13 @@ const conversations = {};
 
 async function loadMessageHistory() {
   try {
-    const response = await fetch(`/chat/messages/`);
+    const response = await fetch(`/chat/messages/`, {
+      method: 'GET',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getTokenCookie()}`
+      }
+    });
 
       if (response.ok) {
         const data = await response.json();
