@@ -457,6 +457,9 @@ function quitDesk() {
 	const pong = document.getElementById('PongGame');
 	pong.style.display = 'none';
 	history.replaceState({}, "", window.location.pathname);
+
+	window.mmws.close();
+	window.ws.close();
 	slideBack();
 }
 

@@ -61,4 +61,18 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (button_2fa != null) {
 		button_2fa.addEventListener('click', activate_2fa);
 	}
+
+  const arrows = document.querySelectorAll('#accountWindow .arrow-buttons');
+  if (arrows.length > 0) {
+    arrows.forEach(button => {
+      button.addEventListener('mouseover', function() {
+        document.querySelector('#accountWindow .number-pages').style.fontWeight = 'bold';
+        document.querySelector('#accountWindow .number-pages').style.fontSize = '13px';
+      });
+      button.addEventListener('mouseout', function() {
+        document.querySelector('#accountWindow .number-pages').style.fontWeight = 'normal';
+        document.querySelector('#accountWindow .number-pages').style.fontSize = '12px';
+      });
+    });
+  }
 });

@@ -11,6 +11,7 @@ icons.forEach(icon => {
     else if (iconName === 'Winbook') toggleWinbookWindow();
     else if (iconName === 'Pong') toogleGameOptionWindow();
     else if (iconName === window.dataMap.get('trash')) toogleTrashBin();
+    else if (iconName === window.dataMap.get('desktop')) cleanDesktop();
   });
 
   let offsetX, offsetY;
