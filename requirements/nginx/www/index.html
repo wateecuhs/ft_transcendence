@@ -661,12 +661,12 @@
 
     <div class="window-content">
       <ul>
-        <li>/invite [user] - Invite a friend to match</li>
-        <li>/add [user] - Add user</li>
-        <li>/accept [user] - Accept friend request</li>
-        <li>/remove [user] - Remove friend</li>
-        <li>/block [user] - Block user</li>
-        <li>/w [user] - Send a private message to a friend</li>
+        <li id="invite-help">/invite [user] - Invite a friend to match</li>
+        <li id="add-help">/add [user] - Add user</li>
+        <li id="accept-help">/accept [user] - Accept friend request</li>
+        <li id="remove-help">/remove [user] - Remove friend</li>
+        <li id="block-help">/block [user] - Block user</li>
+        <li id="w-help">/w [user] - Send a private message to a friend</li>
       </ul>
     </div>
   </div>
@@ -770,6 +770,12 @@
           document.getElementById('join-room-button-id').textContent = window.dataMap.get('validate-qr-code-id');
           document.getElementById('friend-stat').textContent = window.dataMap.get('friend-stat');
           document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
+          document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+          document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+          document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+          document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+          document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+          document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           const trashExplorer = document.getElementById('trash-explorer');
           if (trashExplorer)
             trashExplorer.textContent = window.dataMap.get('trash');

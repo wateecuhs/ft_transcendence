@@ -85,14 +85,12 @@ class PongWindow {
 		this.open();
 
 		window.addEventListener('popstate', (event) => {
-			const currentPage = window.location.hash;
+			//const currentPage = window.location.hash;
 			const pongWindow = document.getElementById('PongGame');
 
-			if (currentPage === "#pong") {
-				pongWindow.style.display = 'none';
-				window.createRoom = false;
-				this.close();
-			}
+			pongWindow.style.display = 'none';
+			window.createRoom = false;
+			this.close();
 		});
 
 		document.addEventListener('keydown', this.handleKeyDown);
@@ -124,6 +122,7 @@ class PongWindow {
 					else {
 						this.close();
 						quitDesk();
+						raiseAlert(window.dataMap.get('expired-session'));
 					}
 				}
 				catch (error) {

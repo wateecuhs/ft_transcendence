@@ -99,8 +99,10 @@ function initMMWebSocket() {
     if (isRefreshed) {
       return initMMWebSocket();
     }
-    else
+    else {
       quitDesk();
+      raiseAlert(window.dataMap.get('expired-session'));
+    }
   }
   return window.mmws;
 }

@@ -92,7 +92,6 @@ function navigateToPage(pageName) {
     return;
   }
 
-  // Logique normale pour les autres pages
   if (historyStack.length > 0 && currentIndex > 0 && historyStack[currentIndex - 1].page === pageName) {
     return;
   }
@@ -108,6 +107,7 @@ window.addEventListener('popstate', function (event) {
 
   if (!event.state || !event.state.page) {
     quitDesk();
+    raiseAlert(window.dataMap.get('expired-session'));
     return;
   }
 
@@ -149,6 +149,7 @@ function switchPage(pageName) {
     case "desktop":
       //history.replaceState({ page: "desktop", index: currentIndex }, "", window.location.pathname + "#login");
       quitDesk();
+      raiseAlert(window.dataMap.get('expired-session'));
       break;
     case "pong":
 

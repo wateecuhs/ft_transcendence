@@ -58,6 +58,7 @@ async function getUserInfo(accessToken) {
         }
         else {
           quitDesk();
+          raiseAlert(window.dataMap.get('expired-session'));
         }
       } else {
         console.error(errorData.message);
@@ -102,8 +103,10 @@ async function getUserStatistic(accessToken) {
           const new_token = getTokenCookie();
           return await getUserStatistic(new_token);
         }
-        else
+        else {
           quitDesk();
+          raiseAlert(window.dataMap.get('expired-session'));
+        }
       } else {
         raiseAlert('Getuser:' + errorData.message);
       }
@@ -166,6 +169,7 @@ async function getMatchesHistory() {
           return await getMatchesHistory();
         } else {
           quitDesk();
+          raiseAlert(window.dataMap.get('expired-session'));
         }
       }
       return null;
@@ -320,8 +324,10 @@ async function getUserAlias(username) {
         if (isRefreshed) {
           return await getUserAlias(username);
         }
-        else
+        else {
           quitDesk();
+          raiseAlert(window.dataMap.get('expired-session'));
+        }
       }
     }
   } catch (error) {

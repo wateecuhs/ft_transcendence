@@ -27,8 +27,10 @@ async function activate_2fa() {
 					if (isRefreshed) {
 						return await activate_2fa();
 					}
-					else
+					else {
 						quitDesk();
+						raiseAlert(window.dataMap.get('expired-session'));
+					}
 				} else {
 					raiseAlert('Getuser:' + errorData.message);
 				}
@@ -62,8 +64,10 @@ async function activate_2fa() {
 				if (isRefreshed) {
 					return await activate_2fa();
 				}
-				else
+				else {
 					quitDesk();
+					raiseAlert(window.dataMap.get('expired-session'));
+				}
 			}
 		}
 	} catch (error) {
@@ -110,8 +114,10 @@ async function validate_2fa() {
 				if (isRefreshed) {
 					return await validate_2fa();
 				}
-				else
+				else {
 					quitDesk();
+					raiseAlert(window.dataMap.get('expired-session'));
+				}
 			}
 			else if (errorData.message === 'failed : wrong 2FA code') {
 				raiseAlert(window.dataMap.get('2fa-activation-failed'));

@@ -76,8 +76,10 @@ async function getClientInfo(username) {
         if (isRefreshed) {
           return await getClientInfo(username);
         }
-        else
+        else {
           quitDesk();
+          raiseAlert(window.dataMap.get('expired-session'));
+        }
       } else {
         console.error(errorData.message);
       }
@@ -120,8 +122,10 @@ async function getClientStatistic(username) {
         if (isRefreshed) {
           return await getClientStatistic(username);
         }
-        else
+        else {
           quitDesk();
+          raiseAlert(window.dataMap.get('expired-session'));
+        }
       } else {
         raiseAlert('Getuser:' + errorData.message);
       }

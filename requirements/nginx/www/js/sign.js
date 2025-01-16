@@ -151,6 +151,12 @@ function SignIn() {
 					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 					document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
 					document.getElementById('help').textContent = window.dataMap.get('help');
+					document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+					document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+					document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+					document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+					document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+					document.getElementById('w-help').textContent = window.dataMap.get('w-help');
 				});
 
 				let langageUrl = null;
@@ -519,6 +525,12 @@ async function SignIn42() {
 										document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 										document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
 										document.getElementById('help').textContent = window.dataMap.get('help');
+										document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+										document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+										document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+										document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+										document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+										document.getElementById('w-help').textContent = window.dataMap.get('w-help');
 									});
 
 									let langageUrl = null;
@@ -682,6 +694,12 @@ async function can_sign_in() {
 					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 					document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
 					document.getElementById('help').textContent = window.dataMap.get('help');
+					document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+					document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+					document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+					document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+					document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+					document.getElementById('w-help').textContent = window.dataMap.get('w-help');
 				});
 
 				let langageUrl = null;
@@ -849,6 +867,12 @@ async function verify2FA() {
 					document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
 					document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
 					document.getElementById('help').textContent = window.dataMap.get('help');
+					document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+					document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+					document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+					document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+					document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+					document.getElementById('w-help').textContent = window.dataMap.get('w-help');
 				});
 
 				let langageUrl = null;

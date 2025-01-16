@@ -78,11 +78,8 @@ def decodeAccessToken(request, encoded_jwt):
 		if "id" in payload:
 			payload["id"] = uuid.UUID(payload["id"])
 		username = payload["username"]
-		print(f"username: {username}", flush=True)
 		user = CustomUser.get_user_by_name(username)
 		if user:
-			print(f"access_token: {user.access_token}", flush=True)
-			print(f"encoded_jwt: {encoded_jwt}", flush=True)
 			if user.access_token != encoded_jwt:
 				raise jwt.InvalidTokenError
 			return payload

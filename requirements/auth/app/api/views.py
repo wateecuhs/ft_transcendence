@@ -78,7 +78,6 @@ UserInfo can also take a GET request to return on success all informartions abou
 class UserInfo(APIView):
 	def put(self, request):
 		try:
-			print("PUT", flush=True)
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"}, status=400)
@@ -284,6 +283,14 @@ class ConfirmToken(APIView):
         access_token = response.json()['access_token']
         response = requests.get('https://api.intra.42.fr/v2/me', headers={'Authorization': f'Bearer {access_token}'}).json()
         username = response['login']
+        if not username:
+            return JsonResponse({'message': 'failed : cannot get username from 42 API'}, status=400)
+        avatar_path = response['image']['versions']['small']
+        if not avatar_path:
+            return JsonResponse({'message': 'failed : cannot get avatar from 42 API'}, status=400)
+        email = response['email']
+        if not email:
+            return JsonResponse({'message': 'failed : cannot get email from 42 API'}, status=400)
         add_username = 0
         user = CustomUser.get_user_by_name(username)
         while (user and user.is_42_account is False):

@@ -145,6 +145,12 @@ function toogleLanguageChoices() {
             document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
             document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
             document.getElementById('help').textContent = window.dataMap.get('help');
+            document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+            document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+            document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+            document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+            document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+            document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           });
 
           const flagIcon = document.querySelector('.flag-icon');
@@ -275,6 +281,12 @@ function toogleLanguageChoices() {
             document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
             document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
             document.getElementById('help').textContent = window.dataMap.get('help');
+            document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+            document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+            document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+            document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+            document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+            document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           });
 
           const flagIcon = document.querySelector('.flag-icon');
@@ -405,6 +417,12 @@ function toogleLanguageChoices() {
             document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
             document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
             document.getElementById('help').textContent = window.dataMap.get('help');
+            document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+            document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+            document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+            document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+            document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+            document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           });
 
           const flagIcon = document.querySelector('.flag-icon');
@@ -535,6 +553,12 @@ function toogleLanguageChoices() {
             document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
             document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
             document.getElementById('help').textContent = window.dataMap.get('help');
+            document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+            document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+            document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+            document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+            document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+            document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           });
 
           const flagIcon = document.querySelector('.flag-icon');
@@ -693,6 +717,12 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
             document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
             document.getElementById('help').textContent = window.dataMap.get('help');
+            document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+            document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+            document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+            document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+            document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+            document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           });
 
           const flagIcon = document.querySelector('.flag-icon-login');
@@ -822,6 +852,12 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
             document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
             document.getElementById('help').textContent = window.dataMap.get('help');
+            document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+            document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+            document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+            document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+            document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+            document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           });
 
           const flagIcon = document.querySelector('.flag-icon-login');
@@ -951,6 +987,12 @@ function toogleLanguageChoicesLogin() {
             document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
             document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
             document.getElementById('help').textContent = window.dataMap.get('help');
+            document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+            document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+            document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+            document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+            document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+            document.getElementById('w-help').textContent = window.dataMap.get('w-help');
           });
 
           const flagIcon = document.querySelector('.flag-icon-login');
@@ -1080,6 +1122,12 @@ function toogleLanguageChoicesLogin() {
           document.getElementById('trash-bin-title').textContent = window.dataMap.get('trash');
           document.getElementById('user-history').textContent = window.dataMap.get('user-match-history');
           document.getElementById('help').textContent = window.dataMap.get('help');
+          document.getElementById('invite-help').textContent = window.dataMap.get('invite-help');
+          document.getElementById('add-help').textContent = window.dataMap.get('add-help');
+          document.getElementById('accept-help').textContent = window.dataMap.get('accept-help');
+          document.getElementById('remove-help').textContent = window.dataMap.get('remove-help');
+          document.getElementById('block-help').textContent = window.dataMap.get('block-help');
+          document.getElementById('w-help').textContent = window.dataMap.get('w-help');
 
           const flagIcon = document.querySelector('.flag-icon-login');
           if (flagIcon) {

@@ -71,8 +71,10 @@ function initWebSocket() {
     if (isRefreshed) {
       return initWebSocket();
     }
-    else
+    else {
       quitDesk();
+      raiseAlert(window.dataMap.get('expired-session'));
+    }
   };
   return window.ws;
 }
@@ -122,8 +124,10 @@ async function updateUserFriend(username) {
           if (isRefreshed) {
             return updateUserFriend(username);
           }
-          else
-            quitDesk();
+					else {
+						quitDesk();
+						raiseAlert(window.dataMap.get('expired-session'));
+					}
         } else {
           console.error('Error: Failed to fetch friends', response.status);
           return;

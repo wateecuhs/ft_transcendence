@@ -50,8 +50,10 @@ function openFileSelector() {
                         if (isRefreshed) {
                           return changeImage();
                         }
-                        else
+                        else {
                             quitDesk();
+                            raiseAlert(window.dataMap.get('expired-session'));
+                        }
                       } else {
                         raiseAlert('Getuser:' + errorData.message);
                       }
