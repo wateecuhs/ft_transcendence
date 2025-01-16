@@ -717,6 +717,9 @@ function quitDesk() {
   	const button = document.getElementById('launch-matchmaking');
 	button.textContent = window.dataMap.get('launch-matchmaking');
     window.matchmaking = true;
+
+	const pong = document.getElementById('PongGame');
+	pong.style.display = 'none';
 	history.replaceState({}, "", window.location.pathname);
 	slideBack();
 }

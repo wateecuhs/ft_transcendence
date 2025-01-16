@@ -52,13 +52,11 @@ async function getUserInfo(accessToken) {
       const errorData = await response.json();
       if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
         const isRefreshed = await getRefreshToken();
-        console.log("yo le rap ", isRefreshed);
         if (isRefreshed) {
           const new_token = getTokenCookie();
           return await getUserInfo(new_token);
         }
         else {
-          console.log("yo le rap 2");
           quitDesk();
         }
       } else {
@@ -198,7 +196,7 @@ async function updateMatchHistory() {
       return ;
     }
 
-    matchesData.matches.forEach((match) => {
+    matchesData.matches.forEach( async (match) => {
       const matchElement = document.createElement('li');
       matchElement.classList.add('match');
 
@@ -208,7 +206,10 @@ async function updateMatchHistory() {
 
       const matchVersus = document.createElement('div');
       matchVersus.classList.add('match-versus');
-      matchVersus.textContent = `${match.user_name} vs ${match.opponent_name}`;
+
+      const alias_user = await getUserAlias(match.user_name);
+      const alias_opponent = await getUserAlias(match.opponent_name);
+      matchVersus.textContent = `${alias_user} vs ${alias_opponent}`;
 
       const matchScore = document.createElement('div');
       matchScore.classList.add('match-score');
