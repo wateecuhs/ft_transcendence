@@ -32,6 +32,13 @@ class GameConsumer(AsyncWebsocketConsumer):
             rooms[self.room_name] = Room(self.room_name)
         self.room = rooms[self.room_name]
 
+        for player in self.room.players:
+            if player.user["username"] == self.user["username"]:
+                print(f"User {self.user['username']} is already in the room", flush=True)
+                await self.accept()
+                await self.close()
+                return
+
         if not await self.room.add_player(self):
             await self.close()
             return
