@@ -32,7 +32,6 @@ async function showTournamentResults(query) {
       if (filteredTournaments.length > 0) {
         filteredTournaments.forEach(tournament => function() {
           const li = document.createElement('li');
-          console.log(tournament);
           if (tournament.status === 'FINISHED')
             li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')} | ${window.dataMap.get('finished')}`;
           else
@@ -80,7 +79,6 @@ async function showAllTournaments() {
       if (tournaments.length > 0) {
         tournaments.forEach(tournament => {
           const li = document.createElement('li');
-          console.log(tournament);
           if (tournament.status === 'FINISHED')
             li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')} | ${window.dataMap.get('finished')}`;
           else

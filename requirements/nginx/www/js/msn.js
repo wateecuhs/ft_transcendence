@@ -40,6 +40,7 @@ function initWebSocket() {
     }
     else if (message.type === "chat.private") {
       handle_chat_private(private_message, mp_user, message);
+      addMessageToConversation(message.data.author, message.data);
     }
     else if (message.type === "relationship.request") {
       showPopUp(window.dataMap.get('friend-request') + ' ' + message.data.author);
@@ -321,9 +322,10 @@ function searchFriends() {
 }
 
 function openGeneralMessage() {
-  const chatMessages = document.querySelector('#msnWindow .chat-messages')
+  const chatMessages = document.querySelector('#msnWindow .chat-messages');
+  const messageField = document.getElementById('type-message');
   chatMessages.innerHTML = '';
-  chatMessages.placeholder = 'Type a message';
+  messageField.placeholder = window.dataMap.get('type-message');
   private_message = false;
   mp_user = null;
   loadMessageHistory();

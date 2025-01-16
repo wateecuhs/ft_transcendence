@@ -153,6 +153,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             logger.info(f"Handling block command: {target} and {self.user}")
 
         if splitted_message[0] == self.BLOCK_CHAT_CMD:
+            await self._handle_friend_command(f"{self.REMOVE_FRIEND_CMD} {target}")
             await database_sync_to_async(block_user)(self.user, target)
         elif splitted_message[0] == self.UNBLOCK_CHAT_CMD:
             await database_sync_to_async(unblock_user)(self.user, target)

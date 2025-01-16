@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 from .models import Tournament
 
 class TournamentSerializer(serializers.ModelSerializer):
@@ -8,16 +8,16 @@ class TournamentSerializer(serializers.ModelSerializer):
 
     def validate_name(self, value):
         if not value.isalnum():
-            raise serializers.ValidationError("Name must be alphanumeric")
+            raise exceptions.ValidationError("Name must be alphanumeric")
         if ' ' in value:
-            raise serializers.ValidationError("Name must not contain spaces")
+            raise exceptions.ValidationError("Name must not contain spaces")
         if len(value) < 3:
-            raise serializers.ValidationError("Name must be at least 3 characters long")
+            raise exceptions.ValidationError("Name must be at least 3 characters long")
         if len(value) > 20:
-            raise serializers.ValidationError("Name must be at most 20 characters long")
+            raise exceptions.ValidationError("Name must be at most 20 characters long")
         return value
 
     def validate(self, attrs):
-        if Tournament.objects.filter(name=attrs['name']).exclude(status=Tournament.Status.FINISHED).exclude(status=Tournament.Status.CANCELLED).exists():
-            raise serializers.ValidationError("Tournament with this name already exists")
+        if Tournament.objects.filter(name=attrs['name']).exclude(status=Tournament.Status.CANCELLED).exists():
+            raise exceptions.ValidationError("Tournament with this name already exists")
         return super().validate(attrs)

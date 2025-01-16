@@ -126,7 +126,6 @@ async function quitTournament() {
 }
 
 function resetWinBook() {
-  console.log('resetWinBook');
   const winBookWindow = document.getElementById("winBook");
   const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
   const playerListElement = winBookWindow.querySelector('#player-list');
@@ -193,36 +192,40 @@ async function sendPlayersToRooms(tournament) {
 function firstRoundResults(tournament) {
   const winBookWindow = document.getElementById("winBook");
   const tournamentContent = winBookWindow.querySelector('#tournament-score-id');
-  const rounds = tournament.rounds;
   tournamentContent.innerHTML = '';
-
   let i = 1;
-  rounds.forEach(round => {
-      const matches = round.matches;
-      matches.forEach(match => {
-        const newData = document.createElement('div');
-        if (match.status === "FINISHED") {
-          const dataMatch = {
-            room_code: match.room_code,
-            player1: match.player1,
-            player2: match.player2,
-            score: match.score
-          };
-          newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${dataMatch.player1}</b> vs <b>${dataMatch.player2}</b>: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
-          tournamentContent.appendChild(newData);
-          i += 1;
-        }
-        else {
-          const dataMatch = {
-            room_code: match.room_code,
-            player1: match.player1,
-            player2: match.player2
-          };
-          newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${dataMatch.player1}</b> vs <b>${dataMatch.player2}</b>`;
 
-          tournamentContent.appendChild(newData);
-          i += 1;
-        }
-      });
+  const processPromise = (async () => {
+      for (const round of tournament.rounds) {
+          await Promise.all(round.matches.map(async (match) => {
+              const newData = document.createElement('div');
+              
+              const dataMatch = {
+                  room_code: match.room_code,
+                  player1: match.player1,
+                  player2: match.player2,
+                  ...(match.status === "FINISHED" && { score: match.score })
+              };
+
+              const [alias_1, alias_2] = await Promise.all([
+                  getUserAlias(dataMatch.player1),
+                  getUserAlias(dataMatch.player2)
+              ]);
+
+              if (match.status === "FINISHED") {
+                  newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
+              } else {
+                  newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>`;
+              }
+
+              tournamentContent.appendChild(newData);
+              i += 1;
+          }));
+      }
+  })();
+
+  processPromise.catch(error => {
+      console.error('Error processing tournament results:', error);
   });
+  return processPromise;
 }
