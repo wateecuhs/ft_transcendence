@@ -666,6 +666,7 @@
         <li id="accept-help">/accept [user] - Accept friend request</li>
         <li id="remove-help">/remove [user] - Remove friend</li>
         <li id="block-help">/block [user] - Block user</li>
+        <li id="unblock-help">/unblock [user] - Unblock user</li>
         <li id="w-help">/w [user] - Send a private message to a friend</li>
       </ul>
     </div>
@@ -936,6 +937,9 @@
           const blockHelp = document.getElementById('block-help');
           if (blockHelp != null)
             blockHelp.textContent = window.dataMap.get('block-help');
+          const unblockHelp = document.getElementById('unblock-help');
+          if (unblockHelp != null)
+            unblockHelp.textContent = window.dataMap.get('unblock-help');
           const wHelp = document.getElementById('w-help');
           if (wHelp != null)
             wHelp.textContent = window.dataMap.get('w-help');

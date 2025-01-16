@@ -138,3 +138,5 @@ accept-help=/accept [utilisateur] - Accepter la demande d'ami
 remove-help=/remove [utilisateur] - Supprimer un ami
 block-help=/block [utilisateur] - Bloquer un utilisateur
 w-help=/w [utilisateur] - Envoyer un message privé à un ami
+unblock-help=/unblock [utilisateur] - Débloquer l'utilisateur
+double-tournament=Un tournoi portant ce nom existe déjà

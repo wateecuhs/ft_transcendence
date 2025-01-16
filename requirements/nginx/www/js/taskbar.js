@@ -267,6 +267,9 @@ function translate() {
   const blockHelp = document.getElementById('block-help');
   if (blockHelp != null)
     blockHelp.textContent = window.dataMap.get('block-help');
+  const unblockHelp = document.getElementById('unblock-help');
+  if (unblockHelp != null)
+    unblockHelp.textContent = window.dataMap.get('unblock-help');
   const wHelp = document.getElementById('w-help');
   if (wHelp != null)
     wHelp.textContent = window.dataMap.get('w-help');

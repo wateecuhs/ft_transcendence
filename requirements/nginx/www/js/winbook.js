@@ -44,6 +44,8 @@ function initMMWebSocket() {
       };
 
       displayChatMessage(data);
+      const pongWindow = document.getElementById('PongGame');
+      pongWindow.querySelector('.close-button').click();
       showPopUp(window.dataMap.get('start-tournament'));
       navigateToPage("pong");
       sendPlayersToRooms(message.data);
@@ -56,7 +58,7 @@ function initMMWebSocket() {
         if (message.data.author === message.data.rounds[1].matches[0].player1 || message.data.author === message.data.rounds[1].matches[0].player2) {
           showPopUp("Hurry up ! You are in the next round !");
 		      const pongWindow = document.getElementById('PongGame');
-          pongWindow.style.display = 'none';
+          pongWindow.querySelector('.close-button').click();
           setTimeout(() => {
             let game = new PongWindow("remote", message.data.rounds[1].matches[0].room_code);
             game.run();
@@ -87,6 +89,8 @@ function initMMWebSocket() {
         errorMessage = window.dataMap.get('alphanumeric-name');
       if (message.message === 'You already have an active tournament.')
         errorMessage = window.dataMap.get('already-tournament');
+      if (message.message === 'Tournament with this name already exists')
+        errorMessage = window.dataMap.get('double-tournament');
       raiseAlert(errorMessage);
     }
     else {

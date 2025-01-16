@@ -139,3 +139,5 @@ accept-help=/accept [usuário] - Aceitar pedido de amizade
 remove-help=/remove [usuário] - Remover amigo
 block-help=/block [usuário] - Bloquear usuário
 w-help=/w [usuário] - Enviar mensagem privada para um amigo
+unblock-help=/unblock [usuário] - Desbloquear usuário
+double-tournament=Já existe um torneio com esse nome

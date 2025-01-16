@@ -311,7 +311,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             )
             await sync_to_async(serializer.save)()
         except ValidationError as ve:
-            await self.error(f"Invalid message format. ({ve.detail.get('name')[0].title()})")
+            await self.error("Invalid message format.")
 
     """
 		These methods are called by the channel layer when a message is received /

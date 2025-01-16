@@ -33,9 +33,9 @@ async function showTournamentResults(query) {
         filteredTournaments.forEach(tournament => function() {
           const li = document.createElement('li');
           if (tournament.status === 'FINISHED')
-            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')} | ${window.dataMap.get('finished')}`;
+            li.textContent = `${tournament.name} | ${window.dataMap.get('finished')}`;
           else
-            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')}`;
+            li.textContent = `${tournament.name}`;
 
           li.addEventListener('click', function() {
             raiseAlert(`Vous avez sélectionné ${tournament.name}`);
