@@ -22,6 +22,8 @@ def CreateAccessToken(request, username):
 		"iat": int(iat.timestamp())
 	}
 	encoded_access_jwt = jwt.encode(payload, os.getenv('JWT_ACCESS_KEY'), algorithm="HS256")
+	user.access_token = encoded_access_jwt
+	user.save()
 	return encoded_access_jwt
 
 '''
@@ -75,6 +77,14 @@ def decodeAccessToken(request, encoded_jwt):
 		payload = jwt.decode(encoded_jwt, os.getenv('JWT_ACCESS_KEY'), algorithms=["HS256"])
 		if "id" in payload:
 			payload["id"] = uuid.UUID(payload["id"])
+		username = payload["username"]
+		print(f"username: {username}", flush=True)
+		user = CustomUser.get_user_by_name(username)
+		if user:
+			print(f"access_token: {user.access_token}", flush=True)
+			print(f"encoded_jwt: {encoded_jwt}", flush=True)
+			if user.access_token != encoded_jwt:
+				raise jwt.InvalidTokenError
 			return payload
 		else:
 			return None

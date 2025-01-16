@@ -50,11 +50,16 @@ async function getUserInfo(accessToken) {
       }
     } else {
       const errorData = await response.json();
-      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+      if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
         const isRefreshed = await getRefreshToken();
+        console.log("yo le rap ", isRefreshed);
         if (isRefreshed) {
           const new_token = getTokenCookie();
           return await getUserInfo(new_token);
+        }
+        else {
+          console.log("yo le rap 2");
+          quitDesk();
         }
       } else {
         console.error(errorData.message);
@@ -93,12 +98,14 @@ async function getUserStatistic(accessToken) {
       }
     } else {
       const errorData = await response.json();
-      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+      if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
         const isRefreshed = await getRefreshToken();
         if (isRefreshed) {
           const new_token = getTokenCookie();
           return await getUserStatistic(new_token);
         }
+        else
+          quitDesk();
       } else {
         raiseAlert('Getuser:' + errorData.message);
       }
@@ -155,12 +162,12 @@ async function getMatchesHistory() {
       }
     } else {
       const errorData = await response.json();
-      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+      if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
         const isRefreshed = await getRefreshToken();
         if (isRefreshed) {
           return await getMatchesHistory();
         } else {
-          console.error(errorData.message);
+          quitDesk();
         }
       }
       return null;
@@ -260,11 +267,12 @@ async function getRefreshToken() {
         document.cookie = `access_token=${data.access_token}; path=/; SameSite=None; Secure`;
         return true;
       } else {
-        raiseAlert('In getRefreshToken: ' + data.message);
+        return false;
       }
     }
   } catch (error) {
     console.error(error);
+    return false;
   }
   return false;
 }
@@ -306,11 +314,13 @@ async function getUserAlias(username) {
       }
     } else {
       const errorData = await response.json();
-      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+      if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
         const isRefreshed = await getRefreshToken();
         if (isRefreshed) {
           return await getUserAlias(username);
         }
+        else
+          quitDesk();
       }
     }
   } catch (error) {

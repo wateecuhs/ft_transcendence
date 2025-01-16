@@ -713,6 +713,10 @@ async function can_sign_in() {
 function quitDesk() {
 	document.cookie = "access_token=; path=/; SameSite=None; Secure";
 	document.cookie = "refresh_token=; path=/; SameSite=None; Secure";
+
+  	const button = document.getElementById('launch-matchmaking');
+	button.textContent = window.dataMap.get('launch-matchmaking');
+    window.matchmaking = true;
 	history.replaceState({}, "", window.location.pathname);
 	slideBack();
 }
@@ -877,7 +881,7 @@ async function verify2FA() {
 			if (errorMessage.message === 'failed : wrong 2FA code') {
 				raiseAlert('Wrong code');
 			}
-			else if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+			else if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
 				const isRefreshed = await getRefreshToken();
 				if (isRefreshed) {
 					return await verify2FA();

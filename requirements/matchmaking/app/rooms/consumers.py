@@ -80,6 +80,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if player is None:
                 await self.error("Player name is required")
                 return
+            if player in self.list:
+                raise Exception("Player already in the list")
             self.list.append(player)
             if (len(self.list) >= 2):
                 room_code = "mm_" + os.urandom(4).hex()

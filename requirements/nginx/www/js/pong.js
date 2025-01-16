@@ -49,9 +49,9 @@ class PongWindow {
 		const pongWindow = document.getElementById('PongGame');
 		const gameOver = document.querySelector('.all-game-over');
 		const gameOverButton = document.querySelector('.game-over-button');
-		
+
 		gameOver.style.display = 'none';
-		
+
 		if (pongWindow.style.display === 'none') {
 			pongWindow.style.display = 'flex';
 			history.pushState({ page: "pong" }, "", "#pong");
@@ -87,7 +87,7 @@ class PongWindow {
 		window.addEventListener('popstate', (event) => {
 			const currentPage = window.location.hash;
 			const pongWindow = document.getElementById('PongGame');
-			
+
 			if (currentPage === "#pong") {
 				pongWindow.style.display = 'none';
 				window.createRoom = false;
@@ -120,6 +120,10 @@ class PongWindow {
 					if (isRefreshed) {
 						this.socket = new WebSocket('wss://' + window.location.host + '/game/rooms/' + this.roomName);
 						this.run();
+					}
+					else {
+						this.close();
+						quitDesk();
 					}
 				}
 				catch (error) {
