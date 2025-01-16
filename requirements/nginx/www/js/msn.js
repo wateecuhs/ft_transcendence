@@ -322,8 +322,9 @@ function searchFriends() {
 
 function openGeneralMessage() {
   const chatMessages = document.querySelector('#msnWindow .chat-messages')
+  const messageField = document.getElementById('type-message');
   chatMessages.innerHTML = '';
-  chatMessages.placeholder = 'Type a message';
+  messageField.placeholder = window.dataMap.get('type-message');
   private_message = false;
   mp_user = null;
   loadMessageHistory();
