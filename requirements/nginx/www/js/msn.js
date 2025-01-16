@@ -71,6 +71,8 @@ function initWebSocket() {
     if (isRefreshed) {
       return initWebSocket();
     }
+    else
+      quitDesk();
   };
   return window.ws;
 }
@@ -120,8 +122,8 @@ async function updateUserFriend(username) {
           if (isRefreshed) {
             return updateUserFriend(username);
           }
-          console.error(errorData);
-          return;
+          else
+            quitDesk();
         } else {
           console.error('Error: Failed to fetch friends', response.status);
           return;

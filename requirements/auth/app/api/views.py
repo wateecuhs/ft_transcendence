@@ -78,20 +78,21 @@ UserInfo can also take a GET request to return on success all informartions abou
 class UserInfo(APIView):
 	def put(self, request):
 		try:
+			print("PUT", flush=True)
 			authorization_header = request.headers.get('Authorization')
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"}, status=400)
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -147,9 +148,9 @@ class UserInfo(APIView):
 		except ConfirmationError as e:
 			JsonResponse({"message": f"failed : {e.messages}"}, status=401)
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 	def get(self, request):
 		try:
@@ -157,16 +158,16 @@ class UserInfo(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"}, status=400)
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access_token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -185,9 +186,9 @@ class UserInfo(APIView):
 								"is_2FA": user.is_2FA,
                 "language": user.language})
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 
 
@@ -336,16 +337,16 @@ class MatchHistory(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access token in header'})
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -357,9 +358,9 @@ class MatchHistory(APIView):
 			}
 			return JsonResponse(response)
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 
 class MatchHistoryId(APIView):
@@ -399,16 +400,16 @@ class	UserStat(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access token in header'})
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -420,9 +421,9 @@ class	UserStat(APIView):
 								"goal_scored": user.goal_scored,
 								"goal_conceded": user.goal_conceded})
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 class	UserStatId(APIView):
 	def get(self, request, **kwargs):
@@ -467,16 +468,16 @@ class Activate2FA(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed no access token in header'})
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -502,9 +503,9 @@ class Activate2FA(APIView):
 			return JsonResponse({'message': 'Success', 'qrcode_path': user.qrcode_path})
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 	def post(self, request):
 		try:
@@ -512,16 +513,16 @@ class Activate2FA(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access_token in header'})
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -540,9 +541,9 @@ class Activate2FA(APIView):
 				return JsonResponse({'message': 'failed : wrong 2FA code'}, status=401)
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 class Verify2FA(APIView):
 	def post(self, request):
@@ -551,16 +552,16 @@ class Verify2FA(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access_token in header'})
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -578,9 +579,9 @@ class Verify2FA(APIView):
 				return JsonResponse({'message': 'failed : wrong 2FA code'}, status=401)
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 class Desactivate2FA(APIView):
 	def put(self, request):
@@ -589,16 +590,16 @@ class Desactivate2FA(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"})
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access_token in header'})
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -608,9 +609,9 @@ class Desactivate2FA(APIView):
 			return JsonResponse({'message': 'Success'})
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 
 class ChangeLanguage(APIView):
@@ -620,16 +621,16 @@ class ChangeLanguage(APIView):
 			if authorization_header is None:
 				return JsonResponse({"message": "failed : authorization header missing"}, status=400)
 			if not authorization_header.startswith("Bearer "):
-				return JsonResponse({'message': 'failed : no access_token in header'}, stauts=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			encoded_access_jwt = authorization_header.split(" ", 1)[1]
 			if not encoded_access_jwt:
-				return JsonResponse({'message': 'failed : no access token in header'}, status=400)
+				return JsonResponse({'message': 'failed : access token not found in header'}, status=400)
 			payload = decodeAccessToken(request, encoded_access_jwt)
 			if not payload:
-				return JsonResponse({'message': 'failed : cannot decode access token'}, status=400)
+				return JsonResponse({'message': 'failed : access token cant be decode'}, status=400)
 			username = payload.get("username")
 			if not (username):
-				return JsonResponse({'message': 'failed : no username in payload'}, status=400)
+				return JsonResponse({'message': 'failed : access token no contain username in payload'}, status=400)
 			user = CustomUser.get_user_by_name(username)
 			if not (user):
 				return JsonResponse({'message': 'failed : user not found'}, status=404)
@@ -646,9 +647,9 @@ class ChangeLanguage(APIView):
 			return JsonResponse({'message': 'Success'})
 
 		except jwt.InvalidTokenError:
-			return JsonResponse({"message": "failed : access_token is invalid"}, status=401)
+			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
-			return JsonResponse({"message": "failed : access_token is expired"}, status=401)
+			return JsonResponse({"message": "failed : access token is expired"}, status=401)
 
 class Redirect42(APIView):
     def get(self, request):

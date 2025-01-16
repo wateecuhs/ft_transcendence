@@ -71,11 +71,13 @@ async function getClientInfo(username) {
       }
     } else {
       const errorData = await response.json();
-      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+      if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
         const isRefreshed = await getRefreshToken();
         if (isRefreshed) {
           return await getClientInfo(username);
         }
+        else
+          quitDesk();
       } else {
         console.error(errorData.message);
       }
@@ -113,11 +115,13 @@ async function getClientStatistic(username) {
       }
     } else {
       const errorData = await response.json();
-      if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+      if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
         const isRefreshed = await getRefreshToken();
         if (isRefreshed) {
           return await getClientStatistic(username);
         }
+        else
+          quitDesk();
       } else {
         raiseAlert('Getuser:' + errorData.message);
       }

@@ -99,6 +99,8 @@ function initMMWebSocket() {
     if (isRefreshed) {
       return initMMWebSocket();
     }
+    else
+      quitDesk();
   }
   return window.mmws;
 }

@@ -45,11 +45,13 @@ function openFileSelector() {
                     }
                 } else {
                     const errorData = await response.json();
-                    if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+                    if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
                         const isRefreshed = await getRefreshToken();
                         if (isRefreshed) {
                           return changeImage();
                         }
+                        else
+                            quitDesk();
                       } else {
                         raiseAlert('Getuser:' + errorData.message);
                       }

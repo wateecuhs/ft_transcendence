@@ -22,11 +22,13 @@ async function activate_2fa() {
 				}
 			} else {
 				const errorData = await response.json();
-				if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+				if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
 					const isRefreshed = await getRefreshToken();
 					if (isRefreshed) {
 						return await activate_2fa();
 					}
+					else
+						quitDesk();
 				} else {
 					raiseAlert('Getuser:' + errorData.message);
 				}
@@ -55,11 +57,13 @@ async function activate_2fa() {
 			}
 		} else {
 			const errorData = await response.json();
-			if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+			if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
 				const isRefreshed = await getRefreshToken();
 				if (isRefreshed) {
 					return await activate_2fa();
 				}
+				else
+					quitDesk();
 			}
 		}
 	} catch (error) {
@@ -101,11 +105,13 @@ async function validate_2fa() {
 			}
 		} else {
 			const errorData = await response.json();
-			if (errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+			if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
 				const isRefreshed = await getRefreshToken();
 				if (isRefreshed) {
 					return await validate_2fa();
 				}
+				else
+					quitDesk();
 			}
 			else if (errorData.message === 'failed : wrong 2FA code') {
 				raiseAlert(window.dataMap.get('2fa-activation-failed'));
