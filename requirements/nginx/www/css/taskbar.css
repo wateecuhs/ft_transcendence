@@ -8,6 +8,7 @@
   flex-direction: row;
   align-items: center;
   padding: 5px;
+  z-index: 7000;
 }
 
 .taskbar-items {
@@ -123,4 +124,9 @@
 
 .language-choices li:nth-child(4) {
   animation-delay: 0.8s;
+}
+
+.name-taskbar {
+  font-weight: bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

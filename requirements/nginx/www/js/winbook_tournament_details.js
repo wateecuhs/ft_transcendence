@@ -213,9 +213,9 @@ function firstRoundResults(tournament) {
               ]);
 
               if (match.status === "FINISHED") {
-                  newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
               } else {
-                  newData.innerHTML = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>`;
               }
 
               tournamentContent.appendChild(newData);

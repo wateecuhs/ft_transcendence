@@ -76,7 +76,7 @@ function displayDeskInconsInWindow() {
         cleanDesktop();
       }
       if (textSpan.textContent.trim() === 'Docs') {
-        cleanDesktop();
+        toogleDocsWindow();
       }
     });
   });

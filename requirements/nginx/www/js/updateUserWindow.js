@@ -19,8 +19,6 @@ async function updateUser() {
 	try {
 
 			const accountWin = document.getElementById("accountWindow");
-			const fullNameText = accountWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent.trim();
-			const userNameText = fullNameText.replace("Name: ", "").trim();
 
 			const updateUserWindow = document.getElementById("updateUserWindow");
 			const inputAlias = updateUserWindow.querySelector('.window-content input:nth-child(1)');
