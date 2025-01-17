@@ -20,7 +20,7 @@ async function showTournamentDetails(tournament) {
   if (tournament.players) {
     tournament.players.forEach(async (player) => {
       const li = document.createElement('li');
-      if (player === user) {
+      if (player === user.username) {
         is_in_tournament = true;
       }
       player = await getUserAlias(player);
@@ -43,7 +43,7 @@ async function showTournamentDetails(tournament) {
   } else {
     readyButton.style.display = 'flex';
     quitButton.style.display = 'flex';
-    if (is_in_tournament) {
+    if (is_in_tournament === true) {
       readyButton.disabled = true;
       readyButton.textContent = window.dataMap.get('joined');
     }
