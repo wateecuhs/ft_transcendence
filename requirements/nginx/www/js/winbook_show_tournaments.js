@@ -38,7 +38,7 @@ async function showTournamentResults(query) {
             li.textContent = `${tournament.name}`;
 
           li.addEventListener('click', function() {
-            raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+            raiseAlert(`${window.dataMap.get('tournament-selected')} ${tournament.name}`);
             const tournamentContent = document.getElementById('tournament-score-id');
             if (tournamentContent) {
               tournamentContent.innerHTML = '';
@@ -86,7 +86,7 @@ async function showAllTournaments() {
 
           li.addEventListener('click', function() {
             resetWinBook();
-            raiseAlert(`Vous avez sélectionné ${tournament.name}`);
+            raiseAlert(`${window.dataMap.get('tournament-selected')} ${tournament.name}`);
             showTournamentDetails(tournament);
           });
 

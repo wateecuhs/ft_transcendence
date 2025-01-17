@@ -550,6 +550,7 @@ function toogleLanguageChoices() {
           body: JSON.stringify(requestData),
         });
       }
+      languages.style.display = 'none';
     });
   });
 }

@@ -7,11 +7,12 @@ icons.forEach(icon => {
     const iconElement = icon.querySelector('.icon-text');
     const iconName = iconElement ? iconElement.textContent.trim() : '';
 
-    if (iconName === 'Msn') toggleMsnWindow();
-    else if (iconName === 'Winbook') toggleWinbookWindow();
-    else if (iconName === 'Pong') toogleGameOptionWindow();
-    else if (iconName === window.dataMap.get('trash')) toogleTrashBin();
-    else if (iconName === window.dataMap.get('desktop')) cleanDesktop();
+    if (icon.id === 'Msn') toggleMsnWindow();
+    else if (icon.id === 'Winbook') toggleWinbookWindow();
+    else if (icon.id === 'Pong') toogleGameOptionWindow();
+    else if (icon.id === 'Trash') toogleTrashBin();
+    else if (icon.id === 'Desktop') cleanDesktop();
+    else if (icon.id === "Documentation") raiseAlert("Documentation", "Documentation is not available yet.");
   });
 
   let offsetX, offsetY;
@@ -164,4 +165,30 @@ function setWindowIndex() {
   windows.forEach(window => {
       window.style.zIndex = 2000;
   });
+}
+
+function cleanDesktop() {
+  const windows = document.querySelectorAll('#explorerWindow, \
+    #accountWindow, \
+    #msnWindow, \
+    #updateUserWindow, \
+    #window-alert, \
+    #activate-2fa, \
+    #window-alert, \
+    #game-option, \
+    #tree-matchmaking, \
+    #clientWindow, \
+    #pop-up-message, \
+    #client-action, \
+    #trash-bin, \
+    #winBook, \
+    #window-join-room, \
+    #information-window');
+
+    for (const window of windows) {
+      window.style.display = 'none';
+    }
+    navigateToPage("desktop");
+
+    organizeIcons(icons, gridSize);
 }

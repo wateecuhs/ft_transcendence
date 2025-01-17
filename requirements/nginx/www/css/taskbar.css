@@ -93,10 +93,10 @@
 
 @keyframes slide-flag-down {
   from  {
-    transform: translateY(140px);
+    transform: translateY(0);
   }
   to {
-    transform: translateY(0);
+    transform: translateY(140px);
   }
 }
 

@@ -71,6 +71,13 @@ function displayDeskInconsInWindow() {
       if (textSpan.textContent.trim() === window.dataMap.get('trash')) {
         toogleTrashBin();
       }
+
+      if (textSpan.textContent.trim() === window.dataMap.get('desktop')) {
+        cleanDesktop();
+      }
+      if (textSpan.textContent.trim() === 'Docs') {
+        cleanDesktop();
+      }
     });
   });
 }
@@ -158,28 +165,4 @@ function switchPage(pageName) {
       console.log("Unknown page:", pageName);
       break;
   }
-}
-
-function cleanDesktop() {
-  const windows = document.querySelectorAll('#explorerWindow, \
-    #accountWindow, \
-    #msnWindow, \
-    #updateUserWindow, \
-    #window-alert, \
-    #activate-2fa, \
-    #window-alert, \
-    #game-option, \
-    #tree-matchmaking, \
-    #clientWindow, \
-    #pop-up-message, \
-    #client-action, \
-    #trash-bin, \
-    #winBook, \
-    #window-join-room, \
-    #information-window');
-
-    for (const window of windows) {
-      window.style.display = 'none';
-    }
-    navigateToPage("desktop");
 }
