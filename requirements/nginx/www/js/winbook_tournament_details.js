@@ -1,9 +1,10 @@
-function showTournamentDetails(tournament) {
+async function showTournamentDetails(tournament) {
   const winBookWindow = document.getElementById("winBook");
   if (!winBookWindow) {
     console.error("L'élément #winBook est introuvable !");
     return;
   }
+  let is_in_tournament = false;
   const tournamentNameElement = winBookWindow.querySelector('#tournament-name');
   const playerListElement = winBookWindow.querySelector('#player-list');
 
@@ -13,9 +14,15 @@ function showTournamentDetails(tournament) {
     resetWinBook();
     return ;
   }
+
+  user = await getUserInfo();
+
   if (tournament.players) {
     tournament.players.forEach(async (player) => {
       const li = document.createElement('li');
+      if (player === user) {
+        is_in_tournament = true;
+      }
       player = await getUserAlias(player);
       li.textContent = player;
       playerListElement.appendChild(li);
@@ -36,6 +43,10 @@ function showTournamentDetails(tournament) {
   } else {
     readyButton.style.display = 'flex';
     quitButton.style.display = 'flex';
+    if (is_in_tournament) {
+      readyButton.disabled = true;
+      readyButton.textContent = window.dataMap.get('joined');
+    }
   }
 }
 
