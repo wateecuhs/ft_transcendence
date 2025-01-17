@@ -91,6 +91,10 @@ function initMMWebSocket() {
         errorMessage = window.dataMap.get('already-tournament');
       if (message.message === 'Tournament with this name already exists')
         errorMessage = window.dataMap.get('double-tournament');
+      if (message.message === 'Tournament not found')
+        errorMessage = window.dataMap.get('tournament-not-found');
+      if (message.message === 'Player already in matchmaking')
+        errorMessage = window.dataMap.get('already-matchmaking');
       raiseAlert(errorMessage);
     }
     else {

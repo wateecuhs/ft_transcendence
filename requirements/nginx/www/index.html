@@ -693,9 +693,9 @@
         <div class="doc-page-title" id="doc-page-0-title-id"> Welcome on Windows 98 ! </div>
 
         <ul>
-          <li> <b>This is a documentation page</b> </li>
-          <li> - You will find everything you'll need through this journey. </li>
-          <li> - Please press on arrows buttons to change page. </li>
+          <li id="documentation-page"> <b>This is a documentation page</b> </li>
+          <li id="find-everything"> - You will find everything you'll need through this journey. </li>
+          <li id="press-arrow"> - Please press on arrows buttons to change page. </li>
         </ul>
       </div>
 
@@ -703,9 +703,9 @@
         <div class="doc-page-title" id="doc-page-1-title-id"> General Information </div>
 
         <ul>
-          <li> <b>Click on start to open explorer !</b> </li>
-          <li> - Desktop icon is useful to clean your desk.</li>
-          <li> - You can change languages with flags on screen right bottom.</li>
+          <li id="gi-1"> <b>Click on start to open explorer !</b> </li>
+          <li id="gi-2"> - Desktop icon is useful to clean your desk.</li>
+          <li id="gi-3"> - You can change languages with flags on screen right bottom.</li>
         </ul>
       </div>
 
@@ -713,9 +713,9 @@
         <div class="doc-page-title" id="doc-page-2-title-id"> Msn Icon </div>
 
         <ul>
-          <li> <b> Chat with your friends ! </b></li>
-          <li>- With msn, you can chat with everyone and laughing with friends.</li>
-          <li>- You can also invite people on private matches and see their profiles.</li>
+          <li id="msn-1"> <b> Chat with your friends ! </b></li>
+          <li id="msn-2">- With msn, you can chat with everyone and laughing with friends.</li>
+          <li id="msn-3">- You can also invite people on private matches and see their profiles.</li>
         </ul>
       </div>
 
@@ -723,9 +723,9 @@
         <div class="doc-page-title" id="doc-page-3-title-id"> Winbook Icon </div>
 
         <ul>
-          <li> <b> Create awesome tournaments and challenge others people ! </b></li>
-          <li>- There, you'll see that you can create and search for tournaments. </li>
-          <li>- Good game and have fun.</li>
+          <li id="wb-1"> <b> Create awesome tournaments and challenge others people ! </b></li>
+          <li id="wb-2">- There, you'll see that you can create and search for tournaments. </li>
+          <li id="wb-3">- Good game and have fun.</li>
         </ul>
       </div>
 
@@ -733,10 +733,10 @@
         <div class="doc-page-title" id="doc-page-4-title-id"> Pong Icon </div>
 
         <ul>
-          <li> <b>Pong on various forms</b> </li>
-          <li> -- Play agaisnt Ai. </li>
-          <li> -- Play on local or remote.</li>
-          <li> -- Play on matchmaking. </li>
+          <li id="pong-1"> <b>Pong on various forms</b> </li>
+          <li id="pong-2"> -- Play agaisnt Ai. </li>
+          <li id="pong-3"> -- Play on local or remote.</li>
+          <li id="pong-4"> -- Play on matchmaking. </li>
         </ul>
       </div>
 
@@ -744,7 +744,7 @@
       <div class="doc-page-title" id="doc-page-5-title-id"> Trash bin </div>
 
       <ul>
-        <li> <b> \_O-o_/ </b> Surprise <b> \_O-o_/ </b> </li>
+        <li id="trash-1"> <b> \_O-o_/ </b> Surprise <b> \_O-o_/ </b> </li>
       </ul>
     </div>
 
@@ -1023,6 +1023,81 @@
           const wHelp = document.getElementById('w-help');
           if (wHelp != null)
             wHelp.textContent = window.dataMap.get('w-help');
+          const docsWindowTitle = document.getElementById('docs-window-title');
+          if (docsWindowTitle != null)
+            docsWindowTitle.textContent = window.dataMap.get('docs-window-title');
+          const closeButton = document.getElementById('close-button');
+          if (closeButton != null)
+            closeButton.textContent = window.dataMap.get('close-button');
+          const docsPage0TitleId = document.getElementById('doc-page-0-title-id');
+          if (docsPage0TitleId != null)
+            docsPage0TitleId.textContent = window.dataMap.get('doc-page-0-title-id');
+          const documentationPage = document.getElementById('documentation-page');
+          if (documentationPage != null)
+            documentationPage.textContent = window.dataMap.get('documentation-page');
+          const findEverything = document.getElementById('find-everything');
+          if (findEverything != null)
+            findEverything.textContent = window.dataMap.get('find-everything');
+          const pressArrow = document.getElementById('press-arrow');
+          if (pressArrow != null)
+            pressArrow.textContent = window.dataMap.get('press-arrow');
+          const docsPage1TitleId = document.getElementById('doc-page-1-title-id');
+          if (docsPage1TitleId != null)
+            docsPage1TitleId.textContent = window.dataMap.get('doc-page-1-title-id');
+          const gi1 = document.getElementById('gi-1');
+          if (gi1 != null)
+            gi1.textContent = window.dataMap.get('gi-1');
+          const gi2 = document.getElementById('gi-2');
+          if (gi2 != null)
+            gi2.textContent = window.dataMap.get('gi-2');
+          const gi3 = document.getElementById('gi-3');
+          if (gi3 != null)
+            gi3.textContent = window.dataMap.get('gi-3');
+          const docsPage2TitleId = document.getElementById('doc-page-2-title-id');
+          if (docsPage2TitleId != null)
+            docsPage2TitleId.textContent = window.dataMap.get('doc-page-2-title-id');
+          const msn1 = document.getElementById('msn-1');
+          if (msn1 != null)
+            msn1.textContent = window.dataMap.get('msn-1');
+          const msn2 = document.getElementById('msn-2');
+          if (msn2 != null)
+            msn2.textContent = window.dataMap.get('msn-2');
+          const msn3 = document.getElementById('msn-3');
+          if (msn3 != null)
+            msn3.textContent = window.dataMap.get('msn-3');
+          const docsPage3TitleId = document.getElementById('doc-page-3-title-id');
+          if (docsPage3TitleId != null)
+            docsPage3TitleId.textContent = window.dataMap.get('doc-page-3-title-id');
+          const wb1 = document.getElementById('wb-1');
+          if (wb1 != null)
+            wb1.textContent = window.dataMap.get('wb-1');
+          const wb2 = document.getElementById('wb-2');
+          if (wb2 != null)
+            wb2.textContent = window.dataMap.get('wb-2');
+          const wb3 = document.getElementById('wb-3');
+          if (wb3 != null)
+            wb3.textContent = window.dataMap.get('wb-3');
+          const docsPage4TitleId = document.getElementById('doc-page-4-title-id');
+          if (docsPage4TitleId != null)
+            docsPage4TitleId.textContent = window.dataMap.get('doc-page-4-title-id');
+          const pong1 = document.getElementById('pong-1');
+          if (pong1 != null)
+            pong1.textContent = window.dataMap.get('pong-1');
+          const pong2 = document.getElementById('pong-2');
+          if (pong2 != null)
+            pong2.textContent = window.dataMap.get('pong-2');
+          const pong3 = document.getElementById('pong-3');
+          if (pong3 != null)
+            pong3.textContent = window.dataMap.get('pong-3');
+          const pong4 = document.getElementById('pong-4');
+          if (pong4 != null)
+            pong4.textContent = window.dataMap.get('pong-4');
+          const docsPage5TitleId = document.getElementById('doc-page-5-title-id');
+          if (docsPage5TitleId != null)
+            docsPage5TitleId.textContent = window.dataMap.get('doc-page-5-title-id');
+          const trash1 = document.getElementById('trash-1');
+          if (trash1 != null)
+            trash1.textContent = window.dataMap.get('trash-1');
           updateTime();
           setInterval(updateTime, 1000);
         })
