@@ -58,9 +58,6 @@ function initWebSocket() {
     else if (message.type === "match.invite") {
       handle_chat_invite(message);
     }
-    else {
-      console.log(message.data);
-    }
   }
 
   window.ws.onclose = async function(event) {
