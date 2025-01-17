@@ -105,11 +105,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.error(f"Invalid JSON format. ({e})")
             return
 
-        match event["type"]:
-            case "chat_message":
-                await self._handle_chat_message(event)
-            case _:
-                await self.error(f"Invalid message type. ({event['type']})")
+        try:
+            match event["type"]:
+                case "chat_message":
+                    await self._handle_chat_message(event)
+                case _:
+                    await self.error(f"Invalid message type. ({event['type']})")
+        except Exception:
+            await self.error("Invalid message format.")
 
     """
 		Rooting functions for handling chat messages.

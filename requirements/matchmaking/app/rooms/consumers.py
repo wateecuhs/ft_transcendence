@@ -75,8 +75,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def _handle_matchmaking_join(self, event):
         try:
-            data = event.get("data", {})
-            player = data["author"]
+            player = self.username
             if player is None:
                 await self.error("Player name is required")
                 return
@@ -114,8 +113,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def _handle_matchmaking_leave(self, event):
         try:
-            data = event.get("data", {})
-            player = data["author"]
+            player = self.username
             if player is None:
                 await self.error("Player name is required")
                 return
@@ -125,6 +123,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def _handle_tournament_create(self, event):
         try:
+            if self.username in self.list:
+                await self.error("Player already in matchmaking")
+                return
             existing_active = await sync_to_async(Tournament.objects.filter)(
                 Q(players__contains=self.username) &
                 Q(status__in=[Tournament.Status.PENDING, Tournament.Status.PLAYING])
@@ -153,6 +154,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             logger.info(f"[{self.username}] Joining tournament")
             data = event.get("data", {})
+            if self.username in self.list:
+                await self.error("Player already in matchmaking")
+                return
             tournament_name = data.get("name")
             if not tournament_name:
                 await self.error("Tournament name is required")
