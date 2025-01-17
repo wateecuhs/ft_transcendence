@@ -457,8 +457,8 @@ function quitDesk() {
 	pong.style.display = 'none';
 	history.replaceState({}, "", window.location.pathname);
 
-	window.mmws.close();
-	window.ws.close();
+	if (window.mmws) window.mmws.close();
+	if (window.ws) window.ws.close();
 	slideBack();
 }
 

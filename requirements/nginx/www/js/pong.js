@@ -78,6 +78,7 @@ class PongWindow {
 		document.removeEventListener('keydown', this.handleKeyDown);
 		document.removeEventListener('keyup', this.handleKeyUp);
 		window.removeEventListener('resize', this.resizeCanvas);
+		this.commandBuffer = {};
 	}
 
 	run() {
@@ -130,7 +131,8 @@ class PongWindow {
 				}
 			}
 			else if (event.code === 3005) {
-				raiseAlert("Room is full");
+				if (window.dataMap && window.dataMap.get('room-full'))
+					raiseAlert(window.dataMap.get('room-full'));
 				const pongWindow = document.getElementById('PongGame');
 				pongWindow.querySelector('.close-button').click();
 			}

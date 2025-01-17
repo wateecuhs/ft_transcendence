@@ -21,7 +21,7 @@ async function showTournamentDetails(tournament) {
   if (tournament.players) {
     tournament.players.forEach(async (player) => {
       const li = document.createElement('li');
-      if (player === user.username) {
+      if (user && user.username && player === user.username) {
         is_in_tournament = true;
       }
       player = await getUserAlias(player);
@@ -225,7 +225,7 @@ function firstRoundResults(tournament) {
               ]);
 
               if (match.status === "FINISHED") {
-                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}: ${dataMatch.score[1]} - ${dataMatch.score[0]}`;
               } else {
                   newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}`;
               }

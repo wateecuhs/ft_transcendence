@@ -125,15 +125,15 @@ async function updateUserInfo() {
 	if (userInfo) {
 		const user = JSON.parse(userInfo);
     const userWin = document.querySelector("#accountWindow");
-
-    const userTaskbar = document.getElementById('name-taskbar-id');
-    if (userTaskbar) {
-      userTaskbar.textContent = user.username;
-    }
-
+    
     if (user == null) {
       return
     }
+    const userTaskbar = document.getElementById('name-taskbar-id');
+    if (userTaskbar && user.username) {
+      userTaskbar.textContent = user.username;
+    }
+
     userWin.querySelector("#account-page-0 .user-img span").textContent = user.alias || 'default pseudo';
     userWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `${window.dataMap.get('account-name')}: ${user.username || 'default'}`;
     userWin.querySelector("#account-page-0 ul li:nth-child(2)").textContent = `${window.dataMap.get('account-email')}: ${user.email || 'default@gmail.com'}`;

@@ -170,3 +170,4 @@ pong-4=Jogue no matchmaking.
 docs-page-5-title-id=Lixeira
 trash-1=\_O-o_/ Surpresa \_O-o_/ 
 not-in-tournament=Não neste torneio
+room-full=A sala está cheia
