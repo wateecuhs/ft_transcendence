@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="css/tree_matchmaking.css">
     <link rel="stylesheet" href="css/trash_bin.css">
     <link rel="stylesheet" href="css/information_window.css">
+    <link rel="stylesheet" href="css/documentation.css">
     <link rel="icon" type="image/png" href="peas.png">
 </head>
 <body class="desktop">
@@ -667,8 +668,88 @@
         <li id="remove-help">/remove [user] - Remove friend</li>
         <li id="block-help">/block [user] - Block user</li>
         <li id="unblock-help">/unblock [user] - Unblock user</li>
-        <li id="w-help">/w [user] - Send a private message to a friend</li>
       </ul>
+    </div>
+  </div>
+
+  <div class="window" id="docs-window" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title" id="docs-window-title">Documentation</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+
+      <div class="docs-page" id="docs-page-0" style="display: none;">
+        <div class="doc-page-title" id="doc-page-0-title-id"> Welcome on Windows 98 ! </div>
+
+        <ul>
+          <li> <b>This is a documentation page</b> </li>
+          <li> You will find everything you'll need through this journey </li>
+          <li> -- Please press on arrows buttons to change page -- </li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-1" style="display: none;">
+        <div class="doc-page-title" id="doc-page-1-title-id"> General Information </div>
+
+        <ul>
+          <li> Click on start to open explorer !</li>
+          <li> Click on Account in explorer to see your informations and change them </li>
+          <li> Desktop icon is useful to clean your desk</li>
+          <li> You can change languages with flags on screen right bottom</li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-2" style="display: none;">
+        <div class="doc-page-title" id="doc-page-2-title-id"> Msn Icon </div>
+
+        <ul>
+          <li>Chat with your friends !</li>
+          <li>With msn, you can chat with everyone and laughing with friends,</li>
+          <li>You can also invite people on private matches and see their profiles</li>
+          <li>More information with help button</li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-3" style="display: none;">
+        <div class="doc-page-title" id="doc-page-3-title-id"> Winbook Icon </div>
+
+        <ul>
+          <li>Create awesome tournaments and challenge others people !</li>
+          <li>There, you'll see that you can create and search for tournaments</li>
+          <li>Good game and have fun</li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-4" style="display: none;">
+        <div class="doc-page-title" id="doc-page-4-title-id"> Pong Icon </div>
+
+        <ul>
+          <li> Pong on various forms </li>
+          <li> Play agaisnt Ai </li>
+          <li> Play on local or remote </li>
+          <li> Play on matchmaking </li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-5" style="display: none;">
+      <div class="doc-page-title" id="doc-page-5-title-id"> Trash bin </div>
+
+      <ul>
+        <li> Surprise <b> \_O-o_/ </b> </li>
+      </ul>
+    </div>
+
+      <div class="number-pages">1/4</div>
     </div>
   </div>
 
@@ -977,6 +1058,7 @@
   <script src="js/winbook_show_tournaments.js"></script>
   <script src="js/winbook_tournament_details.js"></script>
   <script src="js/trash_bin.js"></script>
+  <script src="js/documentation.js"></script>
 
 </body>
 </html>

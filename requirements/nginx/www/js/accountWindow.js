@@ -12,7 +12,7 @@ function displayStylePage(pageIndex) {
   page.style.display = (index === pageIndex) ? 'block' : 'none';
  });
 
- const numberPages = document.querySelector(".number-pages");
+ const numberPages = document.querySelector("#accountWindow .number-pages");
  numberPages.innerHTML = '';
  numberPages.textContent = `${pageIndex + 1}/3`;
 }

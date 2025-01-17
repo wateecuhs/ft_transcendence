@@ -12,7 +12,7 @@ icons.forEach(icon => {
     else if (icon.id === 'Pong') toogleGameOptionWindow();
     else if (icon.id === 'Trash') toogleTrashBin();
     else if (icon.id === 'Desktop') cleanDesktop();
-    else if (icon.id === "Documentation") raiseAlert("Documentation", "Documentation is not available yet.");
+    else if (icon.id === "Documentation") toogleDocsWindow();
   });
 
   let offsetX, offsetY;
@@ -72,6 +72,7 @@ const windows = document.querySelectorAll('#explorerWindow, \
 #trash-bin, \
 #winBook, \
 #window-join-room, \
+#docs-window, \
 #information-window');
 
 windows.forEach(window => {
@@ -160,6 +161,7 @@ function setWindowIndex() {
   #trash-bin, \
   #winBook, \
   #window-join-room, \
+  #docs-window, \
   #information-window');
 
   windows.forEach(window => {
@@ -182,6 +184,7 @@ function cleanDesktop() {
     #client-action, \
     #trash-bin, \
     #winBook, \
+    #docs-window, \
     #window-join-room, \
     #information-window');
 
