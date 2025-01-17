@@ -6,9 +6,11 @@ from cryptography.fernet import Fernet
 import os, base64, uuid
 from transcendence import settings
 import pyotp
+from django.utils import timezone
 
 key = base64.urlsafe_b64encode(os.urandom(32))
 cipher = Fernet(key)
+
 
 class Tournament(models.Model):
     name = models.CharField(max_length=200)
@@ -156,7 +158,7 @@ class   Match(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
     user_name = models.CharField(max_length=30)
     opponent_name = models.CharField(max_length=30)
-    date = models.DateField()
+    date = models.CharField()
     user_score = models.PositiveSmallIntegerField()
     opponent_score = models.PositiveSmallIntegerField()
     user_win = models.BooleanField(default=False)
@@ -165,9 +167,15 @@ class   Match(models.Model):
         db_table = 'matches'
 
     @classmethod
-    def create_match(cls, user, date, user_score, opponent_score, user_win, user_name, opponent_name):
-        match = cls(user=user, date=date, user_score=user_score, opponent_score=opponent_score, user_win=user_win, user_name=user_name, opponent_name=opponent_name)
+    def create_match(cls, user, user_score, opponent_score, user_win, user_name, opponent_name):
+        timezone.activate('Europe/Paris')
+        now = timezone.now()
+        strTime = str(timezone.localtime(now))
+        datetime = strTime.split('.')
+        print(strTime, flush=True)
+        match = cls(user=user, date=datetime[0], user_score=user_score, opponent_score=opponent_score, user_win=user_win, user_name=user_name, opponent_name=opponent_name)
         match.save()
+        print(match.date, flush=True)
         user.matches_number = user.matches_number + 1
         if user_win == True:
             user.matches_win = user.matches_win + 1
