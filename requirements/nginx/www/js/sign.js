@@ -381,7 +381,7 @@ async function SignIn42() {
 							raiseAlert('Sign42: ' + data.message);
 					}
 			} else {
-					raiseAlert('Error: response 42 is not ok');
+					raiseAlert(window.dataMap.get('response-42'));
 			}
 		} catch (error) {
 				console.error('Erreur réseau:', error);

@@ -79,14 +79,27 @@ async function showAllTournaments() {
       if (tournaments.length > 0) {
         tournaments.forEach(tournament => {
           const li = document.createElement('li');
-          if (tournament.status === 'FINISHED')
-            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')} | ${window.dataMap.get('finished')}`;
-          else
-            li.textContent = `${tournament.name} ${window.dataMap.get('max-4-player')}`;
-
+          if (tournament.status === 'FINISHED') {
+            if (window.dataMap) {
+              if (window.dataMap.get('max-4-player') && window.dataMap.get('finished') && window.dataMap.get('tournament-selected')) {
+                max4Player = window.dataMap.get('max-4-player');
+                finished = window.dataMap.get('finished');
+                tournamentSelected = window.dataMap.get('tournament-selected');
+              }
+              else {
+                max4Player = 'Max 4 players';
+                finished = 'Finished';
+                tournamentSelected = 'Tournament selected';
+              }
+            }
+            li.textContent = `${tournament.name} ${max4Player} | ${finished}`;
+          }
+          else {
+            li.textContent = `${tournament.name} ${max4Player}`;
+          }
           li.addEventListener('click', function() {
             resetWinBook();
-            raiseAlert(`${window.dataMap.get('tournament-selected')} ${tournament.name}`);
+            raiseAlert(`${tournamentSelected} ${tournament.name}`);
             showTournamentDetails(tournament);
           });
 
@@ -95,7 +108,6 @@ async function showAllTournaments() {
       } else {
         const noResultsItem = document.createElement('li');
         noResultsItem.id = 'no-tournament';
-        // noResultsItem.textContent = window.dataMap.get('no-tournament');
         tournamentResultsList.appendChild(noResultsItem);
       }
     } else {

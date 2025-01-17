@@ -63,7 +63,6 @@ async function getClientInfo(username) {
           alias: data.alias,
           status: data.status,
           avatar_path: data.avatar_path,
-          is_42_account: data.is_42_account,
         }
       } else {
         raiseAlert('Erreur lors de la récupération des informations utilisateur');
@@ -143,8 +142,7 @@ async function updateClientInfo(username) {
 
   clientWindow.querySelector("#account-page-0 .user-img span").textContent = user.alias || 'default pseudo';
   clientWindow.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `${window.dataMap.get('account-name')}: ${user.username || 'default'}`;
-	clientWindow.querySelector("#account-page-0 ul li:nth-child(2)").textContent = `${window.dataMap.get('account-42')}: ${user.is_42_account || 'false'}`;
-  clientWindow.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `${window.dataMap.get('account-alias')}: ${user.alias || 'defuat_alias'}`;
+  clientWindow.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `${window.dataMap.get('account-alias')}: ${user.alias || 'default_alias'}`;
 
 	const avatarImg = clientWindow.querySelector("#account-page-0 .user-img img");
 	avatarImg.src = user.avatar_path || 'img/png/game_spider-0.png';
