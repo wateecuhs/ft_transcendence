@@ -1,36 +1,25 @@
 # Configuration
 DOCKER_COMPOSE_FILE := requirements/docker-compose.yml
-DOCKER_COMPOSE_DEV_FILE := requirements/docker-compose.dev.yml
 DOCKER_COMPOSE := docker compose -f $(DOCKER_COMPOSE_FILE)
-DOCKER_COMPOSE_DEV := docker compose -f $(DOCKER_COMPOSE_DEV_FILE)
 
-.PHONY: up build dev down stop start clean status ps logs volume_clean
+.PHONY: up build down stop start clean status ps logs volume_clean volumes
 
 all: up
 
 up:
 	$(DOCKER_COMPOSE) up -d --build --remove-orphans
 
-build:
-	$(DOCKER_COMPOSE) up --build
-
-dev:
-	$(DOCKER_COMPOSE_DEV) up --build -d
-
 down:
 	$(DOCKER_COMPOSE) down -v
-
-devdown:
-	$(DOCKER_COMPOSE_DEV) down -v
 
 stop:
 	$(DOCKER_COMPOSE) stop
 
-devstop:
-	$(DOCKER_COMPOSE_DEV) stop
-
 start:
 	$(DOCKER_COMPOSE) start
+
+prune:
+	docker system prune -af --volumes
 
 ps: status
 status:
@@ -38,9 +27,6 @@ status:
 
 logs:
 	$(DOCKER_COMPOSE) logs -f
-
-devlogs:
-	$(DOCKER_COMPOSE_DEV) logs -f
 
 volume_clean:
 	@read -p "Are you sure? [y/N] " confirmation; \
