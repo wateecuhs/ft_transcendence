@@ -73,7 +73,6 @@ class PongWindow {
 
 	close() {
 		if (this.socket.readyState === WebSocket.OPEN) {
-			// this.socket.send(JSON.stringify({ type: 'disconnect' }));
 			this.socket.close();
 		}
 		document.removeEventListener('keydown', this.handleKeyDown);
@@ -85,7 +84,6 @@ class PongWindow {
 		this.open();
 
 		window.addEventListener('popstate', (event) => {
-			//const currentPage = window.location.hash;
 			const pongWindow = document.getElementById('PongGame');
 
 			pongWindow.style.display = 'none';
