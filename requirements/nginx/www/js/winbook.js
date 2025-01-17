@@ -98,8 +98,8 @@ function initMMWebSocket() {
       }
   }
 
-  window.mmws.onclose = function(event) {
-    const isRefreshed = getRefreshToken();
+  window.mmws.onclose = async function(event) {
+    const isRefreshed = await getRefreshToken();
     if (isRefreshed) {
       return initMMWebSocket();
     }

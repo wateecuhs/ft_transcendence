@@ -63,12 +63,12 @@ function initWebSocket() {
     }
   }
 
-  window.ws.onclose = function(event) {
+  window.ws.onclose = async function(event) {
     for (const key in conversations) {
       conversations[key] = "";
     }
 
-    const isRefreshed = getRefreshToken();
+    const isRefreshed = await getRefreshToken();
     if (isRefreshed) {
       return initWebSocket();
     }

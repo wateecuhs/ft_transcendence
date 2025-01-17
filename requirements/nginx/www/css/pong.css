@@ -11,7 +11,7 @@
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-repeat: space;
-	z-index: 5000;
+	z-index: 8000;
 
 	display: flex;
 	flex-direction: column;
