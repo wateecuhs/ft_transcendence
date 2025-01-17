@@ -484,8 +484,8 @@ async function verify2FA() {
 			body: JSON.stringify(request_data)
 		});
 
+		const data = await response.json();
 		if (response.ok) {
-			const data = await response.json();
 			if (data.message === 'Success') {
 				const userInfo = await getUserInfo(access_token);
 				window.dict = `${userInfo.language}-dict.txt`;
@@ -533,7 +533,7 @@ async function verify2FA() {
 				raiseAlert(data.message);
 			}
 		} else {
-			if (errorMessage.message === 'failed : wrong 2FA code') {
+			if (data.message === 'failed : wrong 2FA code') {
 				raiseAlert('Wrong code');
 			}
 			else if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {

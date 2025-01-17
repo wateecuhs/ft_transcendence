@@ -42,8 +42,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             if self.username:
                 logger.info(f"[{self.username}] Disconnecting. ({close_code})")
+                await self.channel_layer.group_discard(f"user.{self.username}", self.channel_name)
+                if self.room:
+                    await self.channel_layer.group_discard(f"tournament.{self.room}", self.channel_name)
                 await self.leave_tournaments()
-                await self._handle_matchmaking_leave({"data": {"author": self.username}})
+                if self.username in self.list:
+                    await self._handle_matchmaking_leave({"data": {"author": self.username}})
         except Exception as e:
             logger.error(f"Disconnection cleanup failed: {e}")
 
@@ -216,6 +220,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             tournament = await sync_to_async(Tournament.objects.exclude(status=Tournament.Status.CANCELLED).exclude(status=Tournament.Status.FINISHED).get)(name=tournament_name)
             if self.username not in tournament.players:
                 await self.error("Not in this tournament")
+                return
+
+            if tournament.owner == UUID(self.user_id):
+                await self._handle_tournament_delete(event)
                 return
 
             tournament.players.remove(self.username)
@@ -409,7 +417,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     }
                 }
             )
-
+            self.room = None
             await sync_to_async(tournament.delete)()
 
             await self.channel_layer.group_discard(f"tournament.{tournament_name}", self.channel_name)
@@ -461,6 +469,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def tournament_delete(self, event):
         logger.info(f"[{self.username}] Tournament delete: {event['data']}")
+        self.room = None
+        try:
+            await self.channel_layer.group_discard(f"tournament.{event['data']['name']}", self.channel_name)
+        except Exception as e:
+            logger.error(f"Error discarding group: {e}")
         await self._json_send(MessageType.Tournament.DELETE, event["data"])
 
     async def leave_tournaments(self):

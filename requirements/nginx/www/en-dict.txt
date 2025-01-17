@@ -169,3 +169,4 @@ pong-3=Play in local or remote.
 pong-4=Play using matchmaking.
 doc-page-5-title-id=Trash bin
 trash-1=\_O-o_/ Surprise \_O-o_/ 
+not-in-tournament=Not in this tournament

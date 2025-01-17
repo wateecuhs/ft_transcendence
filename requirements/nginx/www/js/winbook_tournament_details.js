@@ -1,3 +1,4 @@
+
 async function showTournamentDetails(tournament) {
   const winBookWindow = document.getElementById("winBook");
   if (!winBookWindow) {
@@ -224,9 +225,9 @@ function firstRoundResults(tournament) {
               ]);
 
               if (match.status === "FINISHED") {
-                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
               } else {
-                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}`;
               }
 
               tournamentContent.appendChild(newData);

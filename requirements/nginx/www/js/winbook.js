@@ -51,7 +51,9 @@ function initMMWebSocket() {
       sendPlayersToRooms(message.data);
     }
     else if (message.type === "tournament.delete") {
-      showTournamentDetails(message.data);
+      showPopUp("Tournament has been deleted");
+      resetWinBook();
+      showAllTournaments();
     }
     else if (message.type === "tournament.update") {
       if (message.data.rounds.length === 2 && message.data.rounds[1].matches[0].status !== "FINISHED") {
@@ -95,6 +97,8 @@ function initMMWebSocket() {
         errorMessage = window.dataMap.get('tournament-not-found');
       if (message.message === 'Player already in matchmaking')
         errorMessage = window.dataMap.get('already-matchmaking');
+      if (message.message === 'Not in this tournament')
+        errorMessage = window.dataMap.get('not-in-tournament');
       raiseAlert(errorMessage);
     }
     else {

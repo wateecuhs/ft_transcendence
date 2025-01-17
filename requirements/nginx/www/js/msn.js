@@ -21,7 +21,7 @@ async function loadMessageHistory() {
             displayChatMessage(message.data);
           });
         } else console.log('load message history: no data');
-      } else console.error('load message history: response is not ok');
+      } else console.error('Could not load message history');
   } catch (error) {
     console.error(error);
   }
@@ -256,7 +256,6 @@ function displayPrivateMessage(data) {
 }
 
 function displayInviteMessage(data) {
-  console.log('Invite message:', data);
   const chatMessages = document.querySelector('#msnWindow .chat-messages');
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message');
@@ -270,7 +269,6 @@ function displayInviteMessage(data) {
   button.textContent = window.dataMap.get('ready-button');
   button.classList.add('accept-button');
   button.addEventListener('click', function() {
-    console.log('Game');
     let game = new PongWindow('remote', data.room_code);
     game.run();
   });

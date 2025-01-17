@@ -14,7 +14,7 @@ function displayClientStylePage(pageIndex) {
 
  const numberPages = clientWindow.querySelector(".number-pages");
  numberPages.innerHTML = '';
- numberPages.textContent = `<b>${pageIndex + 1}/2</b>`;
+ numberPages.textContent = `${pageIndex + 1}/2`;
 }
 
 clientWindow.querySelector('.right-arrow').addEventListener('click', function() {

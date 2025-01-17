@@ -1,5 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.exceptions import DenyConnection
 import asyncio
 from .game import Room
 import redis
@@ -35,9 +36,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         for player in self.room.players:
             if player.user["username"] == self.user["username"]:
                 print(f"User {self.user['username']} is already in the room", flush=True)
-                await self.accept()
-                await self.close()
-                return
+                raise DenyConnection()
+                # return
 
         if not await self.room.add_player(self):
             await self.close()
