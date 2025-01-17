@@ -126,6 +126,11 @@ async function updateUserInfo() {
 		const user = JSON.parse(userInfo);
     const userWin = document.querySelector("#accountWindow");
 
+    const userTaskbar = document.getElementById('name-taskbar-id');
+    if (userTaskbar) {
+      userTaskbar.textContent = user.username;
+    }
+
     if (user == null) {
       return
     }

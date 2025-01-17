@@ -12,7 +12,7 @@ icons.forEach(icon => {
     else if (icon.id === 'Pong') toogleGameOptionWindow();
     else if (icon.id === 'Trash') toogleTrashBin();
     else if (icon.id === 'Desktop') cleanDesktop();
-    else if (icon.id === "Documentation") toogleDocsWindow();
+    else if (icon.id === 'Documentation') toogleDocsWindow();
   });
 
   let offsetX, offsetY;
