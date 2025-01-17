@@ -36,11 +36,14 @@ class GameConsumer(AsyncWebsocketConsumer):
         for player in self.room.players:
             if player.user["username"] == self.user["username"]:
                 print(f"User {self.user['username']} is already in the room", flush=True)
+                self.room = None
                 raise DenyConnection()
-                # return
 
         if not await self.room.add_player(self):
-            await self.close()
+            print(f"Room {self.room_name} is full", flush=True)
+            self.room = None
+            await self.accept()
+            await self.close(code=3005)
             return
 
         await self.channel_layer.group_add(self.room_name, self.channel_name)

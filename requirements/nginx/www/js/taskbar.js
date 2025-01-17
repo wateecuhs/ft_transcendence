@@ -173,7 +173,7 @@ function translate() {
   if (createTournamentButton != null)
     createTournamentButton.textContent = window.dataMap.get('create-tournament-button');
   const tournamentName = document.getElementById('tournament-name').textContent;
-  if (tournamentName == 'Aucun Tournoi Sélectionné' || tournamentName == 'Nenhum torneio selecionado' || tournamentName == 'No Tournament Selected' || tournamentName == 'Турнир не выбран')
+  if ((tournamentName != null) && (tournamentName == 'Aucun Tournoi Sélectionné' || tournamentName == 'Nenhum torneio selecionado' || tournamentName == 'No Tournament Selected' || tournamentName == 'Турнир не выбран'))
     document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
   const emptyData = document.getElementById('empty');
   if (emptyData != null)

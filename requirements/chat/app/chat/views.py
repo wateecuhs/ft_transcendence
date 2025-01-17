@@ -23,7 +23,7 @@ class MessagesView(APIView):
             for message in serializer.data:
                 if get_relationship_status(user.username, message["author"]) == cmod.Relationship.Status.BLOCKED or get_relationship_status(message["author"], user.username)== cmod.Relationship.Status.BLOCKED:
                     continue
-                formatted_time = datetime.strptime(message['created_at'].split('+')[0], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%H-%M")
+                formatted_time = datetime.fromisoformat(message['created_at']).strftime("%H:%M")
                 message_history.append({'type': MessageType.Chat.HISTORY, 'data': {
                     'content': message['content'],
                     'author': message['author'],

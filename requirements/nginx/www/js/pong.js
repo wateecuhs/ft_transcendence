@@ -109,6 +109,7 @@ class PongWindow {
 			};
 
 		this.socket.onclose = async (event) => {
+			console.log('WebSocket connection closed, code:', event.code);
 			if (event.code === 3000) {
 				console.log('WebSocket connection closed, code:', event.code);
 				try {
@@ -127,6 +128,11 @@ class PongWindow {
 					console.error('Failed during token refresh or reconnection:', error);
 					this.close();
 				}
+			}
+			else if (event.code === 3005) {
+				raiseAlert("Room is full");
+				const pongWindow = document.getElementById('PongGame');
+				pongWindow.querySelector('.close-button').click();
 			}
 		};
 
