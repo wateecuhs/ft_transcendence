@@ -9,7 +9,7 @@ To build and start the project
 make
 ```
 
-To down all services and stop the project
+To stop and remove all containers and services
 ```
 make down
 ```
