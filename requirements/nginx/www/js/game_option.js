@@ -22,7 +22,12 @@ function game_option_button() {
 
       if (buttonId === 'ai-button') {
         if (window.matchmaking === false) {
-          raiseAlert(window.dataMap.get('already-match'));
+          let already_match = null;
+          if (window.dataMap && window.dataMap.has('already-match'))
+            already_match = window.dataMap.get('already-match');
+          else
+            already_match = 'You have already matched, please stop matchmaking first.';
+          raiseAlert(already_match);
           return ;
         }
         navigateToPage("pong");
@@ -32,7 +37,12 @@ function game_option_button() {
       }
       else if (buttonId === 'local-button') {
         if (window.matchmaking === false) {
-          raiseAlert(window.dataMap.get('already-match'));
+          let already_match = null;
+          if (window.dataMap && window.dataMap.has('already-match'))
+            already_match = window.dataMap.get('already-match');
+          else
+            already_match = 'You have already matched, please stop matchmaking first.';
+          raiseAlert(already_match);
           return ;
         }
         navigateToPage("pong");
@@ -42,7 +52,12 @@ function game_option_button() {
       }
       else if (buttonId === 'join-room') {
         if (window.matchmaking === false) {
-          raiseAlert(window.dataMap.get('already-match'));
+          let already_match = null;
+          if (window.dataMap && window.dataMap.has('already-match'))
+            already_match = window.dataMap.get('already-match');
+          else
+            already_match = 'You have already matched, please stop matchmaking first.';
+          raiseAlert(already_match);
           return ;
         }
         optionWin.style.display = 'none';
@@ -55,11 +70,21 @@ function game_option_button() {
         }
         if (window.matchmaking) {
           addPlayerMatchmaking();
-          button.textContent = window.dataMap.get('stop-matchmaking');
+          let stopMatchmaking = null;
+          if (window.dataMap && window.dataMap.has('stop-matchmaking'))
+            stopMatchmaking = window.dataMap.get('stop-matchmaking');
+          else
+            stopMatchmaking = 'Stop matchmaking';
+          button.textContent = stopMatchmaking;
           window.matchmaking = false;
         } else {
           removePlayerMatchmaking();
-          button.textContent = window.dataMap.get('launch-matchmaking');
+          let launchMatchmaking = null;
+          if (window.dataMap && window.dataMap.has('launch-matchmaking'))
+            launchMatchmaking = window.dataMap.get('launch-matchmaking');
+          else
+            launchMatchmaking = 'Launch matchmaking';
+          button.textContent = launchMatchmaking;
           window.matchmaking = true;
         }
       }
@@ -95,12 +120,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
   joinRoomButton.addEventListener('click', function() {
     if (window.matchmaking === false) {
-      raiseAlert(window.dataMap.get('already-match'));
+      let already_match = null;
+      if (window.dataMap && window.dataMap.has('already-match'))
+        already_match = window.dataMap.get('already-match');
+      else
+        already_match = 'You have already matched, please stop matchmaking first.';
+      raiseAlert(already_match);
       return ;
     }
     let roomNumber = joinRoomInput.value;
     if (!roomNumber) {
-      raiseAlert(window.dataMap.get('enter-room-number'));
+      let enterRoomNumber = null;
+      if (window.dataMap && window.dataMap.has('enter-room-number'))
+        enterRoomNumber = window.dataMap.get('enter-room-number');
+      else
+        enterRoomNumber = 'Please enter a room number';
+      raiseAlert(enterRoomNumber);
       return ;
     }
     joinRoom.style.display = 'none';

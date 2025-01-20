@@ -215,9 +215,7 @@ class	UserInfoId(APIView):
 								 "alias": user.alias,
 								 "status": user.status,
 								 "avatar_path": user.avatar_path,
-								 "is_42_pp": user.is_42_pp,
-								 "id": user.id,
-								 "room_id": user.room_id})
+								 "is_42_pp": user.is_42_pp})
 
 
 class	UserInfoUsername(APIView):
@@ -244,9 +242,7 @@ class	UserInfoUsername(APIView):
 								 "alias": user.alias,
 								 "status": user.status,
 								 "avatar_path": user.avatar_path,
-								 "is_42_pp": user.is_42_pp,
-								 "id": user.id,
-								 "room_id": user.room_id})
+								 "is_42_pp": user.is_42_pp})
 
 '''
 ConfirmToken verify that the response is ok and then create or connect the user with all informations and create JWT token.

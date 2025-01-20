@@ -1,3 +1,4 @@
+
 async function showTournamentDetails(tournament) {
   const winBookWindow = document.getElementById("winBook");
   if (!winBookWindow) {
@@ -20,7 +21,7 @@ async function showTournamentDetails(tournament) {
   if (tournament.players) {
     tournament.players.forEach(async (player) => {
       const li = document.createElement('li');
-      if (player === user.username) {
+      if (user && user.username && player === user.username) {
         is_in_tournament = true;
       }
       player = await getUserAlias(player);
@@ -218,15 +219,17 @@ function firstRoundResults(tournament) {
                   ...(match.status === "FINISHED" && { score: match.score })
               };
 
-              const [alias_1, alias_2] = await Promise.all([
-                  getUserAlias(dataMatch.player1),
-                  getUserAlias(dataMatch.player2)
-              ]);
+              const alias_1 = await getUserAlias(dataMatch.player1);
+              const alias_2 = await getUserAlias(dataMatch.player2);
+              //     const [alias_1, alias_2] = await Promise.all([
+              //     getUserAlias(dataMatch.player1),
+              //     getUserAlias(dataMatch.player2)
+              // ]);
 
               if (match.status === "FINISHED") {
-                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
               } else {
-                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : <b>${alias_1}</b> vs <b>${alias_2}</b>`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}`;
               }
 
               tournamentContent.appendChild(newData);

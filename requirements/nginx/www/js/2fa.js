@@ -15,7 +15,12 @@ async function activate_2fa() {
 			if (response.ok) {
 				const data = await response.json();
 				if (data.message === 'Success') {
-					raiseAlert(window.dataMap.get('2fa-desactivated'));
+					let A2F_desactivated = null;
+					if (window.dataMap && window.dataMap.has('2fa-desactivated'))
+						 A2F_desactivated = window.dataMap.get('2fa-desactivated');
+					else
+						A2F_desactivated = '2FA desactivated';
+					raiseAlert(A2F_desactivated);
 					return ;
 				} else {
 					raiseAlert('activate_2fa: ' + data.message);
@@ -29,7 +34,12 @@ async function activate_2fa() {
 					}
 					else {
 						quitDesk();
-						raiseAlert(window.dataMap.get('expired-session'));
+						let expired_session = null;
+						if (window.dataMap && window.dataMap.has('expired-session'))
+							expired_session = window.dataMap.get('expired-session');
+						else
+							expired_session = 'Session expired';
+						raiseAlert(expired_session);
 					}
 				} else {
 					raiseAlert('Getuser:' + errorData.message);
@@ -66,7 +76,12 @@ async function activate_2fa() {
 				}
 				else {
 					quitDesk();
-					raiseAlert(window.dataMap.get('expired-session'));
+					let expired_session = null;
+					if (window.dataMap && window.dataMap.has('expired-session'))
+						expired_session = window.dataMap.get('expired-session');
+					else
+						expired_session = 'Session expired';
+					raiseAlert(expired_session);
 				}
 			}
 		}
@@ -105,7 +120,12 @@ async function validate_2fa() {
 			const data = await response.json();
 			if (data.message === 'Success') {
 				inputCode.innerHTML = '';
-				raiseAlert(window.dataMap.get('2fa-activated'));
+				let A2F_activated = null;
+				if (window.dataMap && window.dataMap.has('2fa-activated'))
+					 A2F_activated = window.dataMap.get('2fa-activated');
+				else
+					A2F_activated = '2FA activated';
+				raiseAlert(A2F_activated);
 			}
 		} else {
 			const errorData = await response.json();
@@ -116,11 +136,21 @@ async function validate_2fa() {
 				}
 				else {
 					quitDesk();
-					raiseAlert(window.dataMap.get('expired-session'));
+					let expired_session = null;
+					if (window.dataMap && window.dataMap.has('expired-session'))
+						expired_session = window.dataMap.get('expired-session');
+					else
+						expired_session = 'Session expired';
+					raiseAlert(expired_session);
 				}
 			}
 			else if (errorData.message === 'failed : wrong 2FA code') {
-				raiseAlert(window.dataMap.get('2fa-activation-failed'));
+				let wrong_2fa_code = null;
+				if (window.dataMap && window.dataMap.has('wrong-2fa-code'))
+					 wrong_2fa_code = window.dataMap.get('wrong-2fa-code');
+				else
+					wrong_2fa_code = 'Wrong 2FA code';
+				raiseAlert(wrong_2fa_code);
 			}
 		}
 	} catch (error) {

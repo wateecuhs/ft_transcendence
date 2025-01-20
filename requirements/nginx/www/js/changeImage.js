@@ -11,16 +11,8 @@ function openFileSelector() {
 
         reader.onload = async function (event) {
         const accountWin = document.getElementById("accountWindow");
-        const fullNameText = accountWin.querySelector("#account-page-0 ul li:nth-child(1)").textContent.trim();
-        const userNameText = fullNameText.replace(`${window.dataMap.get("account-name")}: `, "").trim();
-        const storedUserInfo = localStorage.getItem(userNameText);
 
-            if (!storedUserInfo) {
-                raiseAlert("Error : user not found.");
-                return;
-            }
-
-            let access_token = getTokenCookie();
+        let access_token = getTokenCookie();
 
             const requestData = {
                 new_pp: event.target.result
@@ -52,7 +44,12 @@ function openFileSelector() {
                         }
                         else {
                             quitDesk();
-                            raiseAlert(window.dataMap.get('expired-session'));
+                            let expired_session = null;
+                            if (window.dataMap && window.dataMap.has('expired-session'))
+                                expired_session = window.dataMap.get('expired-session');
+                            else
+                                expired_session = 'Session expired';
+                            raiseAlert(expired_session);
                         }
                       } else {
                         raiseAlert('Getuser:' + errorData.message);
@@ -60,7 +57,12 @@ function openFileSelector() {
                 }
             } catch (error) {
                 if (error.message.startsWith("unexpected") || error.message.startsWith("Unexpected")) {
-                    raiseAlert(window.dataMap.get('too-big-img'));
+                    let too_big_img = null;
+                    if (window.dataMap && window.dataMap.has('too-big-img'))
+                        too_big_img = window.dataMap.get('too-big-img');
+                    else
+                        too_big_img = 'This image is too big';
+                    raiseAlert(too_big_img);
                 }
                 else
                     console.error('Failed to parse JSON response:', error);

@@ -80,7 +80,7 @@ def decodeAccessToken(request, encoded_jwt):
 		username = payload["username"]
 		user = CustomUser.get_user_by_name(username)
 		if user:
-			if user.access_token != encoded_jwt:
+			if str(user.access_token) != str(encoded_jwt):
 				raise jwt.InvalidTokenError
 			return payload
 		else:

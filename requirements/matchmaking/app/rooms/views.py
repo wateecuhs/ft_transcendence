@@ -6,14 +6,11 @@ from .models import Tournament
 
 class TournamentsView(APIView):
     def get(self, request: Request):
-        try:
-            tournaments = Tournament.objects.filter(status__in=[Tournament.Status.PENDING, Tournament.Status.PLAYING, Tournament.Status.FINISHED])
-            if not tournaments.exists():
-                return Response([])
-            serializer = TournamentSerializer(tournaments, many=True)
-            data = serializer.data
-            for tournament in data:
-                tournament['rounds'] = tournament['matches']
-            return Response(serializer.data)
-        except Exception as e:
-            return Response(f"Could not process request ({e})", status=400)
+        tournaments = Tournament.objects.filter(status__in=[Tournament.Status.PENDING, Tournament.Status.PLAYING, Tournament.Status.FINISHED])
+        if not tournaments.exists():
+            return Response([])
+        serializer = TournamentSerializer(tournaments, many=True)
+        data = serializer.data
+        for tournament in data:
+            tournament['rounds'] = tournament['matches']
+        return Response(serializer.data)

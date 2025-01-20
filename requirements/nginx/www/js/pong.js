@@ -78,6 +78,7 @@ class PongWindow {
 		document.removeEventListener('keydown', this.handleKeyDown);
 		document.removeEventListener('keyup', this.handleKeyUp);
 		window.removeEventListener('resize', this.resizeCanvas);
+		this.commandBuffer = {};
 	}
 
 	run() {
@@ -109,6 +110,7 @@ class PongWindow {
 			};
 
 		this.socket.onclose = async (event) => {
+			console.log('WebSocket connection closed, code:', event.code);
 			if (event.code === 3000) {
 				console.log('WebSocket connection closed, code:', event.code);
 				try {
@@ -120,13 +122,29 @@ class PongWindow {
 					else {
 						this.close();
 						quitDesk();
-						raiseAlert(window.dataMap.get('expired-session'));
+						let expired_session = null;
+						if (window.dataMap && window.dataMap.has('expired-session'))
+							expired_session = window.dataMap.get('expired-session');
+						else
+							expired_session = 'Session expired';
+						raiseAlert(expired_session);
 					}
 				}
 				catch (error) {
 					console.error('Failed during token refresh or reconnection:', error);
 					this.close();
 				}
+			}
+			else if (event.code === 3005) {
+				let room_full = null;
+				if (window.dataMap && window.dataMap.has('room-full'))
+					room_full = window.dataMap.get('room-full');
+				else
+					room_full = 'Room is full';
+				if (window.dataMap && window.dataMap.get('room-full'))
+					raiseAlert(room_full);
+				const pongWindow = document.getElementById('PongGame');
+				pongWindow.querySelector('.close-button').click();
 			}
 		};
 
@@ -144,7 +162,17 @@ class PongWindow {
 			this.drawGame(gameState);
 			if (gameState.type === 'game_over') {
 				this.gameOver = true;
-				triggerGameOverWindows(window.dataMap.get('game-over-player') + gameState.winner + window.dataMap.get('game-over-win'));
+				let gameOverPlayer = null;
+				if (window.dataMap && window.dataMap.has('game-over-player'))
+					gameOverPlayer = window.dataMap.get('game-over-player');
+				else
+					gameOverPlayer = 'Game Over! Player ';
+				let gameOverWin = null;
+				if (window.dataMap && window.dataMap.has('game-over-win'))
+					gameOverWin = window.dataMap.get('game-over-win');
+				else
+					gameOverWin = ' wins!';
+				triggerGameOverWindows(gameOverPlayer + gameState.winner + gameOverWin);
 				this.socket.close();
 				this.close();
 				return;

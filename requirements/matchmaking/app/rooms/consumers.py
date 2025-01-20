@@ -42,8 +42,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             if self.username:
                 logger.info(f"[{self.username}] Disconnecting. ({close_code})")
+                await self.channel_layer.group_discard(f"user.{self.username}", self.channel_name)
+                if self.room:
+                    await self.channel_layer.group_discard(f"tournament.{self.room}", self.channel_name)
                 await self.leave_tournaments()
-                await self._handle_matchmaking_leave({"data": {"author": self.username}})
+                if self.username in self.list:
+                    await self._handle_matchmaking_leave({"data": {"author": self.username}})
         except Exception as e:
             logger.error(f"Disconnection cleanup failed: {e}")
 
@@ -218,6 +222,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.error("Not in this tournament")
                 return
 
+            if tournament.owner == UUID(self.user_id):
+                await self._handle_tournament_delete(event)
+                return
+
             tournament.players.remove(self.username)
 
             if not tournament.players:
@@ -316,12 +324,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def _handle_tournament_update(self, event):
         try:
             data = event.get("data", {})
-
             if await sync_to_async(get_user_playing_tournaments)(data["player_1"]) != await sync_to_async(get_user_playing_tournaments)(data["player_2"]):
                 await self.error("Players are not in the same tournament")
                 return
             tournament = await sync_to_async(get_user_playing_tournaments)(data["player_1"])
-            print("TOURNAMENT IS ", tournament, flush=True)
             if tournament.status != Tournament.Status.PLAYING:
                 await self.error("Tournament is not in playing status")
                 return
@@ -331,7 +337,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     if set([data["player_1"], data["player_2"]]) == set([tournament.matches[0]["matches"][i]["player1"], tournament.matches[0]["matches"][i]["player2"]]):
                         tournament.matches[0]["matches"][i]["status"] = tournament.Status.FINISHED
                         tournament.matches[0]["matches"][i]["winner"] = data["winner"]
-                        tournament.matches[0]["matches"][i]["score"] = data["score"]
+                        tournament.matches[0]["matches"][i]["score"] = data["score"] if tournament.matches[0]["matches"][i]["player1"] == data["player_1"] else data["score"][::-1]
                         break
 
                 if all(game["status"] == Tournament.Status.FINISHED for game in tournament.matches[0]["matches"]):
@@ -358,7 +364,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     if set([data["player_1"], data["player_2"]]) == set([tournament.matches[1]["matches"][i]["player1"], tournament.matches[1]["matches"][i]["player2"]]):
                         tournament.matches[1]["matches"][i]["status"] = tournament.Status.FINISHED
                         tournament.matches[1]["matches"][i]["winner"] = data["winner"]
-                        tournament.matches[1]["matches"][i]["score"] = data["score"]
+                        tournament.matches[1]["matches"][i]["score"] = data["score"] if tournament.matches[1]["matches"][i]["player1"] == data["player_1"] else data["score"][::-1]
                         break
 
                 if all(game["status"] == Tournament.Status.FINISHED for game in tournament.matches[1]["matches"]):
@@ -409,7 +415,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     }
                 }
             )
-
+            self.room = None
             await sync_to_async(tournament.delete)()
 
             await self.channel_layer.group_discard(f"tournament.{tournament_name}", self.channel_name)
@@ -461,6 +467,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def tournament_delete(self, event):
         logger.info(f"[{self.username}] Tournament delete: {event['data']}")
+        self.room = None
+        try:
+            await self.channel_layer.group_discard(f"tournament.{event['data']['name']}", self.channel_name)
+        except Exception as e:
+            logger.error(f"Error discarding group: {e}")
         await self._json_send(MessageType.Tournament.DELETE, event["data"])
 
     async def leave_tournaments(self):

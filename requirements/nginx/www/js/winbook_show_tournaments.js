@@ -79,23 +79,21 @@ async function showAllTournaments() {
       if (tournaments.length > 0) {
         tournaments.forEach(tournament => {
           const li = document.createElement('li');
-          if (tournament.status === 'FINISHED') {
-            if (window.dataMap) {
-              if (window.dataMap.get('max-4-player') && window.dataMap.get('finished') && window.dataMap.get('tournament-selected')) {
-                max4Player = window.dataMap.get('max-4-player');
-                finished = window.dataMap.get('finished');
-                tournamentSelected = window.dataMap.get('tournament-selected');
-              }
-              else {
-                max4Player = 'Max 4 players';
-                finished = 'Finished';
-                tournamentSelected = 'Tournament selected';
-              }
+          if (window.dataMap) {
+            if (window.dataMap.get('finished') && window.dataMap.get('tournament-selected')) {
+              finished = window.dataMap.get('finished');
+              tournamentSelected = window.dataMap.get('tournament-selected');
             }
-            li.textContent = `${tournament.name} ${max4Player} | ${finished}`;
+            else {
+              finished = 'Finished';
+              tournamentSelected = 'Tournament selected';
+            }
+          }
+          if (tournament.status === 'FINISHED') {
+            li.textContent = `${tournament.name} | ${finished}`;
           }
           else {
-            li.textContent = `${tournament.name} ${max4Player}`;
+            li.textContent = `${tournament.name}`;
           }
           li.addEventListener('click', function() {
             resetWinBook();

@@ -21,7 +21,7 @@ async function loadMessageHistory() {
             displayChatMessage(message.data);
           });
         } else console.log('load message history: no data');
-      } else console.error('load message history: response is not ok');
+      } else console.error('Could not load message history');
   } catch (error) {
     console.error(error);
   }
@@ -43,11 +43,21 @@ function initWebSocket() {
       addMessageToConversation(message.data.author, message.data);
     }
     else if (message.type === "relationship.request") {
-      showPopUp(window.dataMap.get('friend-request') + ' ' + message.data.author);
+      let friendRequest = null;
+      if (window.dataMap && window.dataMap.has('friend-request'))
+        friendRequest = window.dataMap.get('friend-request');
+      else
+        friendRequest = 'Received friend request from';
+      showPopUp(friendRequest + ' ' + message.data.author);
     }
     else if (message.type === "relationship.accept") {
       updateUserFriend();
-      showPopUp(window.dataMap.get('friend-accepted') + ' ' + message.data.author);
+      let friendAccepted = null;
+      if (window.dataMap && window.dataMap.has('friend-accepted'))
+        friendAccepted = window.dataMap.get('friend-accepted');
+      else
+        friendAccepted = 'You have accepted:';
+      showPopUp(friendAccepted + ' ' + message.data.author);
     }
     else if (message.type === "relationship.remove") {
       updateUserFriend();
@@ -71,7 +81,12 @@ function initWebSocket() {
     }
     else {
       quitDesk();
-      raiseAlert(window.dataMap.get('expired-session'));
+      let expired_session = null;
+      if (window.dataMap && window.dataMap.has('expired-session'))
+        expired_session = window.dataMap.get('expired-session');
+      else
+        expired_session = 'Session expired';
+      raiseAlert(expired_session);
     }
   };
   return window.ws;
@@ -124,7 +139,12 @@ async function updateUserFriend(username) {
           }
 					else {
 						quitDesk();
-						raiseAlert(window.dataMap.get('expired-session'));
+            let expired_session = null;
+            if (window.dataMap && window.dataMap.has('expired-session'))
+              expired_session = window.dataMap.get('expired-session');
+            else
+              expired_session = 'Session expired';
+						raiseAlert(expired_session);
 					}
         } else {
           console.error('Error: Failed to fetch friends', response.status);
@@ -256,7 +276,6 @@ function displayPrivateMessage(data) {
 }
 
 function displayInviteMessage(data) {
-  console.log('Invite message:', data);
   const chatMessages = document.querySelector('#msnWindow .chat-messages');
   const messageDiv = document.createElement('div');
   messageDiv.classList.add('message');
@@ -264,13 +283,27 @@ function displayInviteMessage(data) {
   const who = data.author;
   const target = data.target;
 
-  messageDiv.textContent = `${who} ${window.dataMap.get('invites')} ${target} ${window.dataMap.get('to-match')}`
+  let invite = null;
+  if (window.dataMap && window.dataMap.has('invites'))
+    invite = window.dataMap.get('invites');
+  else
+    invite = 'invites';
+  let toMatch = null;
+  if (window.dataMap && window.dataMap.has('to-match'))
+    toMatch = window.dataMap.get('to-match');
+  else
+    toMatch = 'to a match:';
+  messageDiv.textContent = `${who} ${invite} ${target} ${toMatch} `;
 
   const button = document.createElement('button');
-  button.textContent = window.dataMap.get('ready-button');
+  let readyButton = null;
+  if (window.dataMap && window.dataMap.has('ready-button'))
+    readyButton = window.dataMap.get('ready-button');
+  else
+    readyButton = 'Join';
+  button.textContent = readyButton;
   button.classList.add('accept-button');
   button.addEventListener('click', function() {
-    console.log('Game');
     let game = new PongWindow('remote', data.room_code);
     game.run();
   });
@@ -322,7 +355,12 @@ function openGeneralMessage() {
   const chatMessages = document.querySelector('#msnWindow .chat-messages');
   const messageField = document.getElementById('type-message');
   chatMessages.innerHTML = '';
-  messageField.placeholder = window.dataMap.get('type-message');
+  let typeMessage = null;
+  if (window.dataMap && window.dataMap.has('type-message'))
+    typeMessage = window.dataMap.get('type-message');
+  else
+    typeMessage = 'Type a message';
+  messageField.placeholder = typeMessage;
   private_message = false;
   mp_user = null;
   loadMessageHistory();
