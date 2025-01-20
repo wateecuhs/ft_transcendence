@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bureau Windows 98</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/desktop.css">
     <link rel="stylesheet" href="css/desktop-icons.css">
     <link rel="stylesheet" href="css/taskbar.css">
@@ -14,37 +14,174 @@
     <link rel="stylesheet" href="css/accountWindow.css">
     <link rel="stylesheet" href="css/msn.css">
     <link rel="stylesheet" href="css/winbook.css">
+    <link rel="stylesheet" href="css/loginPage.css">
+    <link rel="stylesheet" href="css/updateUserWindow.css">
+    <link rel="stylesheet" href="css/pong.css">
+    <link rel="stylesheet" href="css/activate_2fa.css">
+    <link rel="stylesheet" href="css/sign_2fa.css">
+    <link rel="stylesheet" href="css/alert_win98.css">
+    <link rel="stylesheet" href="css/pong_game_option.css">
+    <link rel="stylesheet" href="css/clientWindow.css">
+    <link rel="stylesheet" href="css/pop_up_message.css">
+    <link rel=stylesheet href="css/clientAction.css">
+    <link rel=stylesheet href="css/game-over.css">
+    <link rel="stylesheet" href="css/tree_matchmaking.css">
+    <link rel="stylesheet" href="css/trash_bin.css">
+    <link rel="stylesheet" href="css/information_window.css">
+    <link rel="stylesheet" href="css/documentation.css">
+    <link rel="icon" type="image/png" href="peas.png">
 </head>
 <body class="desktop">
+
+  <div class="login-page" id="login-id-page">
+
+    <div class="login-page-header" id="login-title">Start Windows 98</div>
+
+    <div class="sign-in">
+
+      <input type="text" id="sign-in-username" class="input-login-page" placeholder="username">
+      <input type="password" id="sign-in-password" class="input-login-page" placeholder="password">
+      <button id="sign-in-button" class="button-login-page">sign in</button>
+
+    </div>
+
+    <div class="sign-up">
+      <button id="button-sign-up-page" class="button-login-page">sign up</button>
+
+      <div class="register" style="display: none;">
+
+        <input type="text" id="sign-up-username" class="input-login-page" placeholder="username">
+        <input type="text" id="sign-up-email" class="input-login-page" placeholder="email">
+        <input type="password" id="sign-up-password" class="input-login-page" placeholder="password">
+        <input type="password" id="sign-up-confirm-password" class="input-login-page" placeholder="confirm password">
+
+        <button id="button-register-page" class="button-login-page">register</button>
+      </div>
+
+    </div>
+
+    <div class="login-42">
+      <div class="flag-icon-login" id="language-flag-login" alt="Language Flag" onclick="toogleLanguageChoicesLogin()"></div>
+      <button class="button-login-42" id="button-login-42">Login 42</button>
+    </div>
+
+  <div class="window" id="window-2fa-sign" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+      <div class="header-title" id="2fa-sign">Sign 2FA</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <p id="2fa-text">Enter your 2fa code</p>
+      <input type="text" id="2fa-input" class="input-login-page" placeholder="Code">
+      <button class="button-login-page" id="2fa-button">Validate</button>
+    </div>
+  </div>
+
+  <div class="language-choices-login">
+    <ul>
+      <li>
+        <div class="flag-icon-login" id="france-flag-login" alt="France Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="england-flag-login" alt="England Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="portugal-flag-login" alt="Portugal Flag"></div>
+      </li>
+      <li>
+        <div class="flag-icon-login" id="russia-flag-login" alt="Russia Flag"></div>
+      </li>
+    </ul>
+  </div>
+
+  </div>
+
+  <!-- Alerte Windows -->
+  <div class="window" id="window-alert" style="display: none">
+    <div class="window-header">
+
+      <div class="header-title">MiniSoft DataLink</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <div>
+        <img src="img/png/msg_warning-0.png" class="warning-img" alt="message-warning">
+        <span class="warning-text">This is a message</span>
+      </div>
+      <button class="close-button-alert">OK</button>
+    </div>
+  </div>
+
+  <div class="window pop-up" id="pop-up-message">
+    <div class="window-header">
+      <div class="header-title">MiniSoft Pop Up</div>
+    </div>
+
+    <div class="window-content">
+      <div class="pop-up-text">This is a message</div>
+    </div>
+  </div>
 
   <!-- La barre de taches -->
   <div class="taskbar">
 
     <!-- Affiche les optios du boutton start -->
     <button class="start-btn" onclick="toogleStartMenu()">
-      <img src="img/png/windows-0.png" alt="Start Icon" class="start-icon">Start
+      <img src="img/png/windows-0.png" alt="Start Icon" class="start-icon">
+      <div id="start-button">Start</div>
     </button>
 
     <div class="start-menu" style="display: none;">
       <ul>
         <li>
           <!-- Creer le fenetre poste de travail-->
-          <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()">Poste de travail</button>
+          <button class="menu-btn work-desk-btn" onclick="toogleWorkDesk()" id="desktop">Desktop</button>
         </li>
         <li>
-          <button class="menu-btn work-desk-btn" onclick="toogleAccountWindow()">Compte</button>
+          <button class="menu-btn work-desk-btn" id="account">Account</button>
         </li>
-        <li>Parametres</li>
-        <li>Executer...</li>
+        <li id="settings">Settings</li>
+        <li>
+          <button class="menu-btn work-desk-btn" onclick="quitDesk()" id="quit">Quit</button></li>
       </ul>
     </div>
 
-    <!-- L'heure est affichee et mise a jour -->
     <div class="taskbar-items">
-        <span class="time">
+      <div class="icon-container">
+        <div class="name-taskbar" id="name-taskbar-id"></div>
+        <div class="flag-icon" id="language-flag" alt="Language Flag" onclick="toogleLanguageChoices()"></div>
+        <div class="time">
           <img src="img/png/time_and_date-0.png" alt="Time Icon" class="time-icon">
           <span class="time-text">12:00 PM</span>
-        </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="language-choices">
+      <ul>
+        <li>
+          <div class="flag-icon" id="france-flag" alt="France Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="england-flag" alt="England Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="portugal-flag" alt="Portugal Flag"></div>
+        </li>
+        <li>
+          <div class="flag-icon" id="russia-flag" alt="Russia Flag"></div>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -59,7 +196,7 @@
         <button class="left-arrow"> &lt </button>
         <button class="right-arrow"> &gt </button>
       </div>
-      <div class="header-title">Windows Explorer</div>
+      <div class="header-title" id="application-explorer">Application Explorer</div>
       <button class="close-button">X</button>
 
     </div>
@@ -80,66 +217,192 @@
         <button class="left-arrow"> &lt </button>
         <button class="right-arrow"> &gt </button>
       </div>
-      <div class="header-title">Account</div>
+
+      <div class="header-title" id="account-window">Account</div>
       <button class="close-button">X</button>
 
     </div>
+
+    <input type="file" id="file-input" style="display: none;" onchange="changeImage()" accept="image/*">
 
     <div class="window-content">
 
       <div class="account-page" id="account-page-0" style="display: none">
         <div class="user-img">
-          <img src="img/png/game_spider-0.png">
+          <img src="img/png/game_spider-0.png" onclick="openFileSelector()">
           <span>default pseudo</span>
+          <span class="user2FA-span">
+            <button id="user2FA">2FA</button>
+          </span>
         </div>
 
         <ul>
-          <li>name: default </li>
-          <li>email address: default@gmail.com</li>
-          <li>status: active</li>
+          <li> name: default </li>
+          <li> email address: default@gmail.com</li>
+          <li> 42 member: true</li>
+          <li> alias: default_alias</li>
         </ul>
+
+        <button class="change-user-info" onclick="displayUserUpdateWindow()" id="update-profile">Update Profile</button>
       </div>
 
       <div class="account-page" id="account-page-1" style="display: none">
-        <div class="user-stat-title"> User statistic </div>
+        <div class="user-stat-title" id="user-stats"> User Statistics </div>
 
         <ul>
-          <li>winrate: 8</li>
-          <li>number of matches: 10</li>
-          <li>average match time: 2min</li>
+          <li>Number of matches: 8</li>
+          <li>Matches Won: 5</li>
+          <li>Matches lost: 3</li>
+          <li>Win rate: 60%</li>
+          <li>Goal Scored: </li>
+          <li>Goal Conceded: </li>
         </ul>
       </div>
 
       <div class="account-page" id="account-page-2" style="display: none">
-        <div class="user-friends-title"> User friends </div>
+        <div class="user-stat-title" id="user-history"> User Match History </div>
 
-        <ul class="friends-list">
-          <li class="friend-item">
-            <span class="friend-name">user2:</span>
-            <button>See profile</button>
+        <ul class="match-history">
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
           </li>
-          <li class="friend-item">
-            <span class="friend-name">user3:</span>
-            <button>See profile</button>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
           </li>
-          <li class="friend-item">
-            <span class="friend-name">user4:</span>
-            <button>See profile</button>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
+          </li>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
+          </li>
+
+          <li>
+            <div>--- Match 08/01/25 ---</div>
+            <div>Kraken vs DavyJones</div>
+            <div>Score: 5-3</div>
+            <div>Win DavyJones</div>
+            <div>--- ---</div>
           </li>
         </ul>
-
       </div>
 
       <div class="number-pages">1/4</div>
     </div>
   </div>
 
+  <div class="window" id="updateUserWindow" style="display: none">
+
+    <div class="window-header">
+
+      <div class="header-title" id="profile-account">Account</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <input type="text" id="profile-alias" placeholder="alias">
+      <input type="text" id="profile-email" placeholder="email">
+      <input type="password" id="profile-old-password" placeholder="old_password">
+      <input type="password" id="profile-password" placeholder="password">
+      <input type="password" id="profile-confirm-password" placeholder="confirm password">
+
+      <button id="update-button">Update Info</button>
+    </div>
+  </div>
+
+  <div class="window" id="clientWindow" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title" id="friend-account">Friend Account</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+
+      <div class="account-page" id="account-page-0" style="display: none;">
+        <div class="user-img">
+          <img src="img/png/game_spider-0.png">
+          <span>default pseudo</span>
+        </div>
+
+        <ul>
+          <li> name: default </li>
+          <li></li>
+          <li> alias: default_alias</li>
+        </ul>
+      </div>
+
+      <div class="account-page" id="account-page-1" style="display: none;">
+        <div class="user-stat-title" id="friend-stat"> User statistic </div>
+
+        <ul>
+          <li>Number of matches: 8</li>
+          <li>Matches Won: 5</li>
+          <li>Matches lost: 3</li>
+          <li>Win rate: 60%</li>
+          <li>Goal Scored: </li>
+          <li>Goal Conceded: </li>
+        </ul>
+      </div>
+
+      <div class="number-pages">1/4</div>
+    </div>
+  </div>
+
+  <div class="window" id="activate-2fa" style="display: none">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title" id="activate-2fa-text">Activate 2FA</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <img id="img-qr-code">
+      <input type="text" id="enter-code" placeholder="Enter Code">
+      <button id="validate-qr-code-id">Validate</button>
+    </div>
+  </div>
+
+
    <!-- Icone du Bureau -->
   <div class="desktop-icons">
 
-      <div class="icon" draggable="true" id="Poste de travail">
+      <div class="icon" draggable="true" id="Desktop">
           <img src="img/png/computer-0.png" alt="My Computer">
-          <p class="icon-text">Poste de travail</p>
+          <p class="icon-text" id="desktop-image">Desktop</p>
       </div>
 
 
@@ -154,117 +417,722 @@
       </div>
 
       <div class="icon" draggable="true" id="Winbook">
-        <img src="img/png/internet_connection_wiz-0.png" alt="Pong">
+        <img src="img/png/internet_connection_wiz-0.png" alt="Winbook">
         <p class="icon-text">Winbook</p>
       </div>
 
-      <div class="icon" draggable="true" id="Corbeille">
+      <div class="icon" draggable="true" id="Trash">
         <img src="img/png/recycle_bin_directory.png" alt="Recycle Bin">
-        <p class="icon-text">Corbeille</p>
-    </div>
+        <p class="icon-text" id="trash">Trash</p>
+      </div>
+
+      <div class="icon" draggable="true" id="Documentation">
+        <img src="img/png/circle_question-0.png" alt="Documentation Icon">
+        <p class="icon-text" id="documentation">Docs</p>
+      </div>
   </div>
 
   <div class="window" id="msnWindow" style="display: none">
     <div class="window-header">
-      <div class="arrow-buttons">
-        <button class="left-arrow"> &lt </button>
-        <button class="right-arrow"> &gt </button>
-      </div>
       <div class="header-title">MSN</div>
       <button class="close-button">X</button>
     </div>
 
     <div class="window-content">
 
-    <div class="msn-page" id="msn-page-0" style="display: none">
-      <div class="chat-area">
-        <div class="chat-messages"></div>
-        <div class="input-container">
-          <input type="text" class="chat-input" placeholder="Type a message" />
-          <button class="send-button">Send</button>
+      <div class="chat-tab">
+        <div class="general-tab">
+          <p class="general-text" onclick=openGeneralMessage() id="general">General</p>
+          <button class="general-button" id="add-friends">Add Friends</button>
+        </div>
+        <div class="add-friends-input"><input type="text" id="search-friends" placeholder="Search friends"></div>
+        <div class="client tab">
+          <ul class="ul-client-tab"></ul>
+
+        </div>
+      </div>
+
+      <div class="msn-page" id="msn-page-0" style="display: none">
+        <div class="chat-area">
+          <div class="chat-messages"></div>
+          <div class="input-container">
+            <input type="text" class="chat-input" id="type-message" placeholder="Type a message" />
+            <div class="send-container">
+              <button class="send-button" id="send">Send</button>
+              <span>
+                <button class="info-button-cmd" onclick="toogleInformationWindow()" id="help">Help</button>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <div class="msn-page" id="msn-page-1" style="display: none">
-      <div class="contact-list">
-        <div class="contact">
-          Contact 1
-          <button>Action</button>
-        </div>
-        <div class="contact">
-          Contact 2
-          <button>Action</button>
-        </div>
-        <div class="contact">
-          Contact 3
-          <button>Action</button>
-        </div>
-      </div>
-    </div>
-
-    </div>
-
   </div>
 
-  <div class="window fullscreen" id="winBook" style="display: none">
+  <div class="window" id="client-action" style="display: none;">
     <div class="window-header">
-      <div class="arrow-buttons">
-        <button class="left-arrow">&lt;</button>
-        <button class="right-arrow">&gt;</button>
-      </div>
-      <div class="header-title">Winbook - Inscription Tournoi Pong</div>
+
+      <div class="header-title"></div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+      <ul class="ul-client-action">
+        <li id="client-info">See more about this user</li>
+        <li id="client-msg">Open private message</li>
+        <li id="client-invite">Invite this user</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="window" id="winBook" style="display: none">
+    <div class="window-header">
+      <div class="header-title" id="winbook-title">Winbook - Inscription Tournoi Pong</div>
       <button class="close-button">X</button>
     </div>
 
-    <!-- Page 1 - Formulaire d'inscription -->
-    <div class="winBook-page" id="page1">
-
-      <div class="left-panel">
-
-        <div class="search-section">
-          <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
-          <button id="search-button" class="button-98">Rechercher</button>
-        </div>
-        <ul class="result-list" id="tournament-results"></ul>
-
-        <div class="create-section">
-          <input type="text" id="new-tournament-name" class="input-field" placeholder="Nom du nouveau tournoi">
-          <button id="create-tournament-button" class="button-98">Créer un tournoi</button>
+    <div class="window-content">
+      <div class="search-content">
+        <div class="tabs">
+          <div class="tab active" data-tab="tab-search" id="search">Search</div>
+          <div class="tab" data-tab="tab-create" id="create">Create</div>
         </div>
 
-      </div>
+        <div class="tab-content">
 
-      <div class="right-panel">
-        <div class="tournament-info">
-          <h3 class="tournament-name">Nom du tournoi</h3>
-          <p id="players-count">Nombre de joueurs : 0</p>
+          <div class="tab-pane" id="tab-search" style="display: flex;">
+            <div class="search-section">
+              <input type="text" id="search-tournament" class="input-field" placeholder="Rechercher un tournoi">
+              <button id="search-button" class="button-98" id="search-button">Rechercher</button>
+            </div>
+            <ul class="result-list" id="tournament-results"></ul>
+          </div>
 
-          <ul id="players-list">
-
-          </ul>
+          <div class="tab-pane" id="tab-create" style="display: none;">
+            <div class="create-section">
+              <input type="text" id="create-tournament-name" class="input-field" placeholder="Nom du tournoi">
+              <button id="create-tournament-button" class="button-98">Créer</button>
+            </div>
+          </div>
         </div>
       </div>
 
-
+      <div class="tournament-content" id="tournament-content-id">
+        <div class="tournament-pane" id="tournament-pane-id">
+          <h2 id="tournament-name">No Tournament Selected</h2>
+        <ul id="player-list">
+          <li id="empty">Empty</li>
+        </ul>
+          <div class="tournament-content-buttons">
+            <button id="ready-button" class="button">Join</button>
+            <button id="quit-button" class="button">Quit</button>
+          </div>
+          <div id="tournament-status-id"></div>
+          <div class="tournament-score" id="tournament-score-id"></div>
+        </div>
+      </div>
     </div>
-    <div class="vertical-bar"></div>
   </div>
 
+  <div class="window" style ="display: none" id="tree-matchmaking">
+    <div class="window-header">
+      <div class="header-title">Tree matchmaking</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+
+    </div>
+  </div>
+
+  <div class="window fullscreen" id="PongGame" style="display: none">
+    <div class="window-header">
+      <div class="header-title" id="game">Game</div>
+      <button class="close-button">X</button>
+    </div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+  </div>
+
+  <div class="window" id="game-option" style="display: none;">
+    <div class="window-header">
+      <div class="header-title" id="game-options">Pong - Game Option</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <div class="window-content">
+      <div class="option-content">
+        <h2 class="option-text" id="choose-option">Choose your Game Option</h2>
+        <ul class="list-option">
+          <li><button id="ai-button">AI Game</button></li>
+          <li><button id="local-button">Local multiplayer</button></li>
+          <li><button id="join-room">Join room</button></li>
+          <li><button id="launch-matchmaking">Launch matchmaking</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="window container-fluid p-0" id="window-join-room" style="display: none;">
+    <div class="window-header d-flex align-items-center justify-content-between p-2 bg-light border-bottom">
+      <div class="arrow-buttons">
+        <button class="left-arrow btn btn-sm btn-outline-secondary custom-btn"> &lt; </button>
+        <button class="right-arrow btn btn-sm btn-outline-secondary custom-btn"> &gt; </button>
+      </div>
+      <div class="header-title" id="join-room-title" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Join Room</div>
+      <button class="close-button btn btn-sm btn-outline-danger custom-btn">X</button>
+    </div>
+
+    <div class="window-content d-flex flex-column p-3" style="background-color: #dcdcdc; border: 2px solid #808080; box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;">
+      <p id="join-room-text" class="text-center mb-3" style="font-size: 14px; font-weight: bold; color: #000;">Enter your Room Code</p>
+      <input type="text" id="join-input-id" class="form-control mb-3 custom-input" placeholder="Room Code" style="box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;">
+      <button id="join-room-button-id" class="btn btn-primary custom-btn">Validate</button>
+    </div>
+  </div>
+
+  <div class="all-game-over" style="display: none;">
+    <ul>
+      <li>
+        <div class="window" id="game-over-1">
+          <div class="window-header">
+            <div class="header-title" id="game-over">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-2">
+          <div class="window-header">
+            <div class="header-title" id="game-over2">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-3">
+          <div class="window-header">
+            <div class="header-title" id="game-over3">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-4">
+          <div class="window-header">
+            <div class="header-title" id="game-over4">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content"></div>
+        </div>
+      </li>
+      <li>
+        <div class="window" id="game-over-5">
+          <div class="window-header">
+            <div class="header-title" id="game-over5">GAME OVER</div>
+            <button class="close-button">X</button>
+          </div>
+          <div class="window-content">
+            <div class="game-over-text" id="game-over-txt">Game is over! Player One has won!</div>
+            <button class="game-over-button" id="game-over-quit">Quit</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="window" id="trash-bin" style="display: none;">
+    <div class="window-header">
+      <div class="header-title" id="trash-bin-title">Trash Bin</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <div class="window-content">
+
+    </div>
+  </div>
+
+  <div class="window" id="information-window" style="display: none;">
+    <div class="window-header">
+      <div class="header-title" id="information-title">Chat Commands</div>
+      <button class="close-button">X</button>
+    </div>
+
+    <div class="window-content">
+      <ul>
+        <li id="invite-help">/invite [user] - Invite a friend to match</li>
+        <li id="add-help">/add [user] - Add user</li>
+        <li id="accept-help">/accept [user] - Accept friend request</li>
+        <li id="remove-help">/remove [user] - Remove friend</li>
+        <li id="block-help">/block [user] - Block user</li>
+        <li id="unblock-help">/unblock [user] - Unblock user</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="window" id="docs-window" style="display: none;">
+
+    <div class="window-header">
+
+      <div class="arrow-buttons">
+        <button class="left-arrow"> &lt </button>
+        <button class="right-arrow"> &gt </button>
+      </div>
+
+      <div class="header-title" id="docs-window-title">Documentation</div>
+      <button class="close-button">X</button>
+
+    </div>
+
+    <div class="window-content">
+
+      <div class="docs-page" id="docs-page-0" style="display: none;">
+        <div class="doc-page-title" id="doc-page-0-title-id"> Welcome to Windows 98! </div>
+
+        <ul>
+          <li id="documentation-page"> <b>This is a documentation page</b> </li>
+          <li id="find-everything"> - You will find everything you'll need throughout this journey. </li>
+          <li id="press-arrow"> - Please press the arrow keys to switch pages. </li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-1" style="display: none;">
+        <div class="doc-page-title" id="doc-page-1-title-id"> General Information </div>
+
+        <ul>
+          <li id="gi-1"> <b>Click on start to open the explorer!</b> </li>
+          <li id="gi-2"> - The Desktop icon is useful to clean your desk.</li>
+          <li id="gi-3"> - You can change languages using flags in the bottom right of the screen.</li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-2" style="display: none;">
+        <div class="doc-page-title" id="doc-page-2-title-id"> MSN Icon </div>
+
+        <ul>
+          <li id="msn-1"> <b> Chat with your friends! </b></li>
+          <li id="msn-2">- With MSN, you can chat with everyone and laugh with your friends.</li>
+          <li id="msn-3">- You can also invite people to private matches and see their profiles.</li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-3" style="display: none;">
+        <div class="doc-page-title" id="doc-page-3-title-id"> Winbook Icon </div>
+
+        <ul>
+          <li id="wb-1"> <b> Create awesome tournaments and challenge other people! </b></li>
+          <li id="wb-2">- There, you'll see that you can create and search for tournaments. </li>
+          <li id="wb-3">- Good game and have fun.</li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-4" style="display: none;">
+        <div class="doc-page-title" id="doc-page-4-title-id"> Pong Icon </div>
+
+        <ul>
+          <li id="pong-1"> <b>Pong in various forms</b> </li>
+          <li id="pong-2"> -- Play against AI. </li>
+          <li id="pong-3"> -- Play in local or remote.</li>
+          <li id="pong-4"> -- Play using matchmaking. </li>
+        </ul>
+      </div>
+
+      <div class="docs-page" id="docs-page-5" style="display: none;">
+      <div class="doc-page-title" id="doc-page-5-title-id"> Trash bin </div>
+
+      <ul>
+        <li id="trash-1"> <b> \_O-o_/ </b> Surprise <b> \_O-o_/ </b> </li>
+      </ul>
+    </div>
+
+      <div class="number-pages">1/4</div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      window.ws = null;
+      window.mmws = null;
+      window.oldPage = "login";
+      window.currentPage = "login";
+      window.dict = 'en-dict.txt';
+      window.matchmaking = true;
+      window.createRoom = false;
+
+      fetch(window.dict)
+        .then(response => response.text())
+        .then(content => {
+          let file = content.split('\n');
+          window.dataMap = new Map();
+          for (let line of file) {
+            let lineSplit = line.split('=');
+            window.dataMap.set(lineSplit[0], lineSplit[1]);
+          }
+
+          const loginTitle = document.getElementById('login-title');
+          if (loginTitle != null)
+            loginTitle.textContent = window.dataMap.get('login-title');
+          const signInButton = document.getElementById('sign-in-button');
+          if (signInButton != null)
+            signInButton.textContent = window.dataMap.get('sign-in-button');
+          const buttonSignUpPage = document.getElementById('button-sign-up-page');
+          if (buttonSignUpPage != null)
+            buttonSignUpPage.textContent = window.dataMap.get('button-sign-up-page');
+          const buttonRegisterPage = document.getElementById('button-register-page');
+          if (buttonRegisterPage != null)
+            buttonRegisterPage.textContent = window.dataMap.get('button-register-page');
+          const buttonLogin42 = document.getElementById('button-login-42');
+          if (buttonLogin42 != null)
+            buttonLogin42.textContent = window.dataMap.get('button-login-42');
+          const signInUsername = document.getElementById('sign-in-username');
+          if (signInUsername != null)
+            signInUsername.placeholder = window.dataMap.get('sign-in-username');
+          const signInPassword = document.getElementById('sign-in-password');
+          if (signInPassword != null)
+            signInPassword.placeholder = window.dataMap.get('sign-in-password');
+          const signUpUsername = document.getElementById('sign-up-username');
+          if (signUpUsername != null)
+            signUpUsername.placeholder = window.dataMap.get('sign-up-username');
+          const signUpEmail = document.getElementById('sign-up-email');
+          if (signUpEmail != null)
+            signUpEmail.placeholder = window.dataMap.get('sign-up-email');
+          const signUpPassword = document.getElementById('sign-up-password');
+          if (signUpPassword != null)
+            signUpPassword.placeholder = window.dataMap.get('sign-up-password');
+          const signUpConfirmPassword = document.getElementById('sign-up-confirm-password');
+          if (signUpConfirmPassword != null)
+            signUpConfirmPassword.placeholder = window.dataMap.get('sign-up-confirm-password');
+          const twoFactorAuthSign = document.getElementById('2fa-sign');
+          if (twoFactorAuthSign != null)
+            twoFactorAuthSign.textContent = window.dataMap.get('2fa-sign');
+          const twoFactorAuthText = document.getElementById('2fa-text');
+          if (twoFactorAuthText != null)
+            twoFactorAuthText.textContent = window.dataMap.get('2fa-text');
+          const twoFactorAuthButton = document.getElementById('2fa-button');
+          if (twoFactorAuthButton != null)
+            twoFactorAuthButton.textContent = window.dataMap.get('2fa-button');
+          const desktop = document.getElementById('desktop');
+          if (desktop != null)
+            desktop.textContent = window.dataMap.get('desktop');
+          const account = document.getElementById('account');
+          if (account != null)
+            account.textContent = window.dataMap.get('account');
+          const settings = document.getElementById('settings');
+          if (settings != null)
+            settings.textContent = window.dataMap.get('settings');
+          const quit = document.getElementById('quit');
+          if (quit != null)
+            quit.textContent = window.dataMap.get('quit');
+          const applicationExplorer = document.getElementById('application-explorer');
+          if (applicationExplorer != null)
+            applicationExplorer.textContent = window.dataMap.get('application-explorer');
+          const accountWindow = document.getElementById('account-window');
+          if (accountWindow != null)
+            accountWindow.textContent = window.dataMap.get('account-window');
+          const updateProfile = document.getElementById('update-profile');
+          if (updateProfile != null)
+            updateProfile.textContent = window.dataMap.get('update-profile');
+          const userStats = document.getElementById('user-stats');
+          if (userStats != null)
+            userStats.textContent = window.dataMap.get('user-stats');
+          const userFriends = document.getElementById('user-friends');
+          if (userFriends != null)
+            userFriends.textContent = window.dataMap.get('user-friends');
+          const profileAccount = document.getElementById('profile-account');
+          if (profileAccount != null)
+            profileAccount.textContent = window.dataMap.get('profile-account');
+          const profileAlias = document.getElementById('profile-alias');
+          if (profileAlias != null)
+            profileAlias.placeholder = window.dataMap.get('profile-alias');
+          const profileEmail = document.getElementById('profile-email');
+          if (profileEmail != null)
+            profileEmail.placeholder = window.dataMap.get('profile-email');
+          const profileOldPassword = document.getElementById('profile-old-password');
+          if (profileOldPassword != null)
+            profileOldPassword.placeholder = window.dataMap.get('profile-old-password');
+          const profilePassword = document.getElementById('profile-password');
+          if (profilePassword != null)
+            profilePassword.placeholder = window.dataMap.get('profile-password');
+          const profileConfirmPassword = document.getElementById('profile-confirm-password');
+          if (profileConfirmPassword != null)
+            profileConfirmPassword.placeholder = window.dataMap.get('profile-confirm-password');
+          const updateButton = document.getElementById('update-button');
+          if (updateButton != null)
+            updateButton.textContent = window.dataMap.get('update-button');
+          const friendAccount = document.getElementById('friend-account');
+          if (friendAccount != null)
+            friendAccount.textContent = window.dataMap.get('friend-account');
+          const activate2faText = document.getElementById('activate-2fa-text');
+          if (activate2faText != null)
+            activate2faText.textContent = window.dataMap.get('activate-2fa-text');
+          const enterCode = document.getElementById('enter-code');
+          if (enterCode != null)
+            enterCode.placeholder = window.dataMap.get('enter-code');
+          const validateQrCodeId = document.getElementById('validate-qr-code-id');
+          if (validateQrCodeId != null)
+            validateQrCodeId.textContent = window.dataMap.get('validate-qr-code-id');
+          const desktopImage = document.getElementById('desktop-image');
+          if (desktopImage != null)
+            desktopImage.textContent = window.dataMap.get('desktop-image');
+          const trash = document.getElementById('trash');
+          if (trash != null)
+            trash.textContent = window.dataMap.get('trash');
+          const general = document.getElementById('general');
+          if (general != null)
+            general.textContent = window.dataMap.get('general');
+          const addFriends = document.getElementById('add-friends');
+          if (addFriends != null)
+            addFriends.textContent = window.dataMap.get('add-friends');
+          const searchFriends = document.getElementById('search-friends');
+          if (searchFriends != null)
+            searchFriends.placeholder = window.dataMap.get('search-friends');
+          const typeMessage = document.getElementById('type-message');
+          if (typeMessage != null)
+            typeMessage.placeholder = window.dataMap.get('type-message');
+          const send = document.getElementById('send');
+          if (send != null)
+            send.textContent = window.dataMap.get('send');
+          const clientInfo = document.getElementById('client-info');
+          if (clientInfo != null)
+            clientInfo.textContent = window.dataMap.get('client-info');
+          const clientMsg = document.getElementById('client-msg');
+          if (clientMsg != null)
+            clientMsg.textContent = window.dataMap.get('client-msg');
+          const winbookTitle = document.getElementById('winbook-title');
+          if (winbookTitle != null)
+            winbookTitle.textContent = window.dataMap.get('winbook-title');
+          const search = document.getElementById('search');
+          if (search != null)
+            search.textContent = window.dataMap.get('search');
+          const create = document.getElementById('create');
+          if (create != null)
+            create.textContent = window.dataMap.get('create');
+          const searchButton = document.getElementById('search-button');
+          if (searchButton != null)
+            searchButton.textContent = window.dataMap.get('search-button');
+          const searchTournament = document.getElementById('search-tournament');
+          if (searchTournament != null)
+            searchTournament.placeholder = window.dataMap.get('search-tournament');
+          const createTournamentName = document.getElementById('create-tournament-name');
+          if (createTournamentName != null)
+            createTournamentName.placeholder = window.dataMap.get('create-tournament-name');
+          const createTournamentButton = document.getElementById('create-tournament-button');
+          if (createTournamentButton != null)
+            createTournamentButton.textContent = window.dataMap.get('create-tournament-button');
+          const tournamentName = document.getElementById('tournament-name').textContent;
+          if (tournamentName == 'Aucun Tournoi Sélectionné' || tournamentName == 'Nenhum torneio selecionado' || tournamentName == 'No Tournament Selected')
+            document.getElementById('tournament-name').textContent = window.dataMap.get('tournament-name');
+          const emptyData = document.getElementById('empty');
+          if (emptyData != null)
+            emptyData.textContent = window.dataMap.get('empty');
+          const readyButton = document.getElementById('ready-button');
+          if (readyButton != null)
+            readyButton.textContent = window.dataMap.get('ready-button');
+          const quitButton = document.getElementById('quit-button');
+          if (quitButton != null)
+            quitButton.textContent = window.dataMap.get('quit-button');
+          const game = document.getElementById('game');
+          if (game != null)
+            game.textContent = window.dataMap.get('game');
+          const gameOptions = document.getElementById('game-options');
+          if (gameOptions != null)
+            gameOptions.textContent = window.dataMap.get('game-options');
+          const chooseOption = document.getElementById('choose-option');
+          if (chooseOption != null)
+            chooseOption.textContent = window.dataMap.get('choose-option');
+          const aiButton = document.getElementById('ai-button');
+          if (aiButton != null)
+            aiButton.textContent = window.dataMap.get('ai-button');
+          const localButton = document.getElementById('local-button');
+          if (localButton != null)
+            localButton.textContent = window.dataMap.get('local-button');
+          const joinRoom = document.getElementById('join-room');
+          if (joinRoom != null)
+            joinRoom.textContent = window.dataMap.get('join-room');
+          const gameOverTxt = document.getElementById('game-over-txt');
+          if (gameOverTxt != null)
+            gameOverTxt.textContent = window.dataMap.get('game-over-txt');
+          const gameOverQuit = document.getElementById('game-over-quit');
+          if (gameOverQuit != null)
+            gameOverQuit.textContent = window.dataMap.get('game-over-quit');
+          const startButton = document.getElementById('start-button');
+          if (startButton != null)
+            startButton.textContent = window.dataMap.get('start-button');
+          const noTournament = document.getElementById('no-tournament');
+          if (noTournament != null)
+            noTournament.textContent = window.dataMap.get('no-tournament');
+          const clientInvite = document.getElementById('client-invite');
+          if (clientInvite != null)
+            clientInvite.textContent = window.dataMap.get('client-invite');
+          const joinRoomTitle = document.getElementById('join-room-title');
+          if (joinRoomTitle != null)
+            joinRoomTitle.textContent = window.dataMap.get('join-room-title');
+          const joinRoomText = document.getElementById('join-room-text');
+          if (joinRoomText != null)
+            joinRoomText.textContent = window.dataMap.get('join-room-text');
+          const joinInputId = document.getElementById('join-input-id');
+          if (joinInputId != null)
+            joinInputId.placeholder = window.dataMap.get('join-input-id');
+          const joinRoomButtonId = document.getElementById('join-room-button-id');
+          if (joinRoomButtonId != null)
+            joinRoomButtonId.textContent = window.dataMap.get('validate-qr-code-id');
+          const friendStat = document.getElementById('friend-stat');
+          if (friendStat != null)
+            friendStat.textContent = window.dataMap.get('friend-stat');
+          if (window.matchmaking) {
+            document.getElementById('launch-matchmaking').textContent = window.dataMap.get('launch-matchmaking');
+          } else {
+            document.getElementById('launch-matchmaking').textContent = window.dataMap.get('stop-matchmaking');
+          }
+          const trashExplorer = document.getElementById('trash-explorer');
+          if (trashExplorer)
+            trashExplorer.textContent = window.dataMap.get('trash');
+          const desktopExplorer = document.getElementById('desktop-explorer');
+          if (desktopExplorer)
+            desktopExplorer.textContent = window.dataMap.get('desktop');
+          const trashBinTitle = document.getElementById('trash-bin-title');
+          if (trashBinTitle != null)
+            trashBinTitle.textContent = window.dataMap.get('trash');
+          const userHistory = document.getElementById('user-history');
+          if (userHistory != null)
+            userHistory.textContent = window.dataMap.get('user-match-history');
+          const help = document.getElementById('help');
+          if (help != null)
+            help.textContent = window.dataMap.get('help');
+          const inviteHelp = document.getElementById('invite-help');
+          if (inviteHelp != null)
+            inviteHelp.textContent = window.dataMap.get('invite-help');
+          const addHelp = document.getElementById('add-help');
+          if (addHelp != null)
+            addHelp.textContent = window.dataMap.get('add-help');
+          const acceptHelp = document.getElementById('accept-help');
+          if (acceptHelp != null)
+            acceptHelp.textContent = window.dataMap.get('accept-help');
+          const removeHelp = document.getElementById('remove-help');
+          if (removeHelp != null)
+            removeHelp.textContent = window.dataMap.get('remove-help');
+          const blockHelp = document.getElementById('block-help');
+          if (blockHelp != null)
+            blockHelp.textContent = window.dataMap.get('block-help');
+          const unblockHelp = document.getElementById('unblock-help');
+          if (unblockHelp != null)
+            unblockHelp.textContent = window.dataMap.get('unblock-help');
+          const wHelp = document.getElementById('w-help');
+          if (wHelp != null)
+            wHelp.textContent = window.dataMap.get('w-help');
+          const docsWindowTitle = document.getElementById('docs-window-title');
+          if (docsWindowTitle != null)
+            docsWindowTitle.textContent = window.dataMap.get('docs-window-title');
+          const closeButton = document.getElementById('close-button');
+          if (closeButton != null)
+            closeButton.textContent = window.dataMap.get('close-button');
+          const docsPage0TitleId = document.getElementById('doc-page-0-title-id');
+          if (docsPage0TitleId != null)
+            docsPage0TitleId.textContent = window.dataMap.get('doc-page-0-title-id');
+          const documentationPage = document.getElementById('documentation-page');
+          if (documentationPage != null)
+            documentationPage.textContent = window.dataMap.get('documentation-page');
+          const findEverything = document.getElementById('find-everything');
+          if (findEverything != null)
+            findEverything.textContent = window.dataMap.get('find-everything');
+          const pressArrow = document.getElementById('press-arrow');
+          if (pressArrow != null)
+            pressArrow.textContent = window.dataMap.get('press-arrow');
+          const docsPage1TitleId = document.getElementById('doc-page-1-title-id');
+          if (docsPage1TitleId != null)
+            docsPage1TitleId.textContent = window.dataMap.get('doc-page-1-title-id');
+          const gi1 = document.getElementById('gi-1');
+          if (gi1 != null)
+            gi1.textContent = window.dataMap.get('gi-1');
+          const gi2 = document.getElementById('gi-2');
+          if (gi2 != null)
+            gi2.textContent = window.dataMap.get('gi-2');
+          const gi3 = document.getElementById('gi-3');
+          if (gi3 != null)
+            gi3.textContent = window.dataMap.get('gi-3');
+          const docsPage2TitleId = document.getElementById('doc-page-2-title-id');
+          if (docsPage2TitleId != null)
+            docsPage2TitleId.textContent = window.dataMap.get('doc-page-2-title-id');
+          const msn1 = document.getElementById('msn-1');
+          if (msn1 != null)
+            msn1.textContent = window.dataMap.get('msn-1');
+          const msn2 = document.getElementById('msn-2');
+          if (msn2 != null)
+            msn2.textContent = window.dataMap.get('msn-2');
+          const msn3 = document.getElementById('msn-3');
+          if (msn3 != null)
+            msn3.textContent = window.dataMap.get('msn-3');
+          const docsPage3TitleId = document.getElementById('doc-page-3-title-id');
+          if (docsPage3TitleId != null)
+            docsPage3TitleId.textContent = window.dataMap.get('doc-page-3-title-id');
+          const wb1 = document.getElementById('wb-1');
+          if (wb1 != null)
+            wb1.textContent = window.dataMap.get('wb-1');
+          const wb2 = document.getElementById('wb-2');
+          if (wb2 != null)
+            wb2.textContent = window.dataMap.get('wb-2');
+          const wb3 = document.getElementById('wb-3');
+          if (wb3 != null)
+            wb3.textContent = window.dataMap.get('wb-3');
+          const docsPage4TitleId = document.getElementById('doc-page-4-title-id');
+          if (docsPage4TitleId != null)
+            docsPage4TitleId.textContent = window.dataMap.get('doc-page-4-title-id');
+          const pong1 = document.getElementById('pong-1');
+          if (pong1 != null)
+            pong1.textContent = window.dataMap.get('pong-1');
+          const pong2 = document.getElementById('pong-2');
+          if (pong2 != null)
+            pong2.textContent = window.dataMap.get('pong-2');
+          const pong3 = document.getElementById('pong-3');
+          if (pong3 != null)
+            pong3.textContent = window.dataMap.get('pong-3');
+          const pong4 = document.getElementById('pong-4');
+          if (pong4 != null)
+            pong4.textContent = window.dataMap.get('pong-4');
+          const docsPage5TitleId = document.getElementById('doc-page-5-title-id');
+          if (docsPage5TitleId != null)
+            docsPage5TitleId.textContent = window.dataMap.get('doc-page-5-title-id');
+          const trash1 = document.getElementById('trash-1');
+          if (trash1 != null)
+            trash1.textContent = window.dataMap.get('trash-1');
+          updateTime();
+          setInterval(updateTime, 1000);
+        })
+        .catch(error => console.error(error));
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/explorerWindow.js"></script>
   <script src="js/accountWindow.js"></script>
   <script src="/js/start_menu.js"></script>
   <script src="/js/move_icon.js"></script>
-  <script src="/js/update_time.js"></script>
+  <script src="/js/taskbar.js"></script>
   <script src="js/msn.js"></script>
   <script src="js/winbook.js"></script>
-  <script>
-    window.onload = function () {
-      loadMessageHistory();
-      ws = initWebSocket();
-      updateTime();
-      setInterval(updateTime, 1000);
-    }
-  </script>
+  <script src="js/userInfo.js"></script>
+  <script src="js/sign.js"></script>
+  <script src="js/loginPageAnim.js"></script>
+  <script src="js/userInfo.js"></script>
+  <script src="js/updateUserWindow.js"></script>
+  <script src="js/changeImage.js"></script>
+  <script src="js/pong.js"></script>
+  <script src="js/2fa.js"></script>
+  <script src="js/alertWin98.js"></script>
+  <script src="js/clientWindow.js"></script>
+  <script src="js/handle_chat.js"></script>
+  <script src="js/pop_up_message.js"></script>
+  <script src="js/clientAction.js"></script>
+  <script src="js/game_option.js"></script>
+  <script src="js/game_over.js"></script>
+  <script src="js/tree_matchmaking.js"></script>
+  <script src="js/winbook_show_tournaments.js"></script>
+  <script src="js/winbook_tournament_details.js"></script>
+  <script src="js/trash_bin.js"></script>
+  <script src="js/documentation.js"></script>
+
 </body>
 </html>

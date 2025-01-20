@@ -1,30 +1,9 @@
-import requests, jwt, os, uuid
+import requests, os, uuid, base64
 from datetime import datetime, timedelta
-from .models import CustomUser
+from .models import CustomUser, Match
 from django.http import HttpResponse
-from jwt import InvalidTokenError, ExpiredSignatureError
-
-'''
-get42_response take a request with a code. This code will be use to request a response at 42's API. Return this response
-'''
-
-def get42_response(request):
-	code = request.GET.get('code')
-	token_url = 'https://api.intra.42.fr/oauth/token'
-	client_id = os.getenv('CLIENT_ID')
-	client_secret = os.getenv('CLIENT_SECRET')
-	print(f'salut {client_id}')
-	print(f'coucou {client_secret}')
-	redirect_uri = 'http://localhost:8000/auth/token'
-	params = {
-		'grant_type': 'authorization_code',
-		'client_id': client_id,
-		'client_secret': client_secret,
-		'code': code,
-		'redirect_uri': redirect_uri
-	}
-	response = requests.post(token_url, data=params)
-	return response
+from django.core.files.base import ContentFile
+import jwt
 
 '''
 CreateAccessToken take an username. Create, stock in DB and return an encoded_access_token
@@ -32,7 +11,9 @@ CreateAccessToken take an username. Create, stock in DB and return an encoded_ac
 
 def CreateAccessToken(request, username):
 	user = CustomUser.get_user_by_name(username)
-	exp_access = datetime.now() + timedelta(hours=5)
+	if not user:
+		return None
+	exp_access = datetime.now() + timedelta(minutes=30)
 	iat = datetime.now()
 	payload = {
 		"username": username,
@@ -41,6 +22,8 @@ def CreateAccessToken(request, username):
 		"iat": int(iat.timestamp())
 	}
 	encoded_access_jwt = jwt.encode(payload, os.getenv('JWT_ACCESS_KEY'), algorithm="HS256")
+	user.access_token = encoded_access_jwt
+	user.save()
 	return encoded_access_jwt
 
 '''
@@ -48,20 +31,21 @@ CreateRefreshToken take an username. Create and set as cookie an encoded_refresh
 '''
 
 def CreateRefreshToken(request, username):
-	user = CustomUser.get_user_by_name(username)
-	exp_refresh = datetime.now() + timedelta(days=7)
-	iat = datetime.now()
-	payload = {
-		"username": username,
-		"id": str(user.id),
-		"exp": int(exp_refresh.timestamp()),
-		"iat": int(iat.timestamp())
-	}
-	encoded_refresh_jwt = jwt.encode(payload, os.getenv('JWT_REFRESH_KEY'), algorithm="HS256")
-	user.set_refresh_token(user, encoded_refresh_jwt)
-	user.save()
-	response = HttpResponse("Cookie has been set")
-	response.set_cookie('refresh_token', encoded_refresh_jwt, max_age=604800)
+    user = CustomUser.get_user_by_name(username)
+    if user is None:
+        return None
+    exp_refresh = datetime.now() + timedelta(days=7)
+    iat = datetime.now()
+    payload = {
+        "username": username,
+        "id": str(user.id),
+        "exp": int(exp_refresh.timestamp()),
+        "iat": int(iat.timestamp())
+    }
+    encoded_refresh_jwt = jwt.encode(payload, os.getenv('JWT_REFRESH_KEY'), algorithm="HS256")
+    user.refresh_token = encoded_refresh_jwt
+    user.save()
+    return encoded_refresh_jwt
 
 '''
 get_cookie_refresh Get and return the encoded_refresh_token
@@ -76,9 +60,12 @@ checkRefreshToken check if the refresh token in cookies is the same that the ref
 '''
 
 def checkRefreshToken(encoded_refresh_token, username):
-	user = CustomUser.get_user_by_name(username)
-	if user.refresh_token is not encoded_refresh_token:
-		raise InvalidTokenError
+    user = CustomUser.get_user_by_name(username)
+    if not user:
+        return False
+    if user.refresh_token != encoded_refresh_token:
+        raise jwt.InvalidTokenError
+    return True
 
 '''
 decodeAccessToken take an access_token. Check if access token is valid and not expire and return the payload with information.
@@ -90,11 +77,18 @@ def decodeAccessToken(request, encoded_jwt):
 		payload = jwt.decode(encoded_jwt, os.getenv('JWT_ACCESS_KEY'), algorithms=["HS256"])
 		if "id" in payload:
 			payload["id"] = uuid.UUID(payload["id"])
-		return payload
+		username = payload["username"]
+		user = CustomUser.get_user_by_name(username)
+		if user:
+			if str(user.access_token) != str(encoded_jwt):
+				raise jwt.InvalidTokenError
+			return payload
+		else:
+			return None
 	except jwt.ExpiredSignatureError:
-		raise ExpiredSignatureError
+		raise jwt.ExpiredSignatureError
 	except jwt.InvalidTokenError:
-		raise InvalidTokenError
+		raise jwt.InvalidTokenError
 
 '''
 decodeRefreshToken take a refresh_token. Check if access token is valid and not expire and return the payload with information.
@@ -106,9 +100,26 @@ def decodeRefreshToken(encoded_jwt):
 		payload = jwt.decode(encoded_jwt, os.getenv('JWT_REFRESH_KEY'), algorithms=["HS256"])
 		if "id" in payload:
 			payload["id"] = uuid.UUID(payload["id"])
-		return payload
-		return payload
+			return payload
+		return None
 	except jwt.ExpiredSignatureError:
-		raise ExpiredSignatureError
+		raise jwt.ExpiredSignatureError
 	except jwt.InvalidTokenError:
-		raise InvalidTokenError
+		raise jwt.InvalidTokenError
+
+
+def decode_and_save_base64_image(base64_image, file_name):
+    if base64_image.startswith('data:image'):
+        header, base64_str = base64_image.split(',', 1)
+
+        image_data = base64.b64decode(base64_str)
+
+        return ContentFile(image_data, name=file_name)
+    else:
+        raise ValueError("Invalid base64 image data")
+
+def save_match(player1, player2, user1_win, user2_win, player1_score, player2_score):
+	user1 = CustomUser.get_user_by_name(player1)
+	user2 = CustomUser.get_user_by_name(player2)
+	Match.create_match(user=user1, user_win=user1_win, user_score=player1_score, opponent_score=player2_score, user_name=player1, opponent_name=player2)
+	Match.create_match(user=user2, user_win=user2_win, user_score=player2_score, opponent_score=player1_score, user_name=player2, opponent_name=player1)

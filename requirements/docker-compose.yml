@@ -10,33 +10,81 @@ networks:
   matchmaking:
     name: matchmaking
     internal: true
+  ai_game:
+    name: ai_game
+    internal: true
+  game:
+    name: game
+    internal: true
+
+volumes:
+  nginx-volume: {}
+  chat-db-volume: {}
+  auth-db-volume: {}
+  matchmaking-db-volume: {}
+  chat-redis-volume: {}
+  game-redis-volume: {}
+  matchmaking-redis-volume: {}
+  ai_game-redis-volume: {}
+  match-redis-volume: {}
 
 services:
   nginx:
+    container_name: nginx
+    depends_on:
+      - chat
+      - auth
+      - matchmaking
     build: ./nginx
     ports:
       - "8443:8443"
     networks:
       - peas
-    depends_on:
-      - chat
-      - auth
-      - matchmaking
+    volumes:
+      - nginx-volume:/var/www/html
+    restart: on-failure
+    
 
   chat:
-    build: ./chat
-    env_file:
-      - ./conf/.env-chat
-    ports:
-      - "8000:8000"
-    networks:
-      - chat
-      - peas
+    container_name: chat
     depends_on:
       chat-db:
         condition: service_healthy
+      chat-redis:
+        condition: service_healthy
+    build: ./chat
+    env_file:
+      - ./conf/.env-chat
+    expose:
+      - "8000"
+    networks:
+      - chat
+      - peas
+    environment:
+      - REDIS_HOST=chat-redis
+      - REDIS_PORT=6379
+    restart: on-failure
+    
+
+  chat-redis:
+    container_name: chat-redis
+    image: redis:6
+    networks:
+      - chat
+    volumes:
+      - chat-redis-volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
+    
 
   chat-db:
+    container_name: chat-db
     image: postgres:14
     restart: on-failure
     volumes:
@@ -50,21 +98,28 @@ services:
       interval: 1s
       timeout: 5s
       retries: 5
+    
 
   auth:
-    build: ./auth
-    env_file:
-      - ./conf/.env-auth
-    ports:
-      - "8001:8001"
-    networks:
-      - peas
-      - auth
+    container_name: auth
     depends_on:
       auth-db:
         condition: service_healthy
+    build: ./auth
+    env_file:
+      - ./conf/.env-auth
+    expose:
+      - "8001"
+    networks:
+      - peas
+      - auth
+    restart: on-failure
+    volumes:
+      - nginx-volume:/var/www/html
+    
 
   auth-db:
+    container_name: auth-db
     image: postgres:14
     restart: on-failure
     volumes:
@@ -78,22 +133,31 @@ services:
       interval: 1s
       timeout: 5s
       retries: 5
-
+    
 
   matchmaking:
+    container_name: matchmaking
+    depends_on:
+      chat-db:
+        condition: service_healthy
+      matchmaking-redis:
+        condition: service_healthy
     build: ./matchmaking
     env_file:
       - ./conf/.env-matchmaking
     networks:
       - peas
       - matchmaking
-    ports:
-      - "8002:8002"
-    depends_on:
-      chat-db:
-        condition: service_healthy
+    expose:
+      - "8002"
+    environment:
+      - REDIS_HOST=matchmaking-redis
+      - REDIS_PORT=6379
+    restart: on-failure
+    
 
   matchmaking-db:
+    container_name: matchmaking-db
     image: postgres:14
     restart: on-failure
     volumes:
@@ -108,9 +172,111 @@ services:
       interval: 1s
       timeout: 5s
       retries: 5
+    
 
+  matchmaking-redis:
+    container_name: matchmaking-redis
+    image: redis:6
+    networks:
+      - matchmaking
+    volumes:
+      - matchmaking-redis-volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
+    
 
-volumes:
-  chat-db-volume: {}
-  auth-db-volume: {}
-  matchmaking-db-volume: {}
+  ai_game:
+    container_name: ai_game
+    depends_on:
+      ai_game-redis:
+        condition: service_healthy
+    build: 
+      context: ./ai_game
+      dockerfile: Dockerfile
+    networks:
+      - peas
+      - ai_game
+    expose:
+      - "8003"
+    environment:
+      - REDIS_HOST=ai_game-redis
+      - REDIS_PORT=6379
+    restart: on-failure
+    
+
+  ai_game-redis:
+    container_name: ai_game-redis
+    image: redis:6
+    networks:
+      - ai_game
+    volumes:
+      - ai_game-redis-volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
+    
+
+  game:
+    container_name: game
+    depends_on:
+      game-redis:
+        condition: service_healthy
+    build: 
+      context: ./game
+      dockerfile: Dockerfile
+    networks:
+      - peas
+      - game
+    expose:
+      - "8004"
+    environment:
+      - REDIS_HOST=game-redis
+      - REDIS_PORT=6379
+    restart: on-failure
+    
+
+  game-redis:
+    container_name: game-redis
+    image: redis:6
+    networks:
+      - game
+    volumes:
+      - game-redis-volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure
+    
+
+  match-redis:
+    container_name: match-redis
+    image: redis:6
+    networks:
+      - game
+      - matchmaking
+      - auth
+    volumes:
+      - match-redis-volume:/data
+    command: redis-server --save 60 1 --loglevel warning
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: on-failure

@@ -1,17 +1,21 @@
 #accountWindow {
   width: 350px;
+  height: 380px;
   border: 2px solid #000;
   box-shadow: 3px 3px 6px #aaa;
   background-color: #f9f6f6;
   margin: auto;
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 2000;
   box-sizing: border-box;
 }
 
 #accountWindow .window-content {
   padding: 20px;
+  max-width: 400px;
+  max-height: 340px;
+  min-height: 340px;
   background-color: #dcdcdc;
   border: 2px solid #808080;
   box-shadow: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #404040;
@@ -22,7 +26,7 @@
 }
 
 #accountWindow .header-title {
-  margin-right: 30px;
+  margin-right: 20px;
 }
 
 #accountWindow ul {
@@ -42,11 +46,25 @@
   box-sizing: border-box;
 }
 
+#accountWindow .change-user-info {
+  padding: 5px;
+  font-size: 16px;
+  margin-left: 90px;
+  background-color: #dcdcdc;
+  border: 1px solid #808080;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #404040;
+  cursor: pointer;
+}
+
+#accountWindow .change-user-info:hover {
+  background-color: #c0bebe;
+  box-shadow: inset 1px 1px 0 #808080, inset -1px -1px 0 #ffffff;
+}
+
 #accountWindow .number-pages {
   text-align: right;
   font-size: 12px;
   color: #555;
-  padding: 5px;
   margin-top: auto;
   background-color: #e0e0e0;
   border-top: 1px solid #b0b0b0;
@@ -59,6 +77,7 @@
 #accountWindow .user-img {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px;
   background-color: #e0e0e0;
   border: 1px solid #b0b0b0;
@@ -69,11 +88,22 @@
 #accountWindow .user-img img {
   width: 50px;
   height: 50px;
-  margin-right: 10px;
+}
+
+#accountWindow .user-img img:hover {
+  cursor: pointer;
+  box-shadow: inset 1px 1px 0 #ffffff, inset -1px -1px 0 #808080;
+  border: 1px solid #b0b0b0;
 }
 
 #accountWindow .user-img span {
   font-weight: bold;
+  font-size: 16px;
+  margin-left: 14px;
+}
+
+#accountWindow .user2FA-span {
+  margin-left: auto;
 }
 
 /* Page 2*/

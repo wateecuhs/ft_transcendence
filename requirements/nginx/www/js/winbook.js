@@ -1,182 +1,181 @@
-const winBook = document.getElementById('winBook');
-const winBookPages = winBook.querySelectorAll('.winBook-page');
-
-const winSearchTournament = winBook.querySelector('#search-button');  // Bouton "Rechercher"
-const winSearchInput = winBook.querySelector('#search-tournament');  // Champ de texte pour la recherche
-const tournamentResultsList = winBook.querySelector('#tournament-results');  // Liste des résultats
-
-const createTournamentButton = winBook.querySelector('#create-tournament-button');
-
-let currentPageIndex = 0;
-
-var roomWS = new WebSocket("wss://localhost:8443/matchmaking/rooms");
-roomWS.onopen = function(event) {
-  console.log("Connected");
-};
-
-roomWS.onmessage = function(event) {
-  console.log("Message received: " + event.data);
-};
-
-let tournaments = [
-    { name: 'Tournoi 1', maxPlayers: 4, creator: 'player1', players: [{ name: 'player1', status: 'Ready' }, { name: 'test', status: 'Ready'}] },
-    { name: 'Tournoi 2', maxPlayers: 4, creator: 'player2', players: [{ name: 'player2', status: 'Not Ready' }] },
-];
-
-function displayTournamentInfo(tournament) {
-  console.log("TEST");
-  const displayTournament = document.querySelector(".tournament-info");
-
-  if (displayTournament) {
-    console.log("TEST_2");
-    const tournamentElement = displayTournament.querySelector(".tournament-name");
-    if (tournamentElement) {
-      tournamentElement.innerHTML = "";
-      tournamentElement.textContent = tournament.name; // Utilisation de tournament.name pour afficher le nom
-    }
-
-    // Mise à jour du nombre de joueurs
-    const playersCountElement = displayTournament.querySelector("#players-count");
-    if (playersCountElement) {
-      playersCountElement.innerHTML = "";
-      playersCountElement.textContent = `Nombre de joueurs : ${tournament.players.length}`;
-    }
-
-    // Mise à jour de la liste des joueurs
-    const playersList = document.getElementById("players-list"); // Sélectionne la liste des joueurs
-    if (playersList) {
-      console.log("HERE 2");
-      playersList.innerHTML = ""; // Vide la liste avant de la remplir
-
-      // Ajouter chaque joueur à la liste
-      tournament.players.forEach(player => {
-        const playerItem = document.createElement("li");
-        playerItem.classList.add("player");
-
-        const playerName = document.createElement("span");
-        playerName.classList.add("player-name");
-        playerName.textContent = player.name;
-
-        const playerStatus = document.createElement("span");
-        playerStatus.classList.add("player-status");
-        playerStatus.textContent = player.status;
-
-        playerItem.appendChild(playerName);
-        playerItem.appendChild(playerStatus);
-
-        playersList.appendChild(playerItem);
-      });
-    }
-  } else {
-      console.error("Element .tournament-info non trouvé");
-  }
-}
-
-function showTournament() {
-  const query = winSearchInput.value.toLowerCase();
-  console.log("Saisie de l'utilisateur :", query);
-
-  const filteredTournaments = tournaments.filter(tournament => {
-      console.log("Vérification tournoi :", tournament.name);  // Afficher chaque tournoi pendant la vérification
-      return tournament.name.toLowerCase().includes(query);
-  });
-
-  console.log("Tournois filtrés :", filteredTournaments);  // Afficher la liste des tournois filtrés
-
-  tournamentResultsList.innerHTML = '';
-
-  if (filteredTournaments.length > 0) {
-    filteredTournaments.forEach(tournament => {
-      // Créer un bouton pour chaque tournoi
-      const button = document.createElement('button');
-      button.textContent = `${tournament.name} (Max: ${tournament.maxPlayers} joueurs)`;
-      button.classList.add('tournament-button');
-
-      // Ajouter un gestionnaire d'événements sur le bouton
-      button.addEventListener('click', function() {
-          console.log("Tournoi sélectionné :", tournament.name);
-          // Appeler la fonction pour afficher les détails du tournoi
-          displayTournamentInfo(tournament);
-      });
-
-      // Ajouter le bouton à la liste des résultats
-      tournamentResultsList.appendChild(button);
-  });
-  tournamentResultsList.classList.add('show');
-  } else {
-      const noResultsItem = document.createElement('li');
-      noResultsItem.textContent = 'Aucun tournoi trouvé';
-      tournamentResultsList.appendChild(noResultsItem);
-      tournamentResultsList.classList.add('show');
-  }
-}
-
-function addNewTournament() {
-  const tournamentNameInput = document.getElementById('new-tournament-name');
-  const tournamentName = tournamentNameInput.value.trim();
-
-  if (!tournamentName) {
-    alert("Veuillez entrer un nom pour le tournoi");
-    return;
-  }
-
-  const newTournament = {
-    name: tournamentName,
-    maxPlayers: 4,
-    creator: 'player1',
-    players: []
-  };
-
-  tournaments.push(newTournament);
-
-  tournamentNameInput.value = '';
-
-  showTournament();
-}
-
-winSearchTournament.addEventListener('click', showTournament);
-createTournamentButton.addEventListener('click', addNewTournament);
-
-winSearchInput.addEventListener('keypress', function(event) {
-  if(event.key == 'Enter') {
-    showTournament();
-  }
-});
-
-function showPage(pageIndex) {
-  winBookPages.forEach((page, index) => {
-    page.style.display = (index === pageIndex) ? 'block' : 'none';
-  });
-  currentPageIndex = pageIndex;
-
-  if (pageIndex === 0) {
-    history.replaceState({ page: pageIndex }, "", "#winbook");
-  } else {
-    history.pushState({ page: pageIndex }, "", `#page${pageIndex}`);
-  }
-}
-
 function toggleWinbookWindow() {
-  const winbookWindow = document.getElementById('winBook');
-  if (winbookWindow.style.display === 'none') {
-    winbookWindow.style.display = 'flex';
-    showPage(0);
-    history.pushState({ page: "winbook" }, "", "#winbook");
+  const winbook = document.getElementById('winBook');
+  if (winbook.style.display === 'none') {
+    setWindowIndex();
+    winbook.style.zIndex = 3000;
+    winbook.style.display = 'flex';
+    winbook.style.position = 'absolute';
+    winbook.style.top = `${window.innerHeight / 2 - winbook.offsetHeight / 2}px`;
+    winbook.style.left = `${window.innerWidth / 2 - winbook.offsetWidth / 2}px`;
+    navigateToPage('winbook');
+    showAllTournaments();
   } else {
-    winbookWindow.style.display = 'none';
+    winbook.style.display = 'none';
   }
 }
 
-window.addEventListener('popstate', function (event) {
-  const currentPage = window.location.hash;
-
-  if (currentPage === "#winbook") {
-    toggleWinbookWindow(true);
-  } else if (currentPage.startsWith("#page")) {
-    const pageIndex = parseInt(currentPage.replace("#page", ""));
-    showPage(pageIndex);
-  } else if (currentPage === "") {
-    toggleWinbookWindow(false);
+function initMMWebSocket() {
+  if (!window.mmws || window.mmws.readyState === WebSocket.CLOSED) {
+    window.mmws = new WebSocket(`wss://${window.location.host}/matchmaking/`);
   }
+
+  window.mmws.onmessage = function(event) {
+    const message = JSON.parse(event.data);
+
+    if (message.type === "tournament.join") {
+      showTournamentDetails(message.data);
+    }
+    else if (message.type === "tournament.create") {
+      raiseAlert(`${window.dataMap.get('tournament-created-1')} ${message.data.name} ${window.dataMap.get('tournament-created-2')}`);
+      showTournamentDetails(message.data);
+    }
+    else if (message.type === "tournament.leave") {
+      showTournamentDetails(message.data);
+    }
+    else if (message.type === "tournament.start") {
+      const data = {
+        author: 'WinBook Corporation',
+        content: 'A Tournament is now starting !',
+        created_at: new Date().toLocaleDateString('fr-FR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit'
+        })
+      };
+
+      const readyButton = document.querySelector('#ready-button');
+      const quitButton = document.querySelector('#quit-button');
+
+      readyButton.style.display = 'none';
+      quitButton.style.display = 'none';
+
+      displayChatMessage(data);
+      const pongWindow = document.getElementById('PongGame');
+      pongWindow.querySelector('.close-button').click();
+      showPopUp(window.dataMap.get('start-tournament'));
+      navigateToPage("pong");
+      sendPlayersToRooms(message.data);
+    }
+    else if (message.type === "tournament.delete") {
+      showPopUp("Tournament has been deleted");
+      resetWinBook();
+      showAllTournaments();
+    }
+    else if (message.type === "tournament.update") {
+      if (message.data.rounds.length === 2 && message.data.rounds[1].matches[0].status !== "FINISHED") {
+        if (message.data.author === message.data.rounds[1].matches[0].player1 || message.data.author === message.data.rounds[1].matches[0].player2) {
+          showPopUp("Hurry up ! You are in the next round !");
+		      const pongWindow = document.getElementById('PongGame');
+          pongWindow.querySelector('.close-button').click();
+          setTimeout(() => {
+            let game = new PongWindow("remote", message.data.rounds[1].matches[0].room_code);
+            game.run();
+          }, 2000);
+        }
+      }
+    }
+    else if (message.type === "matchmaking.start") {
+      const optionWin = document.getElementById('game-option');
+      const buttonMathmaking = optionWin.querySelector('#launch-matchmaking');
+      buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
+      window.matchmaking = true;
+      optionWin.style.display = 'none';
+      navigateToPage("pong");
+      let game = new PongWindow("remote", message.data.room_code);
+      game.run();
+    }
+    else if (message.type === "matchmaking.leave") {
+      //showPopUp(window.dataMap.get('matchmaking-leave'));
+    }
+    else if (message.type === "error") {
+      errorMessage = message.message.split(':')[1];
+      if (errorMessage === ' Name Must Be At Least 3 Characters Long')
+        errorMessage = window.dataMap.get('too-short-name');
+      else if (errorMessage === ' Ensure This Field Has No More Than 20 Characters.')
+        errorMessage = window.dataMap.get('too-long-name');
+      else if (errorMessage === ' Name Must Be Alphanumeric')
+        errorMessage = window.dataMap.get('alphanumeric-name');
+      if (message.message === 'You already have an active tournament.')
+        errorMessage = window.dataMap.get('already-tournament');
+      if (message.message === 'Tournament with this name already exists')
+        errorMessage = window.dataMap.get('double-tournament');
+      if (message.message === 'Tournament not found')
+        errorMessage = window.dataMap.get('tournament-not-found');
+      if (message.message === 'Player already in matchmaking')
+        errorMessage = window.dataMap.get('already-matchmaking');
+      if (message.message === 'Not in this tournament')
+        errorMessage = window.dataMap.get('not-in-tournament');
+      raiseAlert(errorMessage);
+    }
+    else {
+        console.error(message.type);
+      }
+  }
+
+  window.mmws.onclose = async function(event) {
+    const isRefreshed = await getRefreshToken();
+    if (isRefreshed) {
+      return initMMWebSocket();
+    }
+    else {
+      quitDesk();
+      raiseAlert(window.dataMap.get('expired-session'));
+    }
+  }
+  return window.mmws;
+}
+
+document.getElementById('winBook').querySelector('.close-button').addEventListener('click', function() {
+  document.getElementById('winBook').style.display = 'none';
 });
 
+
+document.addEventListener("DOMContentLoaded", () => {
+  const winBookWindow = document.getElementById("winBook");
+  const tabs = winBookWindow.querySelectorAll(".tabs .tab");
+  const panes = winBookWindow.querySelectorAll(".tab-content .tab-pane");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.classList.remove("active"));
+      panes.forEach((pane) => (pane.style.display = "none"));
+
+      tab.classList.add("active");
+      const targetId = tab.dataset.tab;
+      const targetPane = winBookWindow.querySelector(`#${targetId}`);
+      if (targetPane) {
+        targetPane.style.display = "flex";
+      } else {
+        console.error(`Le contenu de l'onglet #${targetId} est introuvable !`);
+      }
+    });
+  });
+
+  const winSearchInput = winBookWindow.querySelector('#search-tournament');
+  const searchButton = winBookWindow.querySelector('#search-button');
+  const createTournamentInput = winBookWindow.querySelector('#create-tournament-name');
+  const createTournamentButton = document.querySelector('#create-tournament-button');
+
+  createTournamentButton.addEventListener('click', createTournament);
+  searchButton.addEventListener('click', showTournament);
+
+  winSearchInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      searchButton.click();
+    }
+  });
+
+  createTournamentInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      createTournamentButton.click();
+    }
+  });
+
+  const readyButton = winBookWindow.querySelector('#ready-button');
+  const quitButton = winBookWindow.querySelector('#quit-button');
+
+  readyButton.addEventListener('click', joinTournament);
+  quitButton.addEventListener('click', quitTournament);
+
+  showAllTournaments();
+});

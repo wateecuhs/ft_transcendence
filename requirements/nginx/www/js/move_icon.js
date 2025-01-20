@@ -1,5 +1,5 @@
 const icons = document.querySelectorAll('.icon');
-const gridSize = 100;
+const gridSize = 128;
 
 icons.forEach(icon => {
 
@@ -7,19 +7,19 @@ icons.forEach(icon => {
     const iconElement = icon.querySelector('.icon-text');
     const iconName = iconElement ? iconElement.textContent.trim() : '';
 
-    if (iconName === 'Msn') {
-      toggleMsnWindow();
-    }
-    if (iconName === 'Winbook') {
-      toggleWinbookWindow();
-    }
+    if (icon.id === 'Msn') toggleMsnWindow();
+    else if (icon.id === 'Winbook') toggleWinbookWindow();
+    else if (icon.id === 'Pong') toogleGameOptionWindow();
+    else if (icon.id === 'Trash') toogleTrashBin();
+    else if (icon.id === 'Desktop') cleanDesktop();
+    else if (icon.id === 'Documentation') toogleDocsWindow();
   });
 
   let offsetX, offsetY;
 
   icon.addEventListener('mousedown', function(e) {
     e.preventDefault();
-    
+
     const iconRect = icon.getBoundingClientRect();
     offsetX = e.clientX - iconRect.left;
     offsetY = e.clientY - iconRect.top;
@@ -47,7 +47,7 @@ icons.forEach(icon => {
 
     const paddingLeft = parseInt(window.getComputedStyle(container).paddingLeft);
     const paddingTop = parseInt(window.getComputedStyle(container).paddingTop);
-    
+
     let gridX = Math.round((e.clientX - offsetX - containerRect.left - paddingLeft) / gridSize) * gridSize + paddingLeft;
     let gridY = Math.round((e.clientY - offsetY - containerRect.top - paddingTop) / gridSize) * gridSize + paddingTop;
 
@@ -58,7 +58,22 @@ icons.forEach(icon => {
   }
 });
 
-const windows = document.querySelectorAll('#explorerWindow, #accountWindow, #msnWindow');
+const windows = document.querySelectorAll('#explorerWindow, \
+#accountWindow, \
+#msnWindow, \
+#updateUserWindow, \
+#activate-2fa, \
+#window-alert, \
+#game-option, \
+#tree-matchmaking, \
+#clientWindow, \
+#pop-up-message, \
+#client-action, \
+#trash-bin, \
+#winBook, \
+#window-join-room, \
+#docs-window, \
+#information-window');
 
 windows.forEach(window => {
     const header = window.querySelector('.window-header');
@@ -66,6 +81,9 @@ windows.forEach(window => {
 
     header.addEventListener('mousedown', function(e) {
         e.preventDefault();
+
+        setWindowIndex();
+        window.style.zIndex = 3000;
 
         offsetX = e.clientX - window.getBoundingClientRect().left;
         offsetY = e.clientY - window.getBoundingClientRect().top;
@@ -88,5 +106,92 @@ windows.forEach(window => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const icons = document.querySelectorAll('.desktop-icons .icon');
+  const gridSize = 128;
+  organizeIcons(icons, gridSize);
+});
 
+window.addEventListener('resize', () => {
+  const icons = document.querySelectorAll('.desktop-icons .icon');
+  const gridSize = 128;
+  organizeIcons(icons, gridSize);
+});
 
+function organizeIcons(icons, gridSize) {
+  const container = document.querySelector('.desktop-icons');
+  const paddingLeft = parseInt(window.getComputedStyle(container).paddingLeft);
+  const paddingTop = parseInt(window.getComputedStyle(container).paddingTop);
+
+  const containerHeight = container.clientHeight;
+
+  const iconsPerColumn = Math.floor((containerHeight - paddingTop * 2) / gridSize);
+
+  let currentRow = 0;
+
+  icons.forEach(icon => {
+    icon.style.position = 'absolute';
+
+    const xPos = paddingLeft;
+
+    const yPos = paddingTop + currentRow * gridSize;
+
+    icon.style.left = `${xPos}px`;
+    icon.style.top = `${yPos}px`;
+
+    currentRow++;
+
+    if (currentRow >= iconsPerColumn) {
+      return;
+    }
+  });
+}
+
+function setWindowIndex() {
+  const windows = document.querySelectorAll('#explorerWindow, \
+  #accountWindow, \
+  #msnWindow, \
+  #updateUserWindow, \
+  #activate-2fa, \
+  #game-option, \
+  #tree-matchmaking, \
+  #clientWindow, \
+  #pop-up-message, \
+  #client-action, \
+  #trash-bin, \
+  #winBook, \
+  #window-join-room, \
+  #docs-window, \
+  #information-window');
+
+  windows.forEach(window => {
+      window.style.zIndex = 2000;
+  });
+}
+
+function cleanDesktop() {
+  const windows = document.querySelectorAll('#explorerWindow, \
+    #accountWindow, \
+    #msnWindow, \
+    #updateUserWindow, \
+    #window-alert, \
+    #activate-2fa, \
+    #window-alert, \
+    #game-option, \
+    #tree-matchmaking, \
+    #clientWindow, \
+    #pop-up-message, \
+    #client-action, \
+    #trash-bin, \
+    #winBook, \
+    #docs-window, \
+    #window-join-room, \
+    #information-window');
+
+    for (const window of windows) {
+      window.style.display = 'none';
+    }
+    navigateToPage("desktop");
+
+    organizeIcons(icons, gridSize);
+}

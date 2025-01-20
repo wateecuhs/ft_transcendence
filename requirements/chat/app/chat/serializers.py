@@ -4,12 +4,9 @@ from .models import User, Relationship, Message
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'status']
+        fields = ['id', 'username', 'status']
 
 class RelationshipSerializer(serializers.ModelSerializer):
-    sender = UserSerializer()
-    receiver = UserSerializer()
-
     class Meta:
         model = Relationship
         fields = ['sender', 'receiver', 'status']

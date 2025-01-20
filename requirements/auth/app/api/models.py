@@ -5,9 +5,12 @@ from rest_framework.exceptions import ValidationError
 from cryptography.fernet import Fernet
 import os, base64, uuid
 from transcendence import settings
+import pyotp
+from django.utils import timezone
 
 key = base64.urlsafe_b64encode(os.urandom(32))
 cipher = Fernet(key)
+
 
 class Tournament(models.Model):
     name = models.CharField(max_length=200)
@@ -44,9 +47,13 @@ class CustomUser(AbstractUser):
     matches_number = models.PositiveIntegerField(default=0)
     matches_win = models.PositiveIntegerField(default=0)
     matches_lose = models.PositiveIntegerField(default=0)
-    winrate = models.PositiveIntegerField(default=0)
+    winrate = models.PositiveIntegerField(default=100)
     goal_scored = models.PositiveIntegerField(default=0)
     goal_conceded = models.PositiveIntegerField(default=0)
+    totp = models.CharField(default=pyotp.random_base32)
+    qrcode_path = models.CharField(null=True)
+    is_2FA = models.BooleanField(default=False)
+    language = models.CharField(default='en', max_length=2)
 
     class Meta:
         db_table = 'users'
@@ -96,7 +103,8 @@ class CustomUser(AbstractUser):
     def add_user_by_form(cls, username, password, email, avatar, status=1, tournament_id=None):
         if CustomUser.get_user_by_name(name=username) is not None:
             raise ValidationError("Username already taken.")
-        user = cls(username=username, alias=username, email=email, password=password, status=status, avatar=avatar, avatar_path=avatar,tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
+        user = cls(username=username, alias=username, email=email, status=status, avatar=avatar, avatar_path=avatar,tournament_id=tournament_id, is_42_account=False, is_42_pp=False)
+        user.set_password(password)
         user.save()
         return user
 
@@ -125,12 +133,11 @@ class CustomUser(AbstractUser):
     @classmethod
     def set_email(cls, user, newEmail):
         user.email = newEmail
-        print(f"set email {user.email}")
         user.save()
 
     @classmethod
-    def set_password(cls, user, newPassword):
-        user.password = newPassword
+    def set_new_password(cls, user, newPassword):
+        user.set_password(newPassword)
         user.save()
 
     @classmethod
@@ -146,43 +153,35 @@ class CustomUser(AbstractUser):
         user.access_token = token
 
 
-class   Status(models.IntegerChoices):
-       WIN = 1, "WIN"
-       LOSE = 2, "LOSE"
-
 class   Match(models.Model):
 
-    user1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
-    user2 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="opponent_match_history")
-    date = models.DateField()
-    user1_score = models.PositiveSmallIntegerField()
-    user2_score = models.PositiveSmallIntegerField()
-    user1_status = models.IntegerField(choices=Status.choices, default=Status.WIN)
-    user2_status = models.IntegerField(choices=Status.choices, default=Status.WIN)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="match_history")
+    user_name = models.CharField(max_length=30)
+    opponent_name = models.CharField(max_length=30)
+    date = models.CharField()
+    user_score = models.PositiveSmallIntegerField()
+    opponent_score = models.PositiveSmallIntegerField()
+    user_win = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'matches'
 
     @classmethod
-    def create_match(cls, user1, user2, date, user1_score, user2_score, user1_status, user2_status):
-        match = cls(user1=user1, user2=user2, date=date, user1_score=user1_score, user2_score=user2_score, user1_status=user1_status, user2_status=user2_status)
+    def create_match(cls, user, user_score, opponent_score, user_win, user_name, opponent_name):
+        timezone.activate('Europe/Paris')
+        now = timezone.now()
+        strTime = str(timezone.localtime(now))
+        datetime = strTime.split('.')
+        print(strTime, flush=True)
+        match = cls(user=user, date=datetime[0], user_score=user_score, opponent_score=opponent_score, user_win=user_win, user_name=user_name, opponent_name=opponent_name)
         match.save()
-        user1.matches_number = user1.matches_number + 1
-        if user1_status == Status.WIN:
-            user1.matches_win = user1.matches_win + 1
+        print(match.date, flush=True)
+        user.matches_number = user.matches_number + 1
+        if user_win == True:
+            user.matches_win = user.matches_win + 1
         else:
-            user1.matches_lose = user1.matches_lose + 1
-        user1.winrate = (user1.matches_win / user1.matches_number) * 100
-        user1.goal_scored = user1.goal_score + user1_score
-        user1.goal_conceded = user1.goal_conded + user2_score
-        user1.save()
-
-        user2.matches_number = user2.matches_number + 1
-        if user2_status is Status.WIN:
-            user2.matches_win = user2.matches_win + 1
-        else:
-            user2.matches_lose = user2.matches_lose + 1
-        user2.winrate = (user2.matches_win / user2.matches_number) * 100
-        user2.goal_scored = user2.goal_score + user2_score
-        user2.goal_conceded = user2.goal_conded + user1_score
-        user2.save()
+            user.matches_lose = user.matches_lose + 1
+        user.winrate = (user.matches_win / user.matches_number) * 100
+        user.goal_scored = user.goal_scored + user_score
+        user.goal_conceded = user.goal_conceded + opponent_score
+        user.save()
