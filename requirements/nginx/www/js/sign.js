@@ -19,7 +19,12 @@ function SignIn() {
 	  const textPassword = passwordInput.value.trim();
 
 	  if (!textUsername || !textPassword) {
-		raiseAlert(window.dataMap.get('fill-fields'));
+		let fill_fields = null;
+		if (window.dataMap && window.dataMap.has('fill-fields'))
+			fill_fields = window.dataMap.get('fill-fields');
+		else
+			fill_fields = 'All fields are required';
+		raiseAlert(fill_fields);
 		return;
 	  }
 
@@ -101,7 +106,12 @@ function SignIn() {
 		  raiseAlert('SignIn: ' + data.error);
 		}
 	  } catch (error) {
-		raiseAlert(window.dataMap.get('credentials-error'));
+		let credentials_error = null;
+		if (window.dataMap && window.dataMap.has('credentials-error'))
+			credentials_error = window.dataMap.get('credentials-error');
+		else
+			credentials_error = 'Invalid credentials';
+		raiseAlert(credentials_error);
 	  }
 	});
 
@@ -144,11 +154,21 @@ function SignIn() {
 	const textConfirmPassword = confirmPasswordInput.value.trim();
 
 	if (usernameInput == '' || emailInput == '' || passwordInput == '' || confirmPasswordInput == '') {
-		raiseAlert(window.dataMap.get('fill-fields'));
+		let fill_fields = null;
+		if (window.dataMap && window.dataMap.has('fill-fields'))
+			fill_fields = window.dataMap.get('fill-fields');
+		else
+			fill_fields = 'All fields are required';
+		raiseAlert(fill_fields);
 		return ;
 	}
 	if (!(textPassword === textConfirmPassword)) {
-		raiseAlert(window.dataMap.get('not-same-pwd'));
+		let not_same_pwd = null;
+		if (window.dataMap && window.dataMap.has('not-same-pwd'))
+			not_same_pwd = window.dataMap.get('not-same-pwd');
+		else
+			not_same_pwd = "Passwords don't match.";
+		raiseAlert(not_same_pwd);
 		return ;
 	}
 
@@ -172,7 +192,12 @@ function SignIn() {
 		  const data = await response.json();
 
 		  if (data.message === 'success') {
-				raiseAlert(window.dataMap.get('register-success'));
+				let register_success = null;
+				if (window.dataMap && window.dataMap.has('register-success'))
+					register_success = window.dataMap.get('register-success');
+				else
+					register_success = 'Registration successful.';
+				raiseAlert(register_success);
 				displayRegister();
 				document.cookie = `access_token=${data.access_token}; path=/; SameSite=None; Secure`;
 			} else {
@@ -450,7 +475,12 @@ function quitDesk() {
 	document.cookie = "refresh_token=; path=/; SameSite=None; Secure";
 
   	const button = document.getElementById('launch-matchmaking');
-	button.textContent = window.dataMap.get('launch-matchmaking');
+	let launchMatchmaking = null;
+	if (window.dataMap && window.dataMap.has('launch-matchmaking'))
+		launchMatchmaking = window.dataMap.get('launch-matchmaking');
+	else
+		launchMatchmaking = 'Launch matchmaking';
+	button.textContent = launchMatchmaking;
     window.matchmaking = true;
 
 	const pong = document.getElementById('PongGame');

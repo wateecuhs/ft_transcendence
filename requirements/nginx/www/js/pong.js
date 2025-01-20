@@ -122,7 +122,12 @@ class PongWindow {
 					else {
 						this.close();
 						quitDesk();
-						raiseAlert(window.dataMap.get('expired-session'));
+						let expired_session = null;
+						if (window.dataMap && window.dataMap.has('expired-session'))
+							expired_session = window.dataMap.get('expired-session');
+						else
+							expired_session = 'Session expired';
+						raiseAlert(expired_session);
 					}
 				}
 				catch (error) {
@@ -131,8 +136,13 @@ class PongWindow {
 				}
 			}
 			else if (event.code === 3005) {
+				let room_full = null;
+				if (window.dataMap && window.dataMap.has('room-full'))
+					room_full = window.dataMap.get('room-full');
+				else
+					room_full = 'Room is full';
 				if (window.dataMap && window.dataMap.get('room-full'))
-					raiseAlert(window.dataMap.get('room-full'));
+					raiseAlert(room_full);
 				const pongWindow = document.getElementById('PongGame');
 				pongWindow.querySelector('.close-button').click();
 			}
@@ -152,7 +162,17 @@ class PongWindow {
 			this.drawGame(gameState);
 			if (gameState.type === 'game_over') {
 				this.gameOver = true;
-				triggerGameOverWindows(window.dataMap.get('game-over-player') + gameState.winner + window.dataMap.get('game-over-win'));
+				let gameOverPlayer = null;
+				if (window.dataMap && window.dataMap.has('game-over-player'))
+					gameOverPlayer = window.dataMap.get('game-over-player');
+				else
+					gameOverPlayer = 'Game Over! Player ';
+				let gameOverWin = null;
+				if (window.dataMap && window.dataMap.has('game-over-win'))
+					gameOverWin = window.dataMap.get('game-over-win');
+				else
+					gameOverWin = ' wins!';
+				triggerGameOverWindows(gameOverPlayer + gameState.winner + gameOverWin);
 				this.socket.close();
 				this.close();
 				return;

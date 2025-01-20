@@ -77,7 +77,12 @@ async function getClientInfo(username) {
         }
         else {
           quitDesk();
-          raiseAlert(window.dataMap.get('expired-session'));
+          let expired_session = null;
+          if (window.dataMap && window.dataMap.has('expired-session'))
+            expired_session = window.dataMap.get('expired-session');
+          else
+            expired_session = 'Session expired';
+          raiseAlert(expired_session);
         }
       } else {
         console.error(errorData.message);
@@ -123,7 +128,12 @@ async function getClientStatistic(username) {
         }
         else {
           quitDesk();
-          raiseAlert(window.dataMap.get('expired-session'));
+          let expired_session = null;
+          if (window.dataMap && window.dataMap.has('expired-session'))
+            expired_session = window.dataMap.get('expired-session');
+          else
+            expired_session = 'Session expired';
+          raiseAlert(expired_session);
         }
       } else {
         raiseAlert('Getuser:' + errorData.message);
@@ -140,17 +150,57 @@ async function updateClientInfo(username) {
   const user = await getClientInfo(username);
   const stat = await getClientStatistic(username);
 
+  let accountName = null;
+  let accountAlias = null;
+  if (window.dataMap && window.dataMap.has('account-name'))
+    accountName = window.dataMap.get('account-name');
+  else
+    accountName = 'Name';
+  if (window.dataMap && window.dataMap.has('account-alias'))
+    accountAlias = window.dataMap.get('account-alias');
+  else
+    accountAlias = 'Alias';
   clientWindow.querySelector("#account-page-0 .user-img span").textContent = user.alias || 'default pseudo';
-  clientWindow.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `${window.dataMap.get('account-name')}: ${user.username || 'default'}`;
-  clientWindow.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `${window.dataMap.get('account-alias')}: ${user.alias || 'default_alias'}`;
+  clientWindow.querySelector("#account-page-0 ul li:nth-child(1)").textContent = `${accountName}: ${user.username || 'default'}`;
+  clientWindow.querySelector("#account-page-0 ul li:nth-child(3)").textContent = `${accountAlias}: ${user.alias || 'default_alias'}`;
 
 	const avatarImg = clientWindow.querySelector("#account-page-0 .user-img img");
 	avatarImg.src = user.avatar_path || 'img/png/game_spider-0.png';
 
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `${window.dataMap.get('number-match')}: ${stat.matches_number}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `${window.dataMap.get('number-win')}: ${stat.matches_win}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `${window.dataMap.get('number-lose')}: ${stat.matches_lose}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `${window.dataMap.get('winrate')}: ${stat.winrate}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `${window.dataMap.get('goal-scored')}: ${stat.goal_scored}`;
-  clientWindow.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `${window.dataMap.get('goal-conceded')}: ${stat.goal_conceded}`;
+  let statMatchesNumber = null;
+  let statMatchesWin = null;
+  let statMatchesLose = null;
+  let statWinrate = null;
+  let statGoalScored = null;
+  let statGoalConceded = null;
+  if (window.dataMap && window.dataMap.has('number-match'))
+    statMatchesNumber = window.dataMap.get('number-match');
+  else
+    statMatchesNumber = 'Matches number';
+  if (window.dataMap && window.dataMap.has('number-win'))
+    statMatchesWin = window.dataMap.get('number-win');
+  else
+    statMatchesWin = 'Matches win';
+  if (window.dataMap && window.dataMap.has('number-lose'))
+    statMatchesLose = window.dataMap.get('number-lose');
+  else
+    statMatchesLose = 'Matches lose';
+  if (window.dataMap && window.dataMap.has('winrate'))
+    statWinrate = window.dataMap.get('winrate');
+  else
+    statWinrate = 'Winrate';
+  if (window.dataMap && window.dataMap.has('goal-scored'))
+    statGoalScored = window.dataMap.get('goal-scored');
+  else
+    statGoalScored = 'Goal scored';
+  if (window.dataMap && window.dataMap.has('goal-conceded'))
+    statGoalConceded = window.dataMap.get('goal-conceded');
+  else
+    statGoalConceded = 'Goal conceded';
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(1)").textContent = `${statMatchesNumber}: ${stat.matches_number}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(2)").textContent = `${statMatchesWin}: ${stat.matches_win}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(3)").textContent = `${statMatchesLose}: ${stat.matches_lose}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(4)").textContent = `${statWinrate}: ${stat.winrate}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(5)").textContent = `${statGoalScored}: ${stat.goal_scored}`;
+  clientWindow.querySelector("#account-page-1 ul li:nth-child(6)").textContent = `${statGoalConceded}: ${stat.goal_conceded}`;
 }
