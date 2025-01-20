@@ -40,8 +40,6 @@ class MessagesView(APIView):
             return Response("No token provided", status=401)
         except requests.exceptions.ConnectionError:
             return Response("Auth service unreachable", status=503)
-        except Exception as e:
-            return Response(f"An error occurred {e}", status=400)
 
 class FriendsView(APIView):
     def get(self, request):
@@ -63,5 +61,3 @@ class FriendsView(APIView):
             return Response("No token provided", status=401)
         except requests.exceptions.ConnectionError:
             return Response("Auth service unreachable", status=503)
-        except Exception as e:
-            return Response(f"An error occurred {e}", status=400)

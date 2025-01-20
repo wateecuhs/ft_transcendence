@@ -10,7 +10,7 @@ function SignIn() {
 	const signInButton = loginPage.querySelector('#sign-in-button');
 
 	if (!usernameInput || !passwordInput || !signInButton) {
-	  console.error('Certains éléments du formulaire de connexion sont introuvables.');
+	  console.error('Cant find some elements of the login form.');
 	  return;
 	}
 
@@ -143,7 +143,7 @@ function SignIn() {
 	const signUpButton = loginPage.querySelector('#button-register-page');
 
 	if (!usernameInput || !emailInput || !passwordInput || !signUpButton) {
-	  console.error('Certains éléments du formulaire de connexion sont introuvables.');
+	  console.error('Cant find some elements of the register form.');
 	  return;
 	}
 
@@ -260,11 +260,11 @@ function SignIn() {
 			}
 			raiseAlert(errorMessage);
 		  } else {
-			alert('Erreur : ' + (errorData.message || 'Problème de connexion au serveur.'));
+			alert('Erreur : ' + (errorData.message || 'Login error'));
 		  }
 		}
 	} catch (error) {
-		alert('Une erreur est survenue lors de la connexion au serveur.');
+		alert('Login error');
 		console.error('Error:', error);
 	}
 });
@@ -409,7 +409,7 @@ async function SignIn42() {
 					raiseAlert(window.dataMap.get('response-42'));
 			}
 		} catch (error) {
-				console.error('Erreur réseau:', error);
+				console.error('Network error:', error);
 		}
 	}
 }

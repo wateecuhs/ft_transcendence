@@ -149,8 +149,8 @@ async function updateUser() {
 					}
 			}
 	} catch (error) {
-			raiseAlert('Une erreur est survenue lors de la mise à jour des informations utilisateur.');
-			console.error('Erreur lors de la mise à jour de l\'utilisateur :', error);
+			raiseAlert('Update Error');
+			console.error('Update Error', error);
 	}
 }
 

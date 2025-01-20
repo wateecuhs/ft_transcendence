@@ -43,7 +43,7 @@ function initMMWebSocket() {
         })
       };
 
-      const readyButton = winBookWindow.querySelector('#ready-button');
+      const readyButton = document.querySelector('#ready-button');
       const quitButton = document.querySelector('#quit-button');
 
       readyButton.style.display = 'none';
@@ -62,7 +62,6 @@ function initMMWebSocket() {
       showAllTournaments();
     }
     else if (message.type === "tournament.update") {
-      console.log("Tournament updated", message.data);
       if (message.data.rounds.length === 2 && message.data.rounds[1].matches[0].status !== "FINISHED") {
         if (message.data.author === message.data.rounds[1].matches[0].player1 || message.data.author === message.data.rounds[1].matches[0].player2) {
           showPopUp("Hurry up ! You are in the next round !");

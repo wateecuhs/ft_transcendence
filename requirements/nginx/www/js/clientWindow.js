@@ -65,7 +65,7 @@ async function getClientInfo(username) {
           avatar_path: data.avatar_path,
         }
       } else {
-        raiseAlert('Erreur lors de la récupération des informations utilisateur');
+        raiseAlert('GetClientInfo:' + data.message);
         return null;
       }
     } else {
@@ -90,7 +90,7 @@ async function getClientInfo(username) {
       return null;
     }
   } catch (error) {
-    console.error('Erreur lors de la récupération des informations utilisateur:', error);
+    console.error('GetClient', error);
     return null;
   }
 }
@@ -140,7 +140,7 @@ async function getClientStatistic(username) {
       }
     }
   } catch (error) {
-    console.error('Erreur lors de la récupération des informations utilisateur:', error);
+    console.error('GetClientStat', error);
     return null;
   }
   return null;

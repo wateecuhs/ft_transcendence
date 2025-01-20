@@ -15,11 +15,12 @@ function displayUserInfo(username) {
 
     raiseAlert(userInfoMessage);
   } else {
-    alert('Aucune information trouvée pour cet utilisateur.');
+    alert('No information found for this user');
   }
 }
 
-async function getUserInfo(accessToken) {
+async function getUserInfo() {
+  let accessToken = getTokenCookie();
   try {
     const response = await fetch('/auth/user/me/', {
       method: 'GET',
@@ -45,7 +46,7 @@ async function getUserInfo(accessToken) {
           language: data.language,
         };
       } else {
-        raiseAlert('Erreur lors de la récupération des informations utilisateur');
+        raiseAlert('Getuser:' + data.message);
         return null;
       }
     } else {
@@ -66,7 +67,7 @@ async function getUserInfo(accessToken) {
       return null;
     }
   } catch(error) {
-    console.error('Erreur lors de la récupération des informations utilisateur:', error);
+    console.error('Info error', error);
     return null;
   }
 }
@@ -112,7 +113,7 @@ async function getUserStatistic(accessToken) {
       }
     }
   } catch (error) {
-    console.error('Erreur lors de la récupération des informations utilisateur:', error);
+    console.error('Info error', error);
     return null;
   }
   return null;
@@ -125,7 +126,7 @@ async function updateUserInfo() {
 	if (userInfo) {
 		const user = JSON.parse(userInfo);
     const userWin = document.querySelector("#accountWindow");
-    
+
     if (user == null) {
       return
     }
@@ -144,7 +145,7 @@ async function updateUserInfo() {
 		avatarImg.src = "";
 		avatarImg.src = user.avatar_path || 'img/png/game_spider-0.png';
 	} else {
-		console.error('Impossible de récupérer les informations utilisateur.');
+		console.error('Cant get user info');
 	}
 }
 
