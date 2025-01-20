@@ -196,6 +196,8 @@ services:
     depends_on:
       ai_game-redis:
         condition: service_healthy
+    env_file:
+      - ./conf/.env-ai_game
     build: 
       context: ./ai_game
       dockerfile: Dockerfile
@@ -232,6 +234,8 @@ services:
     depends_on:
       game-redis:
         condition: service_healthy
+    env_file:
+      - ./conf/.env-game
     build: 
       context: ./game
       dockerfile: Dockerfile
