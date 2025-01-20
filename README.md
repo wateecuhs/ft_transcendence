@@ -1,6 +1,6 @@
 # ft_transcendence
 
-You will need to manually add the different environment files
+You will need to manually add the different environment files in requirements/conf/
 
 
 
