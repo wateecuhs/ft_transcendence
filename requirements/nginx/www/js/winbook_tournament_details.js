@@ -219,13 +219,15 @@ function firstRoundResults(tournament) {
                   ...(match.status === "FINISHED" && { score: match.score })
               };
 
-              const [alias_1, alias_2] = await Promise.all([
-                  getUserAlias(dataMatch.player1),
-                  getUserAlias(dataMatch.player2)
-              ]);
+              const alias_1 = await getUserAlias(dataMatch.player1);
+              const alias_2 = await getUserAlias(dataMatch.player2);
+              //     const [alias_1, alias_2] = await Promise.all([
+              //     getUserAlias(dataMatch.player1),
+              //     getUserAlias(dataMatch.player2)
+              // ]);
 
               if (match.status === "FINISHED") {
-                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}: ${dataMatch.score[1]} - ${dataMatch.score[0]}`;
+                  newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}: ${dataMatch.score[0]} - ${dataMatch.score[1]}`;
               } else {
                   newData.innerText = `Match ${round.round === "FIRST" ? i : "FINAL"} : ${alias_1} vs ${alias_2}`;
               }

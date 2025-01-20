@@ -324,12 +324,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def _handle_tournament_update(self, event):
         try:
             data = event.get("data", {})
-
             if await sync_to_async(get_user_playing_tournaments)(data["player_1"]) != await sync_to_async(get_user_playing_tournaments)(data["player_2"]):
                 await self.error("Players are not in the same tournament")
                 return
             tournament = await sync_to_async(get_user_playing_tournaments)(data["player_1"])
-            print("TOURNAMENT IS ", tournament, flush=True)
             if tournament.status != Tournament.Status.PLAYING:
                 await self.error("Tournament is not in playing status")
                 return
@@ -339,7 +337,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     if set([data["player_1"], data["player_2"]]) == set([tournament.matches[0]["matches"][i]["player1"], tournament.matches[0]["matches"][i]["player2"]]):
                         tournament.matches[0]["matches"][i]["status"] = tournament.Status.FINISHED
                         tournament.matches[0]["matches"][i]["winner"] = data["winner"]
-                        tournament.matches[0]["matches"][i]["score"] = data["score"]
+                        tournament.matches[0]["matches"][i]["score"] = data["score"] if tournament.matches[0]["matches"][i]["player1"] == data["player_1"] else data["score"][::-1]
                         break
 
                 if all(game["status"] == Tournament.Status.FINISHED for game in tournament.matches[0]["matches"]):
@@ -366,7 +364,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     if set([data["player_1"], data["player_2"]]) == set([tournament.matches[1]["matches"][i]["player1"], tournament.matches[1]["matches"][i]["player2"]]):
                         tournament.matches[1]["matches"][i]["status"] = tournament.Status.FINISHED
                         tournament.matches[1]["matches"][i]["winner"] = data["winner"]
-                        tournament.matches[1]["matches"][i]["score"] = data["score"]
+                        tournament.matches[1]["matches"][i]["score"] = data["score"] if tournament.matches[1]["matches"][i]["player1"] == data["player_1"] else data["score"][::-1]
                         break
 
                 if all(game["status"] == Tournament.Status.FINISHED for game in tournament.matches[1]["matches"]):
