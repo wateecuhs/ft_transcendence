@@ -15,6 +15,7 @@ from .serializers import RegisterSerializer, LoginSerializer, EditAccountSeriali
 from .utils import get_cookie_refresh, checkRefreshToken, CreateAccessToken, CreateRefreshToken, decodeAccessToken, decodeRefreshToken
 from django.shortcuts import redirect
 import logging
+from PIL import Image, UnidentifiedImageError
 
 logger = logging.getLogger(__name__)
 
@@ -113,6 +114,8 @@ class UserInfo(APIView):
 					base64_str = base64_str.split(",")[1]
 
 				image_data = base64.b64decode(base64_str)
+				image = Image.open(io.BytesIO(image_data))
+				image.verify()
 				random_number = random.randint(0, 10000000)
 				file_name = f"img/avatar/new_pp_{user.username}{random_number}.png"
 				file_path = Path(settings.NGINX_STATIC_ROOT) / file_name
@@ -150,6 +153,8 @@ class UserInfo(APIView):
 			return JsonResponse({"message": "failed : access token is invalid"}, status=401)
 		except jwt.ExpiredSignatureError:
 			return JsonResponse({"message": "failed : access token is expired"}, status=401)
+		except (UnidentifiedImageError, IOError) as e:
+			return JsonResponse({"message": "failed : invalid image"}, status=400)
 
 	def get(self, request):
 		try:
@@ -286,6 +291,7 @@ class ConfirmToken(APIView):
         while (user and user.is_42_account is False):
             username = response['login'] + str(add_username)
             add_username += 1
+            user = CustomUser.get_user_by_name(username)
         CustomUser.add_user(username=username, avatar_path=response['image']['versions']['small'], avatar=response['image']['versions']['small'], tournament_id=None, email=response['email'])
         encoded_access_jwt = CreateAccessToken(request, username)
         if encoded_access_jwt is None:

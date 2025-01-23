@@ -144,6 +144,7 @@ async function updateUser() {
 							if (Array.isArray(messages) && messages.includes("This field may not be blank.")) {
 								errorMessage = window.dataMap.get('fill-fields');
 							}
+							
 						}
 						raiseAlert(errorMessage);
 					}
