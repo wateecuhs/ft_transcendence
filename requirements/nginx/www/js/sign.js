@@ -95,7 +95,7 @@ function SignIn() {
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
 				loadMessageHistory();
-				navigateToPage('desktop');
+				cleanDesktop();
 				slideUp();
 			}
 
@@ -395,7 +395,7 @@ async function SignIn42() {
 									window.mmws = initMMWebSocket();
 									window.ws = initWebSocket();
 									loadMessageHistory();
-									navigateToPage('desktop');
+									cleanDesktop();
 
 									slideUp();
 								}
@@ -462,7 +462,7 @@ async function can_sign_in() {
 
 				const loginPage = document.getElementById('login-id-page');
 				loginPage.style.display = 'none';
-				navigateToPage('desktop');
+				cleanDesktop();
 			}
 		}
 	} catch (error) {
@@ -548,6 +548,9 @@ async function verify2FA() {
 					flagIcon.style.height = "32px";
 				}
 
+				const win_2fa = document.querySelector('#window-2fa-sign');
+				win_2fa.style.display = 'none';
+
 				updateUserInfo();
 				updateUserStat();
 				updateUserFriend(userInfo.username);
@@ -557,7 +560,7 @@ async function verify2FA() {
 				window.mmws = initMMWebSocket();
 				window.ws = initWebSocket();
 				loadMessageHistory();
-				navigateToPage('desktop');
+				cleanDesktop();
 				slideUp();
 			} else {
 				raiseAlert(data.message);
@@ -566,13 +569,13 @@ async function verify2FA() {
 			if (data.message === 'failed : wrong 2FA code') {
 				raiseAlert('Wrong code');
 			}
-			else if (errorData.message.startsWith('failed : access token') || errorData.message === 'failed : access_token is invalid' || errorData.message === 'failed : access_token is expired') {
+			else if (data.message.startsWith('failed : access token') || data.message === 'failed : access_token is invalid' || data.message === 'failed : access_token is expired') {
 				const isRefreshed = await getRefreshToken();
 				if (isRefreshed) {
 					return await verify2FA();
 				}
 			} else {
-				console.error(errorData.message);
+				console.error(data.message);
 			}
 		}
 	} catch(error) {

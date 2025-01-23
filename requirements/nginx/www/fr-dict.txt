@@ -170,3 +170,4 @@ docs-page-5-title-id=Corbeille
 trash-1=\_O-o_/ Surprise \_O-o_/ 
 not-in-tournament=Pas dans ce tournoi
 room-full=La salle est pleine
+invalid-img=Cette image est invalide

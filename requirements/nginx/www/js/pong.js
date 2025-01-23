@@ -97,8 +97,10 @@ class PongWindow {
 
 		setInterval(() => {
 			if (Object.keys(this.commandBuffer).length > 0) {
-				this.socket.send(JSON.stringify(this.commandBuffer));
-				this.commandBuffer = {};
+				if (this.socket.readyState === WebSocket.OPEN) {
+					this.socket.send(JSON.stringify(this.commandBuffer));
+					this.commandBuffer = {};
+				}
 			}
 		}, 16); // Send commands every 16ms (60fps)
 

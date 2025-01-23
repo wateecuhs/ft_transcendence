@@ -52,7 +52,16 @@ function openFileSelector() {
                             raiseAlert(expired_session);
                         }
                       } else {
-                        raiseAlert('Getuser:' + errorData.message);
+                        if (errorData.message === 'failed : invalid image') {
+                            let invalid_img = null;
+                            if (window.dataMap && window.dataMap.has('invalid-img'))
+                                invalid_img = window.dataMap.get('invalid-img');
+                            else
+                                invalid_img = 'Invalid image';
+                            raiseAlert(invalid_img);
+                        }
+                        else
+                            raiseAlert('Getuser:' + errorData.message);
                       }
                 }
             } catch (error) {

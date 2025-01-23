@@ -70,7 +70,7 @@ function initMMWebSocket() {
     }
     else if (message.type === "matchmaking.start") {
       const pongWindow = document.getElementById('PongGame');
-          pongWindow.querySelector('.close-button').click();
+      pongWindow.querySelector('.close-button').click();
       const optionWin = document.getElementById('game-option');
       const buttonMathmaking = optionWin.querySelector('#launch-matchmaking');
       buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
