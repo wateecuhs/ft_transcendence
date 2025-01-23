@@ -43,12 +43,6 @@ function initMMWebSocket() {
         })
       };
 
-      const readyButton = document.querySelector('#ready-button');
-      const quitButton = document.querySelector('#quit-button');
-
-      readyButton.style.display = 'none';
-      quitButton.style.display = 'none';
-
       displayChatMessage(data);
       const pongWindow = document.getElementById('PongGame');
       pongWindow.querySelector('.close-button').click();
@@ -76,7 +70,7 @@ function initMMWebSocket() {
     }
     else if (message.type === "matchmaking.start") {
       const pongWindow = document.getElementById('PongGame');
-      pongWindow = document.getElementById('PongGame');
+      pongWindow.querySelector('.close-button').click();
       const optionWin = document.getElementById('game-option');
       const buttonMathmaking = optionWin.querySelector('#launch-matchmaking');
       buttonMathmaking.textContent = window.dataMap.get('launch-matchmaking');
